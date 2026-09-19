@@ -115,7 +115,7 @@ export default function WorkPage() {
             <h1 className="work-hero-headline">
               <MaskIn>What we've</MaskIn>
               <MaskIn delay={0.08}>
-                <em>shipped.</em>
+                <br>shipped.</br>
               </MaskIn>
             </h1>
           </div>
