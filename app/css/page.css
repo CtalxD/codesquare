@@ -50,45 +50,16 @@
   z-index: 200;
 }
 
-/* ---------------------------------------------------------
-   MASK — desktop only
-   Generous padding so italics + descenders never clip
---------------------------------------------------------- */
-
 .cs-mask {
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  line-height: 1.15;
-  padding-bottom: 0.22em;
-  padding-right: 0.06em;
+  line-height: 1.05;
 }
 
 .cs-mask-inner {
   display: inline-block;
   will-change: transform;
-  padding-bottom: 0.04em;
-}
-
-/* ---------------------------------------------------------
-   PLAIN (non-masked) fallback — used on mobile/touch
-   so text is NEVER clipped or hidden
---------------------------------------------------------- */
-
-.cs-plain {
-  display: inline;
-  line-height: inherit;
-  overflow: visible;
-}
-
-/* On mobile, disable mask clipping entirely */
-@media (max-width: 767px) {
-  .cs-mask {
-    overflow: visible;
-    padding-bottom: 0;
-    padding-right: 0;
-    line-height: 1.1;
-  }
 }
 
 /* ---------------------------------------------------------
@@ -168,18 +139,18 @@
   font-family: var(--font-display);
   font-weight: 500;
   font-size: 152px;
-  line-height: 1.05;
+  line-height: 0.98;
   letter-spacing: -0.04em;
   color: var(--ink);
   margin: 32px 0 0 0;
   word-break: normal;
-  overflow: visible;
 }
 
 .cs-hero-line {
   display: block;
   overflow: hidden;
-  padding-bottom: 0.22em;
+  /* Enough padding so italic + descenders never clip on any device */
+  padding-bottom: 0.14em;
 }
 
 .cs-hero-headline em {
@@ -474,51 +445,6 @@
 }
 
 /* =========================================================
-   SAFETY NET — force critical content visible after 1s
-   (protects against framer-motion / IntersectionObserver
-    bugs on iOS Safari and older Android browsers)
-========================================================= */
-
-@keyframes cs-force-visible {
-  to {
-    opacity: 1 !important;
-    transform: none !important;
-  }
-}
-
-.cs-cta-title,
-.cs-cta-email,
-.cs-head-title,
-.cs-studio-text,
-.cs-hero-lede,
-.cs-hero-sub,
-.cs-cap-title,
-.cs-cap-body,
-.cs-cap-num,
-.cs-cap-tag,
-.cs-cap-cta {
-  animation: cs-force-visible 0.01s linear 1s forwards;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cs-cta-title,
-  .cs-cta-email,
-  .cs-head-title,
-  .cs-studio-text,
-  .cs-hero-lede,
-  .cs-hero-sub,
-  .cs-cap-title,
-  .cs-cap-body,
-  .cs-cap-num,
-  .cs-cap-tag,
-  .cs-cap-cta {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* =========================================================
    LARGE DESKTOP (1600px+)
 ========================================================= */
 
@@ -609,6 +535,7 @@
 
   .cs-hero { padding-bottom: 40px; }
   .cs-hero-headline { font-size: 78px; margin: 24px 0 0 0; }
+  .cs-hero-line { padding-bottom: 0.18em; }
   .cs-hero-foot {
     margin-top: 36px;
     grid-template-columns: 1fr;
@@ -648,6 +575,7 @@
 
   .cs-hero { padding-bottom: 34px; }
   .cs-hero-headline { font-size: 62px; margin: 22px 0 0 0; }
+  .cs-hero-line { padding-bottom: 0.2em; }
   .cs-hero-foot { margin-top: 32px; gap: 20px; }
   .cs-hero-lede { font-size: 15px; }
   .cs-hero-sub { font-size: 14px; }
@@ -688,6 +616,7 @@
 
   .cs-hero { padding-bottom: 30px; }
   .cs-hero-headline { font-size: 52px; margin: 20px 0 0 0; }
+  .cs-hero-line { padding-bottom: 0.2em; }
   .cs-hero-foot { margin-top: 28px; gap: 18px; }
   .cs-hero-foot-label { font-size: 11px; }
   .cs-hero-lede { font-size: 14.5px; }
@@ -733,6 +662,7 @@
 
   .cs-hero { padding-bottom: 28px; }
   .cs-hero-headline { font-size: 48px; margin: 18px 0 0 0; }
+  .cs-hero-line { padding-bottom: 0.22em; }
   .cs-hero-foot { margin-top: 26px; gap: 16px; }
   .cs-hero-foot-label { font-size: 11px; }
   .cs-hero-lede { font-size: 14px; }
@@ -776,6 +706,7 @@
   .cs-head-title { font-size: 28px; }
 
   .cs-hero-headline { font-size: 44px; }
+  .cs-hero-line { padding-bottom: 0.24em; }
 
   .cs-cap-title { font-size: 19px; }
   .cs-cap-body { font-size: 13px; }
@@ -798,6 +729,7 @@
 
   .cs-hero { padding-bottom: 24px; }
   .cs-hero-headline { font-size: 38px; margin: 16px 0 0 0; letter-spacing: -0.02em; }
+  .cs-hero-line { padding-bottom: 0.26em; }
   .cs-hero-foot { margin-top: 22px; gap: 14px; }
   .cs-hero-foot-label { font-size: 10px; }
   .cs-hero-lede { font-size: 13.5px; }

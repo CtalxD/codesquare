@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
 import Link from "next/link";
 import "./css/page.css";
@@ -47,27 +47,11 @@ const FOUNDED = new Date().getFullYear();
    ██  DO NOT EDIT BELOW  ██
 ========================================================= */
 
-/**
- * Detects if the device is a touch device / small screen.
- * On these, we skip mask animations entirely because they
- * cause text to disappear on iOS Safari.
- */
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const check = () => {
-      const smallScreen = window.matchMedia("(max-width: 767px)").matches;
-      const isTouch = window.matchMedia("(hover: none)").matches;
-      setIsMobile(smallScreen || isTouch);
-    };
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-
-  return isMobile;
-}
+const VIEWPORT_OPTS = {
+  once: true,
+  amount: 0.05,
+  margin: "0px 0px -40px 0px" as const,
+};
 
 function Reveal({
   children,
@@ -78,19 +62,12 @@ function Reveal({
   className?: string;
   delay?: number;
 }) {
-  const isMobile = useIsMobile();
-
-  // On mobile, skip animation entirely — content is always visible
-  if (isMobile) {
-    return <div className={className}>{children}</div>;
-  }
-
   return (
     <motion.div
       className={className}
       initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.05, margin: "0px 0px -40px 0px" }}
+      viewport={VIEWPORT_OPTS}
       transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
@@ -105,13 +82,6 @@ function MaskIn({
   children: React.ReactNode;
   delay?: number;
 }) {
-  const isMobile = useIsMobile();
-
-  // On mobile: no mask, plain text. No clipping, no disappearing.
-  if (isMobile) {
-    return <span className="cs-plain">{children}</span>;
-  }
-
   return (
     <span className="cs-mask">
       <motion.span
@@ -133,19 +103,13 @@ function MaskOnView({
   children: React.ReactNode;
   delay?: number;
 }) {
-  const isMobile = useIsMobile();
-
-  if (isMobile) {
-    return <span className="cs-plain">{children}</span>;
-  }
-
   return (
     <span className="cs-mask">
       <motion.span
         className="cs-mask-inner"
         initial={{ y: "110%" }}
         whileInView={{ y: 0 }}
-        viewport={{ once: true, amount: 0.05, margin: "0px 0px -40px 0px" }}
+        viewport={VIEWPORT_OPTS}
         transition={{ duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
       >
         {children}
@@ -158,10 +122,8 @@ function Hero() {
   const ref = useRef<HTMLElement>(null);
   const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
   const [active, setActive] = useState(false);
-  const isMobile = useIsMobile();
 
   function onMove(e: React.MouseEvent) {
-    if (isMobile) return;
     const el = ref.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
@@ -177,23 +139,21 @@ function Hero() {
       ref={ref}
       className="cs-hero"
       onMouseMove={onMove}
-      onMouseEnter={() => !isMobile && setActive(true)}
-      onMouseLeave={() => !isMobile && setActive(false)}
+      onMouseEnter={() => setActive(true)}
+      onMouseLeave={() => setActive(false)}
     >
       <div className="cs-hero-bg" aria-hidden="true">
         <div className="cs-hero-bg-base" />
-        {!isMobile && (
-          <motion.div
-            className="cs-hero-bg-glow"
-            animate={{
-              opacity: active ? 1 : 0.5,
-              background: `radial-gradient(700px circle at ${
-                mouse.x * 100
-              }% ${mouse.y * 100}%, rgba(30, 58, 138, 0.22), rgba(30, 58, 138, 0.06) 35%, transparent 65%)`,
-            }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          />
-        )}
+        <motion.div
+          className="cs-hero-bg-glow"
+          animate={{
+            opacity: active ? 1 : 0.5,
+            background: `radial-gradient(700px circle at ${mouse.x * 100}% ${
+              mouse.y * 100
+            }%, rgba(30, 58, 138, 0.22), rgba(30, 58, 138, 0.06) 35%, transparent 65%)`,
+          }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        />
         <div className="cs-hero-bg-grid" />
       </div>
 
@@ -214,7 +174,7 @@ function Hero() {
 
         <motion.div
           className="cs-hero-foot"
-          initial={isMobile ? false : { opacity: 0, y: 14 }}
+          initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
         >
