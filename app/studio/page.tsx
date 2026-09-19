@@ -180,6 +180,7 @@ export default function StudioPage() {
           <div className="cs-container">
             <h1 className="studio-hero-headline">
               <MaskIn>Built by people</MaskIn>
+              <br />
               <MaskIn delay={0.08}>
                 <em>who ship.</em>
               </MaskIn>
@@ -216,7 +217,7 @@ export default function StudioPage() {
                 <span className="studio-head-label">The team</span>
               </div>
               <h2 className="studio-head-title">
-                <MaskOnView>Who you'll actually work with.</MaskOnView>
+                <MaskOnView>Who you&apos;ll actually work with.</MaskOnView>
               </h2>
             </Reveal>
 
