@@ -9,6 +9,12 @@
   padding: 0;
 }
 
+/* Plain fallback for mobile — used when mask is skipped */
+.cs-plain {
+  display: inline;
+  overflow: visible;
+}
+
 .cs-progress {
   position: fixed;
   top: 0;
@@ -24,11 +30,14 @@
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  line-height: 1.05;
+  line-height: 1.15;
+  padding-bottom: 0.22em;
+  padding-right: 0.06em;
 }
 .cs-mask-inner {
   display: inline-block;
   will-change: transform;
+  padding-bottom: 0.04em;
 }
 
 /* ---------------------------------------------------------
@@ -49,6 +58,14 @@
   letter-spacing: -0.04em;
   color: var(--ink);
   margin: 32px 0 0 0;
+}
+
+/* Each phrase of the headline is its own line.
+   This is what fixes "weactually" gluing together. */
+.cap-hero-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
 }
 
 @media (max-width: 1280px) {
@@ -652,6 +669,19 @@
 /* ---------------------------------------------------------
    RESPONSIVE
 --------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  .cs-mask {
+    overflow: visible;
+    padding-bottom: 0;
+    padding-right: 0;
+    line-height: 1.1;
+  }
+  .cap-hero-line {
+    overflow: visible;
+    padding-bottom: 0;
+  }
+}
 
 @media (max-width: 640px) {
   .cap-row-head {

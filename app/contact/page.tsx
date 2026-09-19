@@ -136,6 +136,7 @@ export default function ContactPage() {
           <div className="cs-container">
             <h1 className="contact-hero-headline">
               <MaskIn>Start a</MaskIn>
+              <br />
               <MaskIn delay={0.08}>
                 <em>project.</em>
               </MaskIn>

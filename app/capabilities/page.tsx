@@ -304,6 +304,7 @@ export default function CapabilitiesPage() {
           <div className="cs-container">
             <h1 className="cap-hero-headline">
               <MaskIn>What we</MaskIn>
+              <br />
               <MaskIn delay={0.08}>
                 <em>actually</em> build.
               </MaskIn>
@@ -377,7 +378,7 @@ export default function CapabilitiesPage() {
                 <span className="cap-head-label">How we work</span>
               </div>
               <h2 className="cap-head-title">
-                <MaskOnView>Four rules we don't bend.</MaskOnView>
+                <MaskOnView>Four rules we don&apos;t bend.</MaskOnView>
               </h2>
             </Reveal>
 
@@ -421,13 +422,13 @@ export default function CapabilitiesPage() {
               <Reveal className="cap-nogo-left">
                 <div className="cap-head-bar">
                   <span className="cap-head-num">04</span>
-                  <span className="cap-head-label">What we don't do</span>
+                  <span className="cap-head-label">What we don&apos;t do</span>
                 </div>
                 <h2 className="cap-head-title">
-                  <MaskOnView>Some things we'd rather turn down.</MaskOnView>
+                  <MaskOnView>Some things we&apos;d rather turn down.</MaskOnView>
                 </h2>
                 <p className="cap-nogo-lede">
-                  Knowing what we won't take is how we stay good at
+                  Knowing what we won&apos;t take is how we stay good at
                   what we will. This list is short on purpose.
                 </p>
               </Reveal>
@@ -457,8 +458,8 @@ export default function CapabilitiesPage() {
                 </h2>
                 <p className="cap-stack-lede">
                   Only what we can staff today. If a project needs
-                  something outside this list and we can't deliver it
-                  properly, we'll tell you upfront.
+                  something outside this list and we can&apos;t deliver it
+                  properly, we&apos;ll tell you upfront.
                 </p>
               </Reveal>
 

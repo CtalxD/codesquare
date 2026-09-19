@@ -113,9 +113,10 @@ export default function WorkPage() {
         <section className="work-hero">
           <div className="cs-container">
             <h1 className="work-hero-headline">
-              <MaskIn>What we've</MaskIn>
+              <MaskIn>What we&apos;ve</MaskIn>
+              <br />
               <MaskIn delay={0.08}>
-                <br>shipped.</br>
+                <em>shipped.</em>
               </MaskIn>
             </h1>
           </div>
