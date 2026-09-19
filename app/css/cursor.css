@@ -1,0 +1,152 @@
+/* =========================================================
+   CUSTOM CURSOR
+   Two themes only:
+   - light sections  → cobalt
+   - dark sections   → mist
+   Only renders on devices with a real mouse.
+========================================================= */
+
+html.cs-cursor-on,
+html.cs-cursor-on a,
+html.cs-cursor-on button,
+html.cs-cursor-on [role="button"] {
+  cursor: none;
+}
+
+.cs-cursor {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 500;
+}
+
+.cs-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--cobalt);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: width 0.28s var(--ease), height 0.28s var(--ease),
+    border-radius 0.28s var(--ease), background-color 0.28s var(--ease),
+    border-color 0.28s var(--ease), opacity 0.2s var(--ease);
+  will-change: transform;
+}
+
+.cs-cursor-ring[data-theme="light"] { border-color: var(--cobalt); }
+.cs-cursor-ring[data-theme="light"] .cs-cursor-inner { color: var(--cobalt); }
+.cs-cursor-dot[data-theme="light"] { background: var(--cobalt); }
+
+.cs-cursor-ring[data-theme="dark"] { border-color: var(--mist); }
+.cs-cursor-ring[data-theme="dark"] .cs-cursor-inner { color: var(--mist); }
+.cs-cursor-dot[data-theme="dark"] { background: var(--mist); }
+
+.cs-cursor-ring[data-variant="nav"] {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+
+.cs-cursor-ring[data-variant="row"] {
+  width: 90px;
+  height: 38px;
+  border-radius: 19px;
+  background: var(--cobalt-soft);
+}
+.cs-cursor-ring[data-theme="dark"][data-variant="row"] {
+  background: rgba(232, 236, 238, 0.14);
+}
+
+.cs-cursor-ring[data-variant="action"] {
+  width: 56px;
+  height: 56px;
+  background: var(--cobalt);
+  border-color: var(--cobalt);
+}
+.cs-cursor-ring[data-theme="dark"][data-variant="action"] {
+  background: var(--mist);
+  border-color: var(--mist);
+}
+
+.cs-cursor-ring[data-variant="email"] {
+  width: 44px;
+  height: 44px;
+}
+
+.cs-cursor-inner {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--cobalt);
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+}
+
+.cs-cursor-ring[data-variant="row"] .cs-cursor-inner,
+.cs-cursor-ring[data-variant="email"] .cs-cursor-inner {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.cs-cursor-ring[data-variant="action"] .cs-cursor-inner {
+  opacity: 1;
+  transform: scale(1);
+  font-size: 18px;
+  letter-spacing: 0;
+  color: var(--mist);
+}
+.cs-cursor-ring[data-theme="dark"][data-variant="action"] .cs-cursor-inner {
+  color: var(--ink);
+}
+
+.cs-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--cobalt);
+  will-change: transform;
+  transition: opacity 0.2s var(--ease), background-color 0.2s var(--ease);
+}
+
+.cs-cursor-ring[data-pressed="true"] { width: 20px; height: 20px; }
+.cs-cursor-ring[data-pressed="true"][data-variant="row"] {
+  width: 78px;
+  height: 32px;
+}
+.cs-cursor-ring[data-pressed="true"][data-variant="action"] {
+  width: 46px;
+  height: 46px;
+}
+
+.cs-cursor-ring[data-hidden="true"] { opacity: 0; }
+
+/* never show on touch devices */
+@media (hover: none), (pointer: coarse) {
+  .cs-cursor,
+  .cs-cursor-ring,
+  .cs-cursor-dot {
+    display: none !important;
+  }
+
+  html.cs-cursor-on,
+  html.cs-cursor-on a,
+  html.cs-cursor-on button,
+  html.cs-cursor-on [role="button"] {
+    cursor: auto;
+  }
+}

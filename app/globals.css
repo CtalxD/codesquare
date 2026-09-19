@@ -1,26 +1,190 @@
-@import "tailwindcss";
+/* =========================================================
+   CODE SQUARE — GLOBAL TOKENS + RESET
+========================================================= */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --mist: #e8ecee;
+  --mist-2: #dde3e6;
+  --ink: #0e0e0c;
+  --cobalt: #1e3a8a;
+  --cobalt-soft: rgba(30, 58, 138, 0.14);
+  --steel: #8a8a8a;
+
+  --ink-70: rgba(14, 14, 12, 0.72);
+  --ink-50: rgba(14, 14, 12, 0.5);
+  --ink-30: rgba(14, 14, 12, 0.3);
+  --rule: rgba(14, 14, 12, 0.14);
+  --rule-strong: rgba(14, 14, 12, 0.28);
+
+  --paper-70: rgba(232, 236, 238, 0.72);
+  --paper-50: rgba(232, 236, 238, 0.5);
+  --paper-30: rgba(232, 236, 238, 0.3);
+  --paper-rule: rgba(232, 236, 238, 0.16);
+
+  --font-display: var(--font-geist), "Inter Tight", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: var(--font-inter), -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, "SFMono-Regular", Menlo,
+    Consolas, monospace;
+
+  --container: 1360px;
+  --gutter: 24px;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@media (min-width: 900px) {
+  :root { --gutter: 48px; }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@media (min-width: 1280px) {
+  :root { --gutter: 72px; }
+}
+
+@media (max-width: 640px) {
+  :root { --gutter: 20px; }
+}
+
+@media (max-width: 380px) {
+  :root { --gutter: 16px; }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+  background: var(--mist);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--mist);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  justify-content: flex-start;
+  align-items: stretch;
+  overflow-wrap: anywhere;
+}
+
+main {
+  flex: 1 0 auto;
+  display: block;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+ul { list-style: none; }
+img,
+video,
+svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+::selection { background: var(--cobalt); color: var(--mist); }
+
+:focus-visible {
+  outline: 2px solid var(--cobalt);
+  outline-offset: 3px;
+}
+
+@media (hover: none) {
+  * { -webkit-tap-highlight-color: transparent; }
+}
+
+.cs-container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  position: relative;
+}
+
+.cs-mark { display: block; }
+
+.cs-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 20px;
+  border-radius: 0;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  transition: background-color 0.2s var(--ease),
+    color 0.2s var(--ease), border-color 0.2s var(--ease),
+    transform 0.2s var(--ease);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.cs-btn:hover { transform: translateY(-1px); }
+
+.cs-btn--sm { padding: 9px 16px; font-size: 13px; }
+.cs-btn--lg { padding: 16px 26px; font-size: 15px; }
+
+.cs-btn--primary {
+  background: var(--ink);
+  color: var(--mist);
+}
+.cs-btn--primary:hover {
+  background: var(--cobalt);
+  border-color: var(--cobalt);
+  color: var(--mist);
+}
+
+.cs-btn--ghost {
+  background: transparent;
+  color: var(--ink);
+}
+.cs-btn--ghost:hover {
+  background: var(--ink);
+  color: var(--mist);
+}
+
+.cs-section--dark .cs-btn--ghost {
+  border-color: var(--paper-30);
+  color: var(--mist);
+}
+.cs-section--dark .cs-btn--ghost:hover {
+  background: var(--mist);
+  color: var(--ink);
+  border-color: var(--mist);
+}
+
+@media (max-width: 480px) {
+  .cs-btn { padding: 11px 16px; font-size: 13px; }
+  .cs-btn--lg { padding: 14px 20px; font-size: 14px; }
+}
+
+@media (hover: none) {
+  .cs-btn:hover { transform: none; }
 }
