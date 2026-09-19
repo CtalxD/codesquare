@@ -1,5 +1,20 @@
 /* =========================================================
-   LANDING PAGE
+   LANDING PAGE — FULLY RESPONSIVE
+   Breakpoints covered:
+   320px   → tiny phones (iPhone SE 1st gen, old Androids)
+   360px   → small Androids
+   375px   → iPhone X / 12 mini / SE 2/3
+   390px   → iPhone 12/13/14
+   414px   → iPhone Plus / XR
+   430px   → iPhone Pro Max
+   480px   → large phones (landscape small)
+   640px   → phone → tablet threshold
+   768px   → iPad portrait
+   820px   → iPad Air
+   1024px  → iPad landscape / small laptop
+   1280px  → laptop
+   1440px  → desktop
+   1600px+ → large desktop
 ========================================================= */
 
 .cs-section {
@@ -7,21 +22,21 @@
   padding: 48px 0;
   border-top: none;
   overflow: hidden;
+  width: 100%;
 }
 
 .cs-section:first-of-type {
   padding-top: 24px;
 }
 
-@media (max-width: 640px) {
-  .cs-section { padding: 32px 0; }
-  .cs-section:first-of-type { padding-top: 16px; }
-}
-
 .cs-section--dark {
   background: var(--ink);
   color: var(--mist);
   border-top: none;
+}
+
+.cs-section--last {
+  padding-bottom: 80px;
 }
 
 .cs-progress {
@@ -35,15 +50,45 @@
   z-index: 200;
 }
 
+/* ---------------------------------------------------------
+   MASK — desktop only
+   Generous padding so italics + descenders never clip
+--------------------------------------------------------- */
+
 .cs-mask {
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  line-height: 1.05;
+  line-height: 1.15;
+  padding-bottom: 0.22em;
+  padding-right: 0.06em;
 }
+
 .cs-mask-inner {
   display: inline-block;
   will-change: transform;
+  padding-bottom: 0.04em;
+}
+
+/* ---------------------------------------------------------
+   PLAIN (non-masked) fallback — used on mobile/touch
+   so text is NEVER clipped or hidden
+--------------------------------------------------------- */
+
+.cs-plain {
+  display: inline;
+  line-height: inherit;
+  overflow: visible;
+}
+
+/* On mobile, disable mask clipping entirely */
+@media (max-width: 767px) {
+  .cs-mask {
+    overflow: visible;
+    padding-bottom: 0;
+    padding-right: 0;
+    line-height: 1.1;
+  }
 }
 
 /* ---------------------------------------------------------
@@ -62,12 +107,12 @@
   letter-spacing: -0.03em;
   color: var(--ink);
   max-width: 1000px;
+  margin: 0;
 }
 
-@media (max-width: 900px) { .cs-head-title { font-size: 48px; } }
-@media (max-width: 640px) { .cs-head-title { font-size: 34px; } }
-
-.cs-section--dark .cs-head-title { color: var(--mist); }
+.cs-section--dark .cs-head-title {
+  color: var(--mist);
+}
 
 /* ---------------------------------------------------------
    HERO
@@ -81,10 +126,6 @@
   isolation: isolate;
 }
 
-@media (max-width: 640px) {
-  .cs-hero { padding-bottom: 32px; }
-}
-
 .cs-hero-bg {
   position: absolute;
   inset: 0;
@@ -95,12 +136,7 @@
 .cs-hero-bg-base {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    #eef1f3 0%,
-    var(--mist) 40%,
-    #dfe5e8 100%
-  );
+  background: linear-gradient(180deg, #eef1f3 0%, var(--mist) 40%, #dfe5e8 100%);
 }
 
 .cs-hero-bg-glow {
@@ -112,15 +148,10 @@
 .cs-hero-bg-grid {
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(14, 14, 12, 0.05) 1px, transparent 1px),
+  background-image: linear-gradient(rgba(14, 14, 12, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(14, 14, 12, 0.05) 1px, transparent 1px);
   background-size: 80px 80px;
-  mask-image: radial-gradient(
-    ellipse at center,
-    black 30%,
-    transparent 80%
-  );
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
   -webkit-mask-image: radial-gradient(
     ellipse at center,
     black 30%,
@@ -137,25 +168,18 @@
   font-family: var(--font-display);
   font-weight: 500;
   font-size: 152px;
-  line-height: 0.98;
+  line-height: 1.05;
   letter-spacing: -0.04em;
   color: var(--ink);
   margin: 32px 0 0 0;
+  word-break: normal;
+  overflow: visible;
 }
-
-@media (max-width: 1280px) { .cs-hero-headline { font-size: 120px; } }
-@media (max-width: 900px) {
-  .cs-hero-headline { font-size: 96px; margin: 24px 0 0 0; }
-}
-@media (max-width: 640px) {
-  .cs-hero-headline { font-size: 64px; margin: 20px 0 0 0; }
-}
-@media (max-width: 380px) { .cs-hero-headline { font-size: 44px; } }
 
 .cs-hero-line {
   display: block;
   overflow: hidden;
-  padding-bottom: 0.04em;
+  padding-bottom: 0.22em;
 }
 
 .cs-hero-headline em {
@@ -172,17 +196,6 @@
   margin-top: 48px;
 }
 
-@media (max-width: 640px) {
-  .cs-hero-foot { margin-top: 32px; }
-}
-
-@media (min-width: 900px) {
-  .cs-hero-foot {
-    grid-template-columns: 180px 1fr;
-    gap: 56px;
-  }
-}
-
 .cs-hero-foot-label {
   font-family: var(--font-mono);
   font-size: 12px;
@@ -191,7 +204,9 @@
   color: var(--ink-50);
 }
 
-.cs-hero-foot-body { max-width: 640px; }
+.cs-hero-foot-body {
+  max-width: 640px;
+}
 
 .cs-hero-lede {
   font-family: var(--font-body);
@@ -200,7 +215,7 @@
   line-height: 1.65;
   letter-spacing: 0;
   color: var(--ink);
-  margin-bottom: 10px;
+  margin: 0 0 10px 0;
 }
 
 .cs-hero-sub {
@@ -209,7 +224,7 @@
   font-size: 15px;
   line-height: 1.65;
   color: var(--ink-70);
-  margin-bottom: 24px;
+  margin: 0 0 24px 0;
 }
 
 .cs-hero-actions {
@@ -236,10 +251,7 @@
   color: var(--ink);
   overflow: hidden;
   isolation: isolate;
-}
-
-.cs-cap-row:hover {
-  padding-left: 12px;
+  text-decoration: none;
 }
 
 .cs-cap-bar {
@@ -254,8 +266,6 @@
   transition: transform 0.5s var(--ease);
   z-index: 2;
 }
-
-.cs-cap-row:hover .cs-cap-bar { transform: scaleY(1); }
 
 .cs-cap-glow {
   position: absolute;
@@ -272,22 +282,12 @@
   z-index: 0;
 }
 
-.cs-cap-row:hover .cs-cap-glow { opacity: 1; }
-
 .cs-cap-grid {
   position: relative;
   z-index: 1;
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
-}
-
-@media (min-width: 800px) {
-  .cs-cap-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: start;
-  }
 }
 
 .cs-cap-left {
@@ -307,11 +307,6 @@
   transition: transform 0.4s var(--ease), letter-spacing 0.4s var(--ease);
 }
 
-.cs-cap-row:hover .cs-cap-num {
-  transform: scale(1.25) translateX(-2px);
-  letter-spacing: 0.1em;
-}
-
 .cs-cap-title {
   font-family: var(--font-display);
   font-weight: 500;
@@ -320,14 +315,12 @@
   letter-spacing: -0.025em;
   color: var(--ink);
   transition: color 0.35s var(--ease);
+  margin: 0;
 }
 
-@media (max-width: 900px) { .cs-cap-title { font-size: 28px; } }
-@media (max-width: 640px) { .cs-cap-title { font-size: 22px; } }
-
-.cs-cap-row:hover .cs-cap-title { color: var(--cobalt); }
-
-.cs-cap-right { max-width: 520px; }
+.cs-cap-right {
+  max-width: 520px;
+}
 
 .cs-cap-body {
   font-family: var(--font-body);
@@ -335,11 +328,9 @@
   font-size: 15px;
   line-height: 1.6;
   color: var(--ink-70);
-  margin-bottom: 16px;
+  margin: 0 0 16px 0;
   transition: color 0.35s var(--ease);
 }
-
-.cs-cap-row:hover .cs-cap-body { color: var(--ink); }
 
 .cs-cap-tags {
   display: flex;
@@ -359,13 +350,7 @@
   transform-origin: left center;
   transition: transform 0.45s var(--ease), border-color 0.35s var(--ease),
     color 0.35s var(--ease), background-color 0.35s var(--ease);
-}
-
-.cs-cap-row:hover .cs-cap-tag {
-  transform: scale(1.18);
-  border-color: var(--cobalt);
-  color: var(--cobalt);
-  background: rgba(30, 58, 138, 0.06);
+  white-space: nowrap;
 }
 
 .cs-cap-cta {
@@ -385,18 +370,10 @@
     letter-spacing 0.4s var(--ease);
 }
 
-.cs-cap-row:hover .cs-cap-cta {
-  opacity: 1;
-  transform: translateY(0) scale(1.12);
-  letter-spacing: 0.1em;
-}
-
 .cs-cap-cta span {
   display: inline-block;
   transition: transform 0.35s var(--ease);
 }
-
-.cs-cap-row:hover .cs-cap-cta span { transform: translateX(4px); }
 
 /* ---------------------------------------------------------
    STUDIO TEASER
@@ -407,14 +384,6 @@
   grid-template-columns: 1fr;
   gap: 32px;
   align-items: start;
-}
-
-@media (min-width: 900px) {
-  .cs-studio {
-    grid-template-columns: 1fr auto;
-    gap: 96px;
-    align-items: end;
-  }
 }
 
 .cs-studio-text {
@@ -459,10 +428,8 @@
   color: var(--mist);
   position: relative;
   z-index: 1;
+  margin: 0;
 }
-
-@media (max-width: 900px) { .cs-cta-title { font-size: 64px; } }
-@media (max-width: 640px) { .cs-cta-title { font-size: 40px; } }
 
 .cs-cta-row {
   position: relative;
@@ -485,9 +452,14 @@
   color: var(--mist);
   transition: color 0.2s var(--ease);
   word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  text-decoration: none;
 }
 
-.cs-cta-email:hover { color: #7a9bff; }
+.cs-cta-email:hover {
+  color: #7a9bff;
+}
 
 .cs-section--dark .cs-btn--primary {
   background: var(--mist);
@@ -501,17 +473,159 @@
   color: var(--mist);
 }
 
-/* ---------------------------------------------------------
-   RESPONSIVE
---------------------------------------------------------- */
+/* =========================================================
+   SAFETY NET — force critical content visible after 1s
+   (protects against framer-motion / IntersectionObserver
+    bugs on iOS Safari and older Android browsers)
+========================================================= */
 
-@media (max-width: 640px) {
-  .cs-hero-actions { width: 100%; }
-  .cs-hero-actions .cs-btn {
-    flex: 1 1 140px;
-    justify-content: center;
+@keyframes cs-force-visible {
+  to {
+    opacity: 1 !important;
+    transform: none !important;
   }
-  .cs-cap-tag { font-size: 10px; padding: 4px 9px; }
+}
+
+.cs-cta-title,
+.cs-cta-email,
+.cs-head-title,
+.cs-studio-text,
+.cs-hero-lede,
+.cs-hero-sub,
+.cs-cap-title,
+.cs-cap-body,
+.cs-cap-num,
+.cs-cap-tag,
+.cs-cap-cta {
+  animation: cs-force-visible 0.01s linear 1s forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-cta-title,
+  .cs-cta-email,
+  .cs-head-title,
+  .cs-studio-text,
+  .cs-hero-lede,
+  .cs-hero-sub,
+  .cs-cap-title,
+  .cs-cap-body,
+  .cs-cap-num,
+  .cs-cap-tag,
+  .cs-cap-cta {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* =========================================================
+   LARGE DESKTOP (1600px+)
+========================================================= */
+
+@media (min-width: 1600px) {
+  .cs-hero-headline { font-size: 176px; }
+  .cs-head-title { font-size: 72px; }
+  .cs-cta-title { font-size: 112px; }
+}
+
+/* =========================================================
+   DESKTOP (1440px – 1599px)
+========================================================= */
+
+@media (min-width: 1440px) and (max-width: 1599px) {
+  .cs-hero-headline { font-size: 160px; }
+  .cs-head-title { font-size: 68px; }
+  .cs-cta-title { font-size: 104px; }
+}
+
+/* =========================================================
+   LAPTOP (1280px – 1439px)
+========================================================= */
+
+@media (min-width: 1280px) and (max-width: 1439px) {
+  .cs-hero-headline { font-size: 140px; }
+  .cs-head-title { font-size: 62px; }
+  .cs-cta-title { font-size: 96px; }
+}
+
+/* =========================================================
+   SMALL LAPTOP / TABLET LANDSCAPE (1024px – 1279px)
+========================================================= */
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .cs-hero-headline { font-size: 120px; }
+  .cs-head-title { font-size: 56px; }
+  .cs-cta-title { font-size: 84px; }
+}
+
+/* =========================================================
+   TABLET PORTRAIT (768px – 1023px)
+========================================================= */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .cs-section { padding: 44px 0; }
+  .cs-section:first-of-type { padding-top: 20px; }
+  .cs-section--last { padding-bottom: 68px; }
+
+  .cs-head { margin-bottom: 24px; }
+  .cs-head-title { font-size: 48px; }
+
+  .cs-hero { padding-bottom: 44px; }
+  .cs-hero-headline { font-size: 96px; margin: 28px 0 0 0; }
+  .cs-hero-line { padding-bottom: 0.16em; }
+  .cs-hero-foot {
+    margin-top: 40px;
+    grid-template-columns: 160px 1fr;
+    gap: 32px;
+  }
+
+  .cs-cap-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  .cs-cap-title { font-size: 28px; }
+
+  .cs-studio {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .cs-cta-title { font-size: 68px; }
+  .cs-cta-email { font-size: 20px; }
+}
+
+/* =========================================================
+   LARGE PHONES / SMALL TABLETS (640px – 767px)
+========================================================= */
+
+@media (min-width: 640px) and (max-width: 767px) {
+  .cs-section { padding: 40px 0; }
+  .cs-section:first-of-type { padding-top: 18px; }
+  .cs-section--last { padding-bottom: 60px; }
+
+  .cs-head { margin-bottom: 22px; }
+  .cs-head-title { font-size: 42px; }
+
+  .cs-hero { padding-bottom: 40px; }
+  .cs-hero-headline { font-size: 78px; margin: 24px 0 0 0; }
+  .cs-hero-foot {
+    margin-top: 36px;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .cs-hero-lede { font-size: 15px; }
+  .cs-hero-sub { font-size: 14px; }
+
+  .cs-cap-grid { grid-template-columns: 1fr; gap: 16px; }
+  .cs-cap-title { font-size: 26px; }
+  .cs-cap-body { font-size: 14.5px; }
+
+  .cs-studio { grid-template-columns: 1fr; gap: 24px; }
+  .cs-studio-text { font-size: 15px; }
+
+  .cs-cta-title { font-size: 56px; }
+  .cs-cta-email { font-size: 18px; }
   .cs-cta-row {
     flex-direction: column;
     align-items: stretch;
@@ -520,7 +634,271 @@
   .cs-cta-row .cs-btn { width: 100%; justify-content: center; }
 }
 
-@media (max-width: 380px) {
+/* =========================================================
+   STANDARD PHONES (480px – 639px)
+========================================================= */
+
+@media (min-width: 480px) and (max-width: 639px) {
+  .cs-section { padding: 34px 0; }
+  .cs-section:first-of-type { padding-top: 16px; }
+  .cs-section--last { padding-bottom: 56px; }
+
+  .cs-head { margin-bottom: 20px; }
+  .cs-head-title { font-size: 36px; }
+
+  .cs-hero { padding-bottom: 34px; }
+  .cs-hero-headline { font-size: 62px; margin: 22px 0 0 0; }
+  .cs-hero-foot { margin-top: 32px; gap: 20px; }
+  .cs-hero-lede { font-size: 15px; }
+  .cs-hero-sub { font-size: 14px; }
+
+  .cs-hero-actions { width: 100%; }
+  .cs-hero-actions .cs-btn { flex: 1 1 140px; }
+
+  .cs-cap-row { padding: 20px 0; }
+  .cs-cap-title { font-size: 24px; }
+  .cs-cap-body { font-size: 14px; line-height: 1.55; }
+  .cs-cap-tags { gap: 6px; }
+  .cs-cap-tag { font-size: 10.5px; padding: 4px 9px; }
+
+  .cs-studio { gap: 22px; }
+  .cs-studio-text { font-size: 14.5px; }
+
+  .cs-cta-title { font-size: 44px; }
+  .cs-cta-email { font-size: 16px; }
+  .cs-cta-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+  }
+  .cs-cta-row .cs-btn { width: 100%; justify-content: center; }
+}
+
+/* =========================================================
+   SMALL PHONES (390px – 479px) — iPhone 12/13/14, Pro Max
+========================================================= */
+
+@media (min-width: 390px) and (max-width: 479px) {
+  .cs-section { padding: 32px 0; }
+  .cs-section:first-of-type { padding-top: 16px; }
+  .cs-section--last { padding-bottom: 52px; }
+
+  .cs-head { margin-bottom: 18px; }
+  .cs-head-title { font-size: 32px; }
+
+  .cs-hero { padding-bottom: 30px; }
+  .cs-hero-headline { font-size: 52px; margin: 20px 0 0 0; }
+  .cs-hero-foot { margin-top: 28px; gap: 18px; }
+  .cs-hero-foot-label { font-size: 11px; }
+  .cs-hero-lede { font-size: 14.5px; }
+  .cs-hero-sub { font-size: 13.5px; margin-bottom: 20px; }
+
+  .cs-hero-actions { width: 100%; gap: 10px; }
+  .cs-hero-actions .cs-btn { flex: 1 1 130px; }
+
+  .cs-cap-row { padding: 18px 0; }
+  .cs-cap-num { font-size: 11px; }
+  .cs-cap-title { font-size: 22px; }
+  .cs-cap-body { font-size: 13.5px; line-height: 1.55; margin-bottom: 14px; }
+  .cs-cap-tags { gap: 6px; margin-bottom: 14px; }
+  .cs-cap-tag { font-size: 10px; padding: 4px 8px; }
+  .cs-cap-cta { font-size: 11px; }
+
+  .cs-studio { gap: 20px; }
+  .cs-studio-text { font-size: 14px; }
+
+  .cs-cta-title { font-size: 38px; }
+  .cs-cta-email { font-size: 15px; }
+  .cs-cta-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    margin-top: 20px;
+    padding-top: 20px;
+  }
+  .cs-cta-row .cs-btn { width: 100%; justify-content: center; }
+}
+
+/* =========================================================
+   IPHONE X / 12 MINI / SE 2-3 (375px – 389px)
+========================================================= */
+
+@media (min-width: 375px) and (max-width: 389px) {
+  .cs-section { padding: 30px 0; }
+  .cs-section:first-of-type { padding-top: 14px; }
+  .cs-section--last { padding-bottom: 48px; }
+
+  .cs-head { margin-bottom: 16px; }
+  .cs-head-title { font-size: 30px; }
+
+  .cs-hero { padding-bottom: 28px; }
+  .cs-hero-headline { font-size: 48px; margin: 18px 0 0 0; }
+  .cs-hero-foot { margin-top: 26px; gap: 16px; }
+  .cs-hero-foot-label { font-size: 11px; }
+  .cs-hero-lede { font-size: 14px; }
+  .cs-hero-sub { font-size: 13px; margin-bottom: 18px; }
+
+  .cs-hero-actions { width: 100%; gap: 10px; }
+  .cs-hero-actions .cs-btn { flex: 1 1 120px; }
+
+  .cs-cap-row { padding: 16px 0; }
+  .cs-cap-num { font-size: 11px; }
+  .cs-cap-title { font-size: 20px; }
+  .cs-cap-body { font-size: 13.5px; line-height: 1.55; margin-bottom: 14px; }
+  .cs-cap-tags { gap: 6px; margin-bottom: 12px; }
+  .cs-cap-tag { font-size: 9.5px; padding: 4px 8px; }
+  .cs-cap-cta { font-size: 11px; }
+
+  .cs-studio { gap: 18px; }
+  .cs-studio-text { font-size: 13.5px; }
+
+  .cs-cta-title { font-size: 34px; }
+  .cs-cta-email { font-size: 14px; }
+  .cs-cta-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    margin-top: 18px;
+    padding-top: 18px;
+  }
+  .cs-cta-row .cs-btn { width: 100%; justify-content: center; }
+}
+
+/* =========================================================
+   SMALL ANDROIDS (360px – 374px)
+========================================================= */
+
+@media (min-width: 360px) and (max-width: 374px) {
+  .cs-section { padding: 28px 0; }
+  .cs-section:first-of-type { padding-top: 14px; }
+  .cs-section--last { padding-bottom: 44px; }
+
+  .cs-head-title { font-size: 28px; }
+
+  .cs-hero-headline { font-size: 44px; }
+
+  .cs-cap-title { font-size: 19px; }
+  .cs-cap-body { font-size: 13px; }
+
+  .cs-cta-title { font-size: 32px; }
+  .cs-cta-email { font-size: 13.5px; }
+}
+
+/* =========================================================
+   TINY PHONES (320px – 359px) — iPhone SE 1st gen, older
+========================================================= */
+
+@media (max-width: 359px) {
+  .cs-section { padding: 26px 0; }
+  .cs-section:first-of-type { padding-top: 12px; }
+  .cs-section--last { padding-bottom: 40px; }
+
+  .cs-head { margin-bottom: 14px; }
+  .cs-head-title { font-size: 26px; }
+
+  .cs-hero { padding-bottom: 24px; }
+  .cs-hero-headline { font-size: 38px; margin: 16px 0 0 0; letter-spacing: -0.02em; }
+  .cs-hero-foot { margin-top: 22px; gap: 14px; }
+  .cs-hero-foot-label { font-size: 10px; }
+  .cs-hero-lede { font-size: 13.5px; }
+  .cs-hero-sub { font-size: 12.5px; margin-bottom: 16px; }
+
+  .cs-hero-actions { width: 100%; gap: 8px; flex-direction: column; }
+  .cs-hero-actions .cs-btn { width: 100%; flex: 1 1 100%; }
+
+  .cs-cap-row { padding: 14px 0; }
+  .cs-cap-num { font-size: 10px; }
+  .cs-cap-title { font-size: 18px; }
+  .cs-cap-body { font-size: 12.5px; line-height: 1.5; margin-bottom: 12px; }
+  .cs-cap-tags { gap: 5px; margin-bottom: 12px; }
   .cs-cap-tag { font-size: 9px; padding: 3px 7px; }
-  .cs-hero-actions .cs-btn { flex-basis: 100%; }
+  .cs-cap-cta { font-size: 10px; }
+
+  .cs-studio { gap: 16px; }
+  .cs-studio-text { font-size: 13px; }
+
+  .cs-cta-title { font-size: 28px; }
+  .cs-cta-email { font-size: 12.5px; }
+  .cs-cta-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    margin-top: 16px;
+    padding-top: 16px;
+  }
+  .cs-cta-row .cs-btn { width: 100%; justify-content: center; }
+}
+
+/* =========================================================
+   DESKTOP HOVER EFFECTS (only where pointer is precise)
+========================================================= */
+
+@media (hover: hover) and (pointer: fine) {
+  .cs-cap-row:hover { padding-left: 12px; }
+  .cs-cap-row:hover .cs-cap-bar { transform: scaleY(1); }
+  .cs-cap-row:hover .cs-cap-glow { opacity: 1; }
+  .cs-cap-row:hover .cs-cap-num {
+    transform: scale(1.25) translateX(-2px);
+    letter-spacing: 0.1em;
+  }
+  .cs-cap-row:hover .cs-cap-title { color: var(--cobalt); }
+  .cs-cap-row:hover .cs-cap-body { color: var(--ink); }
+  .cs-cap-row:hover .cs-cap-tag {
+    transform: scale(1.18);
+    border-color: var(--cobalt);
+    color: var(--cobalt);
+    background: rgba(30, 58, 138, 0.06);
+  }
+  .cs-cap-row:hover .cs-cap-cta {
+    opacity: 1;
+    transform: translateY(0) scale(1.12);
+    letter-spacing: 0.1em;
+  }
+  .cs-cap-row:hover .cs-cap-cta span { transform: translateX(4px); }
+}
+
+/* =========================================================
+   TOUCH DEVICES (phones + tablets) — no hover states
+========================================================= */
+
+@media (hover: none) and (pointer: coarse) {
+  /* Always show CTA on touch */
+  .cs-cap-cta {
+    opacity: 1;
+    transform: none;
+    font-size: 11px;
+  }
+  .cs-cap-cta span { transform: none; }
+
+  /* Subtle tap feedback instead of hover */
+  .cs-cap-row:active {
+    background: rgba(30, 58, 138, 0.04);
+  }
+  .cs-cap-row:active .cs-cap-bar {
+    transform: scaleY(1);
+  }
+  .cs-cap-row:active .cs-cap-glow {
+    opacity: 1;
+  }
+}
+
+/* =========================================================
+   LANDSCAPE PHONES (short height)
+========================================================= */
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .cs-hero { padding-bottom: 24px; }
+  .cs-hero-headline { font-size: 56px; margin: 14px 0 0 0; }
+  .cs-section { padding: 28px 0; }
+  .cs-section--last { padding-bottom: 40px; }
+}
+
+/* =========================================================
+   LANDSCAPE TABLETS
+========================================================= */
+
+@media (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape) {
+  .cs-hero-headline { font-size: 120px; }
+  .cs-head-title { font-size: 56px; }
+  .cs-cta-title { font-size: 88px; }
 }
