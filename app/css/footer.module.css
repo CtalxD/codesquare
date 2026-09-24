@@ -1,0 +1,281 @@
+/* =========================================================
+   Footer - light, compact
+   ========================================================= */
+
+.footer {
+  background: var(--color-off-white);
+  color: var(--text-body);
+  border-top: 1px solid rgba(12, 39, 72, 0.08);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ---------- Top row ---------- */
+
+.top {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 40px 0 32px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-navy);
+  text-decoration: none;
+  transition: opacity 200ms ease-out;
+  flex-shrink: 0;
+}
+
+.brand:hover {
+  opacity: 0.75;
+}
+
+.brand:focus-visible {
+  outline: 2px solid var(--color-navy);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.brandMark {
+  display: inline-flex;
+  color: var(--color-navy);
+}
+
+.brandSquare {
+  fill: var(--color-gold);
+}
+
+.brandName {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  color: var(--color-navy);
+}
+
+/* ---------- Contact list ---------- */
+
+.contactList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+}
+
+.contactList li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-body);
+}
+
+.contactIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-on-light);
+  flex-shrink: 0;
+}
+
+.contactLink {
+  color: var(--text-body);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 200ms ease-out, border-color 200ms ease-out;
+  word-break: break-word;
+}
+
+.contactLink:hover {
+  color: var(--color-navy);
+  border-bottom-color: var(--color-gold);
+}
+
+.contactLink:focus-visible {
+  outline: 2px solid var(--color-navy);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------- Bottom row ---------- */
+
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 0 24px;
+  border-top: 1px solid rgba(12, 39, 72, 0.08);
+}
+
+.copy {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.legal {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.legalLink {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 200ms ease-out;
+}
+
+.legalLink:hover {
+  color: var(--color-navy);
+}
+
+.legalLink:focus-visible {
+  outline: 2px solid var(--color-navy);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.legalDot {
+  width: 3px;
+  height: 3px;
+  background: rgba(12, 39, 72, 0.28);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.backToTop {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid rgba(12, 39, 72, 0.14);
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background 180ms ease-out,
+    border-color 180ms ease-out,
+    color 180ms ease-out;
+}
+
+.backToTop:hover {
+  background: var(--color-white);
+  border-color: rgba(12, 39, 72, 0.28);
+  color: var(--color-navy);
+}
+
+.backToTop svg {
+  transition: transform 200ms cubic-bezier(0.2, 0.85, 0.2, 1);
+}
+
+.backToTop:hover svg {
+  transform: translateY(-2px);
+}
+
+.backToTop:focus-visible {
+  outline: 2px solid var(--color-navy);
+  outline-offset: 3px;
+}
+
+/* =========================================================
+   Breakpoints
+   ========================================================= */
+
+/* Large - two column, brand left, contact right */
+@media (min-width: 720px) {
+  .top {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    padding: 36px 0 28px;
+  }
+}
+
+/* Small - stack bottom row */
+@media (max-width: 640px) {
+  .container {
+    padding: 0 20px;
+  }
+  .top {
+    padding: 32px 0 24px;
+    gap: 20px;
+  }
+  .bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px 0 22px;
+  }
+  .legal {
+    width: 100%;
+  }
+  .contactList {
+    gap: 8px 20px;
+  }
+}
+
+/* XSmall */
+@media (max-width: 420px) {
+  .container {
+    padding: 0 16px;
+  }
+  .top {
+    padding: 28px 0 20px;
+  }
+  .brandName {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+  }
+  .contactList {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .contactList li {
+    font-size: 13px;
+  }
+  .copy,
+  .legalLink,
+  .backToTop {
+    font-size: 12px;
+  }
+}
+
+/* XXLarge - keep content centered */
+@media (min-width: 1600px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+/* =========================================================
+   Reduced motion
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .brand,
+  .contactLink,
+  .legalLink,
+  .backToTop,
+  .backToTop svg {
+    transition-duration: 0.001ms !important;
+    transform: none !important;
+  }
+}

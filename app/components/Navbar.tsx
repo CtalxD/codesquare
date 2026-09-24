@@ -1,215 +1,265 @@
+//app/components/Navbar.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
-import LogoMark from "./LogoMark";
-import "../css/navbar.css";
+import { Menu, X, ArrowRight } from "lucide-react";
+import styles from "../css/navbar.module.css";
 
 const NAV_LINKS = [
-  { n: "00", label: "Home", href: "/" },
-  { n: "01", label: "Capabilities", href: "/capabilities" },
-  { n: "02", label: "Studio", href: "/studio" },
-  { n: "03", label: "Work", href: "/work" },
-  { n: "04", label: "Contact", href: "/contact" },
-];
-
-const FOUNDED = new Date().getFullYear();
-
-function isActive(pathname: string, href: string) {
-  if (href === "/") return pathname === "/";
-  return pathname === href || pathname.startsWith(href + "/");
-}
-
-function pageLabel(pathname: string): string | null {
-  if (pathname === "/") return null;
-  const match = NAV_LINKS.find((l) => isActive(pathname, l.href));
-  if (match) return match.label;
-  const seg = pathname.split("/").filter(Boolean)[0];
-  return seg ? seg.charAt(0).toUpperCase() + seg.slice(1) : null;
-}
+  { label: "Home", href: "/" },
+  { label: "Services", href: "/services" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
+] as const;
 
 export default function Navbar() {
-  const pathname = usePathname() || "/";
-  const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [indicator, setIndicator] = useState({
+    left: 0,
+    width: 0,
+    visible: false,
+  });
 
-  const currentPage = pageLabel(pathname);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const linksRef = useRef<HTMLUListElement>(null);
+  const linkRefs = useRef<Array<HTMLAnchorElement | null>>([]);
+
+  const isActive = useCallback(
+    (href: string) =>
+      href === "/" ? pathname === "/" : pathname.startsWith(href),
+    [pathname]
+  );
 
   useEffect(() => {
-    function onScroll() {
-      setScrolled(window.scrollY > 8);
-    }
+    setIsOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isOpen]);
+
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 60);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    if (!open) return;
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
-    }
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [open]);
+  const moveIndicatorTo = useCallback((index: number) => {
+    const list = linksRef.current;
+    const el = linkRefs.current[index];
+    if (!list || !el) return;
+    const listRect = list.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    setIndicator({
+      left: elRect.left - listRect.left,
+      width: elRect.width,
+      visible: true,
+    });
+  }, []);
+
+  const resetIndicatorToActive = useCallback(() => {
+    const activeIndex = NAV_LINKS.findIndex((l) => isActive(l.href));
+    if (activeIndex >= 0) moveIndicatorTo(activeIndex);
+    else setIndicator((s) => ({ ...s, visible: false }));
+  }, [isActive, moveIndicatorTo]);
 
   useEffect(() => {
-    if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, [open]);
-
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
+    resetIndicatorToActive();
+    const onResize = () => resetIndicatorToActive();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [resetIndicatorToActive]);
 
   return (
     <>
       <header
-        className={`cs-nav ${open ? "is-open" : ""} ${
-          scrolled ? "is-scrolled" : ""
-        }`}
+        className={`${styles.header} ${isScrolled ? styles.headerScrolled : ""}`}
       >
-        <Link
-          href="/"
-          className="cs-nav-brand"
-          data-cursor="nav"
-          onClick={() => setOpen(false)}
-        >
-          <LogoMark size={20} />
-          <span className="cs-nav-brand-word">Code Square</span>
-          {currentPage && (
-            <span className="cs-nav-brand-sep" aria-hidden="true">
-              /
+        <div className={styles.shell}>
+          <Link
+            href="/"
+            className={styles.brand}
+            aria-label="Code Square - Home"
+          >
+            <span className={styles.brandMark} aria-hidden="true">
+              <svg viewBox="0 0 40 40" width="30" height="30">
+                <path
+                  d="M20 3a17 17 0 1 0 0 34h6v-6h-6a11 11 0 1 1 0-22h6V3h-6z"
+                  fill="currentColor"
+                />
+                <rect
+                  x="17"
+                  y="17"
+                  width="6"
+                  height="6"
+                  className={styles.brandSquare}
+                />
+              </svg>
             </span>
-          )}
-          {currentPage && (
-            <span className="cs-nav-brand-page">{currentPage}</span>
-          )}
-        </Link>
+            <span className={styles.brandText}>
+              <span className={styles.brandName}>CODE SQUARE</span>
+              <span className={styles.brandSuffix}>PVT. LTD.</span>
+            </span>
+          </Link>
 
-        <nav className="cs-nav-links">
-          {NAV_LINKS.slice(0, 4).map((l) => {
-            const active = isActive(pathname, l.href);
-            return (
-              <Link
-                key={l.href}
-                href={l.href}
-                className={`cs-nav-link ${active ? "is-active" : ""}`}
-                aria-current={active ? "page" : undefined}
-                data-cursor="nav"
-              >
-                {l.label}
-              </Link>
-            );
-          })}
-        </nav>
+          <span className={styles.divider} aria-hidden="true" />
 
-        <Link
-          href="/contact"
-          className={`cs-nav-cta ${
-            isActive(pathname, "/contact") ? "is-active" : ""
-          }`}
-          aria-current={isActive(pathname, "/contact") ? "page" : undefined}
-          data-cursor="nav"
-        >
-          Start a project
-        </Link>
+          <ul
+            ref={linksRef}
+            className={styles.links}
+            onMouseLeave={resetIndicatorToActive}
+          >
+            {NAV_LINKS.map((link, i) => {
+              const active = isActive(link.href);
+              return (
+                <li key={link.href}>
+                  <Link
+                    ref={(el) => {
+                      linkRefs.current[i] = el;
+                    }}
+                    href={link.href}
+                    className={`${styles.link} ${
+                      active ? styles.linkActive : ""
+                    }`}
+                    aria-current={active ? "page" : undefined}
+                    onMouseEnter={() => moveIndicatorTo(i)}
+                    onFocus={() => moveIndicatorTo(i)}
+                  >
+                    <span className={styles.linkDot} aria-hidden="true" />
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
+            <span
+              className={`${styles.indicator} ${
+                indicator.visible ? styles.indicatorVisible : ""
+              }`}
+              style={{
+                transform: `translateX(${indicator.left}px)`,
+                width: indicator.width,
+              }}
+              aria-hidden="true"
+            />
+          </ul>
 
-        <button
-          className={`cs-burger ${open ? "is-open" : ""}`}
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-          data-cursor="nav"
-        >
-          <span className="cs-burger-line cs-burger-line--top" />
-          <span className="cs-burger-line cs-burger-line--mid" />
-          <span className="cs-burger-line cs-burger-line--bot" />
-        </button>
+          <Link href="/contact" className={styles.cta}>
+            <span className={styles.ctaSquare} aria-hidden="true" />
+            <span>Get a Quote</span>
+            <ArrowRight size={14} strokeWidth={2} aria-hidden="true" />
+          </Link>
+
+          <button
+            ref={menuButtonRef}
+            type="button"
+            className={styles.menuButton}
+            aria-expanded={isOpen}
+            aria-controls="mobile-menu"
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            onClick={() => setIsOpen((v) => !v)}
+          >
+            {isOpen ? (
+              <X size={22} strokeWidth={1.75} aria-hidden="true" />
+            ) : (
+              <Menu size={22} strokeWidth={1.75} aria-hidden="true" />
+            )}
+          </button>
+        </div>
       </header>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            className="cs-menu"
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      <div
+        className={`${styles.backdrop} ${isOpen ? styles.backdropOpen : ""}`}
+        onClick={() => setIsOpen(false)}
+        aria-hidden="true"
+      />
+
+      <aside
+        id="mobile-menu"
+        className={`${styles.drawer} ${isOpen ? styles.drawerOpen : ""}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Site menu"
+        hidden={!isOpen}
+      >
+        <div className={styles.drawerHead}>
+          <span className={styles.drawerEyebrow}>Menu</span>
+          <button
+            type="button"
+            className={styles.drawerClose}
+            aria-label="Close menu"
+            onClick={() => {
+              setIsOpen(false);
+              menuButtonRef.current?.focus();
+            }}
           >
-            <div className="cs-menu-inner">
-              <span className="cs-menu-eyebrow">
-                Menu / {FOUNDED}
-              </span>
+            <X size={20} strokeWidth={1.75} aria-hidden="true" />
+          </button>
+        </div>
 
-              <nav className="cs-menu-nav">
-                {NAV_LINKS.map((l, i) => {
-                  const active = isActive(pathname, l.href);
-                  return (
-                    <motion.div
-                      key={l.href}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 0.45,
-                        delay: 0.05 + i * 0.05,
-                        ease: [0.16, 1, 0.3, 1],
-                      }}
-                    >
-                      <Link
-                        href={l.href}
-                        className={`cs-menu-link ${
-                          active ? "is-active" : ""
-                        }`}
-                        aria-current={active ? "page" : undefined}
-                        onClick={() => setOpen(false)}
-                        data-cursor="nav"
-                      >
-                        <span className="cs-menu-link-num">{l.n}</span>
-                        <span className="cs-menu-link-label">
-                          {l.label}
-                        </span>
-                        {active && (
-                          <span
-                            className="cs-menu-link-current"
-                            aria-hidden="true"
-                          >
-                            Current
-                          </span>
-                        )}
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </nav>
-
-              <motion.div
-                className="cs-menu-foot"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.4, delay: 0.28 }}
+        <ul className={styles.drawerLinks}>
+          {NAV_LINKS.map((link, i) => {
+            const active = isActive(link.href);
+            return (
+              <li
+                key={link.href}
+                style={{
+                  transitionDelay: isOpen ? `${80 + i * 40}ms` : "0ms",
+                }}
               >
-                <a
-                  href="mailto:codesquare2026@gmail.com"
-                  className="cs-menu-email"
-                  data-cursor="email"
+                <Link
+                  href={link.href}
+                  className={`${styles.drawerLink} ${
+                    active ? styles.drawerLinkActive : ""
+                  }`}
+                  aria-current={active ? "page" : undefined}
                 >
-                  codesquare2026@gmail.com
-                </a>
-                <span className="cs-menu-note">
-                  Code / Structure / Square
-                </span>
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                  <span className={styles.drawerIndex}>
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className={styles.drawerLabel}>{link.label}</span>
+                  <ArrowRight
+                    size={18}
+                    strokeWidth={1.75}
+                    className={styles.drawerArrow}
+                    aria-hidden="true"
+                  />
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+
+        <Link href="/contact" className={styles.drawerCta}>
+          <span className={styles.ctaSquare} aria-hidden="true" />
+          <span>Get a Quote</span>
+          <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
+        </Link>
+
+        <div className={styles.drawerFoot}>
+          <span>Code Square Pvt. Ltd.</span>
+          <span>Kathmandu, Nepal</span>
+        </div>
+      </aside>
     </>
   );
 }

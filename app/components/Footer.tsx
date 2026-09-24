@@ -1,67 +1,102 @@
+//app/components/Footer.tsx
 "use client";
 
 import Link from "next/link";
-import LogoMark from "./LogoMark";
-import "../css/footer.css";
-
-const FOOTER_LINKS = [
-  { label: "Capabilities", href: "/capabilities" },
-  { label: "Studio", href: "/studio" },
-  { label: "Work", href: "/work" },
-  { label: "Contact", href: "/contact" },
-];
+import { Mail, Phone, MapPin, ArrowUp } from "lucide-react";
+import styles from "../css/footer.module.css";
 
 const CONTACT = {
-  email: "codesquare2026@gmail.com",
-  links: [] as { label: string; href: string }[],
+  address: "Kathmandu, Nepal",
+  email: "codesquare2026@gmail.com", 
+  phone: "+977 9813301334", 
+  phoneHref: "tel:+9779813301334",
+  emailHref: "mailto:codesquare2026@gmail.com",
 };
-
-const FOUNDED = new Date().getFullYear();
 
 export default function Footer() {
   const year = new Date().getFullYear();
 
+  const handleBackToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <footer className="cs-footer">
-      <div className="cs-container">
-        <div className="cs-footer-top">
-          <div className="cs-footer-brand">
-            <LogoMark size={20} />
-            <span className="cs-footer-brand-word">Code Square</span>
-          </div>
+    <footer className={styles.footer}>
+      <div className={styles.container}>
+        <div className={styles.top}>
+          <Link
+            href="/"
+            className={styles.brand}
+            aria-label="Code Square - Home"
+          >
+            <span className={styles.brandMark} aria-hidden="true">
+              <svg viewBox="0 0 40 40" width="28" height="28">
+                <path
+                  d="M20 3a17 17 0 1 0 0 34h6v-6h-6a11 11 0 1 1 0-22h6V3h-6z"
+                  fill="currentColor"
+                />
+                <rect
+                  x="17"
+                  y="17"
+                  width="6"
+                  height="6"
+                  className={styles.brandSquare}
+                />
+              </svg>
+            </span>
+            <span className={styles.brandName}>CODE SQUARE</span>
+          </Link>
 
-          <nav className="cs-footer-links">
-            {FOOTER_LINKS.map((l) => (
-              <Link key={l.href} href={l.href} data-cursor="nav">
-                {l.label}
-              </Link>
-            ))}
-          </nav>
-
-          {CONTACT.links.length > 0 && (
-            <nav className="cs-footer-links cs-footer-links--ext">
-              {CONTACT.links.map((l) => (
-                <a key={l.label} href={l.href} data-cursor="nav">
-                  {l.label}
-                </a>
-              ))}
-            </nav>
-          )}
+          <ul className={styles.contactList}>
+            <li>
+              <span className={styles.contactIcon} aria-hidden="true">
+                <MapPin size={14} strokeWidth={1.75} />
+              </span>
+              <span>{CONTACT.address}</span>
+            </li>
+            <li>
+              <span className={styles.contactIcon} aria-hidden="true">
+                <Mail size={14} strokeWidth={1.75} />
+              </span>
+              <a href={CONTACT.emailHref} className={styles.contactLink}>
+                {CONTACT.email}
+              </a>
+            </li>
+            <li>
+              <span className={styles.contactIcon} aria-hidden="true">
+                <Phone size={14} strokeWidth={1.75} />
+              </span>
+              <a href={CONTACT.phoneHref} className={styles.contactLink}>
+                {CONTACT.phone}
+              </a>
+            </li>
+          </ul>
         </div>
 
-        <div className="cs-footer-bottom">
-          <span>
-            © {FOUNDED}
-            {year !== FOUNDED ? ` to ${year}` : ""} Code Square
-          </span>
-          <a
-            href={`mailto:${CONTACT.email}`}
-            className="cs-footer-email"
-            data-cursor="email"
-          >
-            {CONTACT.email}
-          </a>
-          <span>Code / Structure / Square</span>
+        <div className={styles.bottom}>
+          <p className={styles.copy}>
+            &copy; {year} Code Square. All rights reserved.
+          </p>
+
+          <div className={styles.legal}>
+            <Link href="/privacy" className={styles.legalLink}>
+              Privacy
+            </Link>
+            <span className={styles.legalDot} aria-hidden="true" />
+            <Link href="/terms" className={styles.legalLink}>
+              Terms
+            </Link>
+            <span className={styles.legalDot} aria-hidden="true" />
+            <button
+              type="button"
+              onClick={handleBackToTop}
+              className={styles.backToTop}
+              aria-label="Back to top"
+            >
+              Back to top
+              <ArrowUp size={13} strokeWidth={2} aria-hidden="true" />
+            </button>
+          </div>
         </div>
       </div>
     </footer>

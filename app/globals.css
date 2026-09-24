@@ -1,279 +1,81 @@
-/* =========================================================
-   CODE SQUARE — GLOBAL TOKENS + RESET
-========================================================= */
-
 :root {
-  --mist: #e8ecee;
-  --mist-2: #dde3e6;
-  --ink: #0e0e0c;
-  --cobalt: #1e3a8a;
-  --cobalt-soft: rgba(30, 58, 138, 0.14);
-  --steel: #8a8a8a;
+  --color-navy: #0c2748;
+  --color-gold: #d9b98c;
+  --color-white: #ffffff;
+  --color-off-white: #f4f6f9;
+  --color-slate: #1a2233;
 
-  --ink-70: rgba(14, 14, 12, 0.72);
-  --ink-50: rgba(14, 14, 12, 0.5);
-  --ink-30: rgba(14, 14, 12, 0.3);
-  --rule: rgba(14, 14, 12, 0.14);
-  --rule-strong: rgba(14, 14, 12, 0.28);
+  --text-strong: #0c2748;
+  --text-body: #2a3446;
+  --text-muted: #5a6478;
+  --gold-on-light: #a8843f;
 
-  --paper-70: rgba(232, 236, 238, 0.72);
-  --paper-50: rgba(232, 236, 238, 0.5);
-  --paper-30: rgba(232, 236, 238, 0.3);
-  --paper-rule: rgba(232, 236, 238, 0.16);
+  --text-on-dark-strong: #ffffff;
+  --text-on-dark-body: rgba(255, 255, 255, 0.9);
+  --text-on-dark-muted: rgba(255, 255, 255, 0.72);
+  --gold-on-dark: #e6c9a2;
 
-  --font-display: var(--font-geist), "Inter Tight", -apple-system,
-    BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-body: var(--font-inter), -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
-  --font-mono: var(--font-mono), ui-monospace, "SFMono-Regular", Menlo,
-    Consolas, monospace;
+  --font-sans: "Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  --container: 1360px;
-  --gutter: 24px;
-
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --radius: 8px;
 }
 
-/* ---------------------------------------------------------
-   RESPONSIVE GUTTERS — phone → tablet → laptop → desktop
---------------------------------------------------------- */
-
-/* Tiny phones (iPhone SE 1st gen, 320px) */
-@media (max-width: 359px) {
-  :root { --gutter: 14px; }
-}
-
-/* Small phones (iPhone SE 2/3, 375px) */
-@media (max-width: 380px) {
-  :root { --gutter: 16px; }
-}
-
-/* Standard phones up to 640px */
-@media (max-width: 640px) {
-  :root { --gutter: 20px; }
-}
-
-/* Tablets portrait (768px) */
-@media (min-width: 768px) {
-  :root { --gutter: 32px; }
-}
-
-/* Tablets landscape / small laptops (900px+) */
-@media (min-width: 900px) {
-  :root { --gutter: 48px; }
-}
-
-/* Desktops (1280px+) */
-@media (min-width: 1280px) {
-  :root { --gutter: 72px; }
-}
-
-/* Large desktops (1600px+) */
-@media (min-width: 1600px) {
-  :root { --gutter: 88px; }
-}
-
-/* ---------------------------------------------------------
-   RESET
---------------------------------------------------------- */
-
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 80px;
-  background: var(--mist);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  overflow-x: hidden;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-  }
+html,
+body {
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  background: var(--mist);
-  color: var(--ink);
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
   font-size: 16px;
-  line-height: 1.55;
+  line-height: 1.65;
+  color: var(--text-body);
+  background: var(--color-white);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
   overflow-x: hidden;
-  max-width: 100vw;
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
-  min-height: 100dvh;
-  justify-content: flex-start;
-  align-items: stretch;
-  overflow-wrap: anywhere;
-  word-break: break-word;
 }
 
-main {
-  flex: 1 0 auto;
-  display: block;
-  width: 100%;
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  color: var(--text-strong);
+  margin: 0;
+  font-weight: 600;
 }
 
-a { color: inherit; text-decoration: none; }
+a { color: inherit; }
+img { display: block; max-width: 100%; height: auto; }
 
-button {
-  font: inherit;
-  color: inherit;
-  background: none;
-  border: none;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+button { font-family: inherit; }
+
+.skipLink {
+  position: absolute;
+  top: -100px;
+  left: 12px;
+  z-index: 200;
+  padding: 10px 16px;
+  background: var(--color-navy);
+  color: var(--color-white);
+  text-decoration: none;
+  border-radius: var(--radius);
+  font-weight: 600;
 }
+.skipLink:focus { top: 12px; }
 
-ul { list-style: none; }
-
-img,
-video,
-svg,
-canvas,
-iframe {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-::selection { background: var(--cobalt); color: var(--mist); }
-
-:focus-visible {
-  outline: 2px solid var(--cobalt);
-  outline-offset: 3px;
-}
-
-@media (hover: none) {
-  * { -webkit-tap-highlight-color: transparent; }
-}
-
-/* Prevent iOS zoom on form focus */
-@media (max-width: 767px) {
-  input,
-  select,
-  textarea {
-    font-size: 16px;
-  }
-}
-
-/* ---------------------------------------------------------
-   CONTAINER
---------------------------------------------------------- */
-
-.cs-container {
-  width: 100%;
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: 0 var(--gutter);
-  position: relative;
-}
-
-.cs-mark { display: block; }
-
-/* ---------------------------------------------------------
-   BUTTONS
---------------------------------------------------------- */
-
-.cs-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 500;
-  padding: 12px 20px;
-  border-radius: 0;
-  border: 1px solid var(--ink);
-  background: transparent;
-  color: var(--ink);
-  transition: background-color 0.2s var(--ease),
-    color 0.2s var(--ease), border-color 0.2s var(--ease),
-    transform 0.2s var(--ease);
-  white-space: nowrap;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.cs-btn:hover { transform: translateY(-1px); }
-
-.cs-btn--sm { padding: 9px 16px; font-size: 13px; }
-.cs-btn--lg { padding: 16px 26px; font-size: 15px; }
-
-.cs-btn--primary {
-  background: var(--ink);
-  color: var(--mist);
-}
-.cs-btn--primary:hover {
-  background: var(--cobalt);
-  border-color: var(--cobalt);
-  color: var(--mist);
-}
-
-.cs-btn--ghost {
-  background: transparent;
-  color: var(--ink);
-}
-.cs-btn--ghost:hover {
-  background: var(--ink);
-  color: var(--mist);
-}
-
-.cs-section--dark .cs-btn--ghost {
-  border-color: var(--paper-30);
-  color: var(--mist);
-}
-.cs-section--dark .cs-btn--ghost:hover {
-  background: var(--mist);
-  color: var(--ink);
-  border-color: var(--mist);
-}
-
-/* Tablet & phone button sizing */
-@media (max-width: 768px) {
-  .cs-btn {
-    padding: 11px 18px;
-    font-size: 13.5px;
-  }
-  .cs-btn--lg {
-    padding: 14px 22px;
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 480px) {
-  .cs-btn {
-    padding: 11px 16px;
-    font-size: 13px;
-  }
-  .cs-btn--lg {
-    padding: 14px 20px;
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 360px) {
-  .cs-btn {
-    padding: 10px 14px;
-    font-size: 12px;
-  }
-}
-
-@media (hover: none) {
-  .cs-btn:hover { transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }
