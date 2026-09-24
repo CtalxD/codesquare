@@ -2,7 +2,6 @@
    Home page styles
    ========================================================= */
 
-
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -138,7 +137,6 @@
   color: var(--text-on-dark-muted);
 }
 
-/* Buttons */
 .btnPrimary,
 .btnGhost,
 .ctaPrimary,
@@ -669,7 +667,7 @@
 }
 
 /* =========================================================
-   TEAM (4 members)
+   TEAM (4 members) - scattered stack, no face overlap
    ========================================================= */
 
 .team {
@@ -684,38 +682,80 @@
   align-items: center;
 }
 
-.teamVisual { display: flex; justify-content: center; }
+.teamVisual {
+  display: flex;
+  justify-content: center;
+}
 
+/* Scatter stage. Photos are absolutely positioned inside.
+   Overlap only ever happens below the top 40% band where
+   every face sits. */
 .teamImages {
   position: relative;
-  width: 280px;
-  height: 300px;
+  width: 320px;
+  height: 400px;
 }
 
 .teamPhoto {
   position: absolute;
-  width: 140px;
-  height: 160px;
+  width: 170px;
+  aspect-ratio: 4 / 5;
+  padding: 0;
+  border: 1px solid rgba(12, 39, 72, 0.08);
   border-radius: var(--radius);
   overflow: hidden;
   background: var(--color-off-white);
-  border: 1px solid rgba(12, 39, 72, 0.08);
-  will-change: transform, opacity;
+  cursor: pointer;
+  appearance: none;
+  transition:
+    transform 400ms cubic-bezier(0.2, 0.85, 0.2, 1),
+    border-color 300ms ease-out,
+    box-shadow 300ms ease-out;
+  will-change: transform;
+}
+
+.teamPhoto:hover {
+  border-color: rgba(12, 39, 72, 0.2);
+  box-shadow: 0 18px 36px -22px rgba(12, 39, 72, 0.4);
+  z-index: 10;
+}
+
+.teamPhoto:focus-visible {
+  outline: 2px solid var(--color-navy);
+  outline-offset: 3px;
+  z-index: 10;
 }
 
 .teamPhotoInner {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: saturate(0.94);
+  object-position: center top;
+  filter: grayscale(100%) contrast(1.02);
+  transition: filter 500ms ease-out;
+  will-change: filter;
 }
 
-.teamPhoto[data-slot="1"] { top: 0; left: 0; z-index: 4; }
-.teamPhoto[data-slot="2"] { top: 30px; left: 120px; z-index: 3; }
-.teamPhoto[data-slot="3"] { top: 130px; left: 20px; z-index: 2; }
-.teamPhoto[data-slot="4"] { top: 150px; left: 140px; z-index: 1; }
+.teamPhoto:hover .teamPhotoInner {
+  filter: grayscale(0%) contrast(1);
+}
+
+.teamPhoto[aria-pressed="true"] .teamPhotoInner {
+  filter: grayscale(0%) contrast(1);
+}
+
+.teamPhoto[aria-pressed="true"] {
+  border-color: rgba(217, 185, 140, 0.6);
+  box-shadow: 0 0 0 2px rgba(217, 185, 140, 0.25);
+}
 
 .teamContent { max-width: 520px; }
+
+/* Base positions (mobile-first: smallest layout) */
+.teamPhoto[data-slot="1"] { top: 0;    left: 0;    z-index: 4; }
+.teamPhoto[data-slot="2"] { top: 16px; left: 140px; z-index: 3; }
+.teamPhoto[data-slot="3"] { top: 200px; left: 20px;  z-index: 2; }
+.teamPhoto[data-slot="4"] { top: 220px; left: 150px; z-index: 1; }
 
 /* =========================================================
    FINAL CTA
@@ -797,7 +837,7 @@
    BREAKPOINTS
    ========================================================= */
 
-/* XXLarge - 1600px+ */
+/* XXLarge - ultrawide */
 @media (min-width: 1600px) {
   .container,
   .heroContent,
@@ -806,9 +846,7 @@
   }
 }
 
-/* XLarge - 1201px to 1599px : base styles are tuned here */
-
-/* Large - 901px to 1200px */
+/* Large - 901 to 1200 */
 @media (max-width: 1200px) {
   .heroTitle { font-size: 60px; }
   .introTitle { font-size: 38px; }
@@ -818,7 +856,7 @@
   .ctaTitle { font-size: 38px; }
 }
 
-/* Medium - 641px to 900px */
+/* Medium - 641 to 900 */
 @media (max-width: 900px) {
   .intro { padding: 104px 0; }
   .splits { padding: 104px 0; }
@@ -852,7 +890,7 @@
   .ctaGrid { grid-template-columns: 1fr; gap: 32px; }
 }
 
-/* Small - 481px to 640px */
+/* Small - 481 to 640 */
 @media (max-width: 640px) {
   .container { padding: 0 20px; }
 
@@ -909,13 +947,19 @@
 
   .team { padding: 80px 0; }
   .teamGrid { gap: 40px; }
+  .teamImages { width: 280px; height: 340px; }
+  .teamPhoto { width: 145px; }
+  .teamPhoto[data-slot="1"] { top: 0;    left: 0;    }
+  .teamPhoto[data-slot="2"] { top: 14px; left: 122px; }
+  .teamPhoto[data-slot="3"] { top: 172px; left: 16px; }
+  .teamPhoto[data-slot="4"] { top: 190px; left: 130px; }
 
   .ctaBand { padding: 80px 0; }
   .ctaTitle { font-size: 28px; }
   .ctaText { font-size: 16px; }
 }
 
-/* XSmall - 320px to 480px */
+/* XSmall - 321 to 480 */
 @media (max-width: 480px) {
   .container { padding: 0 16px; }
 
@@ -977,12 +1021,12 @@
   .timelineRail { left: 11px; top: 28px; }
 
   .team { padding: 64px 0; }
-  .teamImages { width: 240px; height: 260px; }
-  .teamPhoto { width: 120px; height: 140px; }
-  .teamPhoto[data-slot="1"] { top: 0; left: 0; }
-  .teamPhoto[data-slot="2"] { top: 26px; left: 104px; }
-  .teamPhoto[data-slot="3"] { top: 112px; left: 16px; }
-  .teamPhoto[data-slot="4"] { top: 128px; left: 120px; }
+  .teamImages { width: 240px; height: 300px; }
+  .teamPhoto { width: 125px; }
+  .teamPhoto[data-slot="1"] { top: 0;    left: 0;    }
+  .teamPhoto[data-slot="2"] { top: 12px; left: 104px; }
+  .teamPhoto[data-slot="3"] { top: 148px; left: 14px; }
+  .teamPhoto[data-slot="4"] { top: 164px; left: 112px; }
 
   .ctaBand { padding: 64px 0; }
   .ctaTitle { font-size: 24px; }
@@ -991,7 +1035,7 @@
   .ctaActions > a { width: 100%; }
 }
 
-/* Ultra-narrow safety net for 320px */
+/* Ultra-narrow safety net */
 @media (max-width: 360px) {
   .heroTitle { font-size: 30px; }
   .introTitle { font-size: 24px; }
@@ -999,14 +1043,14 @@
   .pinnedTitle { font-size: 20px; }
   .splitTitle { font-size: 20px; }
   .ctaTitle { font-size: 22px; }
-  .teamImages { width: 220px; height: 240px; }
-  .teamPhoto { width: 110px; height: 130px; }
-  .teamPhoto[data-slot="2"] { top: 24px; left: 96px; }
-  .teamPhoto[data-slot="3"] { top: 102px; left: 14px; }
-  .teamPhoto[data-slot="4"] { top: 118px; left: 108px; }
+  .teamImages { width: 220px; height: 280px; }
+  .teamPhoto { width: 115px; }
+  .teamPhoto[data-slot="2"] { top: 10px; left: 96px; }
+  .teamPhoto[data-slot="3"] { top: 138px; left: 12px; }
+  .teamPhoto[data-slot="4"] { top: 152px; left: 102px; }
 }
 
-/* Desktop row-reverse for split sections returns at 900px+ */
+/* Desktop enhancements - 900px+ */
 @media (min-width: 900px) {
   .introGrid { grid-template-columns: 220px 1fr; gap: 72px; }
   .introIndex {
@@ -1025,18 +1069,18 @@
   .splitReverse .splitContent { order: 1; }
 
   .teamGrid { grid-template-columns: 1fr 1fr; gap: 88px; }
-  .teamImages { width: 340px; height: 360px; }
-  .teamPhoto { width: 160px; height: 185px; }
-  .teamPhoto[data-slot="1"] { top: 0; left: 0; }
-  .teamPhoto[data-slot="2"] { top: 40px; left: 150px; }
-  .teamPhoto[data-slot="3"] { top: 160px; left: 20px; }
-  .teamPhoto[data-slot="4"] { top: 180px; left: 170px; }
+  .teamImages { width: 380px; height: 460px; }
+  .teamPhoto { width: 200px; }
+  .teamPhoto[data-slot="1"] { top: 0;    left: 0;    }
+  .teamPhoto[data-slot="2"] { top: 20px; left: 170px; }
+  .teamPhoto[data-slot="3"] { top: 236px; left: 24px; }
+  .teamPhoto[data-slot="4"] { top: 260px; left: 180px; }
 
   .ctaGrid { grid-template-columns: 1.4fr 1fr; gap: 56px; }
   .ctaActions { justify-content: flex-end; }
 }
 
-/* Large desktop - pinned layout goes 2-col */
+/* Pinned layout two-column at 1024+ */
 @media (min-width: 1024px) {
   .pinnedLayout {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -1045,7 +1089,7 @@
   .pinnedVisual { aspect-ratio: 5 / 4; max-height: 60vh; }
 }
 
-/* Timeline horizontal at 960px+ */
+/* Horizontal timeline at 960+ */
 @media (min-width: 960px) {
   .timeline {
     display: grid;
@@ -1076,6 +1120,7 @@
   .splitMedia,
   .splitImage,
   .teamPhoto,
+  .teamPhotoInner,
   .ctaImage {
     transform: none !important;
     transition: none !important;

@@ -1,7 +1,7 @@
 //app/page.tsx
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -111,6 +111,17 @@ const PROCESS_STEPS = [
 
 export default function HomePage() {
   const rootRef = useRef<HTMLDivElement>(null);
+  const [revealed, setRevealed] = useState<boolean[]>(() =>
+    TEAM_PHOTOS.map(() => false)
+  );
+
+  const toggleReveal = (index: number) => {
+    setRevealed((prev) => {
+      const next = [...prev];
+      next[index] = !next[index];
+      return next;
+    });
+  };
 
   useEffect(() => {
     const prefersReduced = window.matchMedia(
@@ -693,11 +704,15 @@ export default function HomePage() {
               <div className={styles.teamVisual}>
                 <div className={styles.teamImages}>
                   {TEAM_PHOTOS.map((src, i) => (
-                    <div
+                    <button
                       key={i}
+                      type="button"
                       className={styles.teamPhoto}
                       data-slot={i + 1}
                       data-team-photo
+                      aria-label={`Reveal color for team member ${i + 1}`}
+                      aria-pressed={revealed[i]}
+                      onClick={() => toggleReveal(i)}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -705,7 +720,7 @@ export default function HomePage() {
                         alt=""
                         className={styles.teamPhotoInner}
                       />
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>
