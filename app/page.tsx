@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
-  Square,
   Compass,
   PenTool,
   Code2,
@@ -145,7 +144,6 @@ export default function HomePage() {
       if (!root) return;
 
       const ctx = gsap.context(() => {
-        /* HERO entrance */
         const heroLines = gsap.utils.toArray<HTMLElement>("[data-hero-line]");
         gsap.set(heroLines, { yPercent: 110, opacity: 0 });
         gsap.to(heroLines, {
@@ -179,7 +177,6 @@ export default function HomePage() {
           },
         });
 
-        /* INTRO */
         gsap.set("[data-intro-line]", { yPercent: 100, opacity: 0 });
         gsap.to("[data-intro-line]", {
           yPercent: 0,
@@ -203,7 +200,6 @@ export default function HomePage() {
           scrollTrigger: { trigger: "[data-intro]", start: "top 80%" },
         });
 
-        /* SCROLL-FILL TEXT */
         gsap.utils.toArray<HTMLElement>("[data-fill]").forEach((block) => {
           const words = block.querySelectorAll("[data-fill-word]");
           if (!words.length) return;
@@ -222,7 +218,6 @@ export default function HomePage() {
           });
         });
 
-        /* PINNED SERVICES */
         const serviceSection = document.querySelector<HTMLElement>(
           "[data-services]"
         );
@@ -289,7 +284,6 @@ export default function HomePage() {
           });
         }
 
-        /* SPLIT ROWS */
         gsap.utils.toArray<HTMLElement>("[data-split]").forEach((row) => {
           const media = row.querySelector("[data-split-media]");
           const img = row.querySelector("[data-split-img]");
@@ -336,7 +330,6 @@ export default function HomePage() {
           }
         });
 
-        /* TIMELINE */
         const rail = document.querySelector("[data-timeline-rail]");
         if (rail) {
           gsap.fromTo(
@@ -365,7 +358,6 @@ export default function HomePage() {
           scrollTrigger: { trigger: "[data-timeline]", start: "top 80%" },
         });
 
-        /* TEAM */
         gsap.set("[data-team-photo]", { y: 40, opacity: 0, scale: 0.94 });
         gsap.to("[data-team-photo]", {
           y: 0,
@@ -387,7 +379,6 @@ export default function HomePage() {
           scrollTrigger: { trigger: "[data-team]", start: "top 80%" },
         });
 
-        /* CTA */
         gsap.fromTo(
           "[data-cta-image]",
           { yPercent: -6 },
@@ -442,8 +433,7 @@ export default function HomePage() {
 
           <div className={styles.heroContent}>
             <span className={styles.heroEyebrow} data-hero-fade>
-              <Square size={10} strokeWidth={2.5} aria-hidden="true" />
-              Software studio - Kathmandu, Nepal
+              Software studio — Kathmandu, Nepal
             </span>
 
             <h1 className={styles.heroTitle}>
@@ -538,10 +528,7 @@ export default function HomePage() {
           <div className={styles.pinnedSticky} data-services-sticky>
             <div className={styles.pinnedInner}>
               <header className={styles.pinnedHead}>
-                <span className={styles.sectionLabel}>
-                  <Square size={10} strokeWidth={2.5} aria-hidden="true" />
-                  What we do
-                </span>
+                <span className={styles.sectionLabel}>What we do</span>
                 <h2
                   id="services-title"
                   className={styles.pinnedTitle}
@@ -617,10 +604,7 @@ export default function HomePage() {
         <section className={styles.splits}>
           <div className={styles.container}>
             <header className={styles.sectionHead}>
-              <span className={styles.sectionLabel}>
-                <Square size={10} strokeWidth={2.5} aria-hidden="true" />
-                How we work
-              </span>
+              <span className={styles.sectionLabel}>How we work</span>
               <h2 className={styles.sectionTitle} data-fill>
                 <FillWords text="A small team, working close to you." />
               </h2>
@@ -657,10 +641,7 @@ export default function HomePage() {
         <section className={styles.process} aria-labelledby="process-title">
           <div className={styles.container}>
             <header className={styles.sectionHead}>
-              <span className={styles.sectionLabel}>
-                <Square size={10} strokeWidth={2.5} aria-hidden="true" />
-                Our process
-              </span>
+              <span className={styles.sectionLabel}>Our process</span>
               <h2
                 id="process-title"
                 className={styles.sectionTitle}
@@ -726,10 +707,7 @@ export default function HomePage() {
               </div>
 
               <div className={styles.teamContent} data-team-content>
-                <span className={styles.sectionLabel}>
-                  <Square size={10} strokeWidth={2.5} aria-hidden="true" />
-                  The people
-                </span>
+                <span className={styles.sectionLabel}>The people</span>
                 <h2 id="team-title" className={styles.sectionTitle}>
                   Four friends. One company.
                 </h2>

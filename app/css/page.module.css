@@ -3,24 +3,15 @@
    ========================================================= */
 
 .container {
-  max-width: 1200px;
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: 0 24px;
-}
-
-.sq {
-  width: 8px;
-  height: 8px;
-  background: var(--color-gold);
-  border-radius: 1px;
-  display: inline-block;
+  padding: 0 var(--container-pad);
 }
 
 .dot {
   width: 4px;
   height: 4px;
   background: var(--color-gold);
-  border-radius: 50%;
   display: inline-block;
 }
 
@@ -36,25 +27,18 @@
   will-change: transform;
 }
 
-.heroEyebrow svg,
-.sectionLabel svg {
-  color: var(--color-gold);
-  flex-shrink: 0;
-}
-
 /* =========================================================
-   HERO
+   HERO — image with black scrim
    ========================================================= */
 
 .hero {
   position: relative;
   min-height: 100vh;
   min-height: 100dvh;
-  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 120px 24px 80px;
+  padding: 120px var(--container-pad) 80px;
   overflow: hidden;
   isolation: isolate;
   color: var(--text-on-dark-strong);
@@ -79,14 +63,14 @@
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(12, 39, 72, 0.55) 0%,
-    rgba(12, 39, 72, 0.78) 40%,
-    rgba(12, 39, 72, 0.96) 100%
+    rgba(0, 0, 0, 0.55) 0%,
+    rgba(0, 0, 0, 0.65) 45%,
+    rgba(0, 0, 0, 0.8) 100%
   );
 }
 
 .heroContent {
-  max-width: 1200px;
+  max-width: var(--container-max);
   margin: 0 auto;
   width: 100%;
   display: flex;
@@ -97,38 +81,39 @@
 .heroEyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--gold-on-dark);
-  margin: 0 0 24px;
+  margin: 0 0 32px;
 }
 
 .heroTitle {
-  font-size: 68px;
-  line-height: 1.04;
-  letter-spacing: -0.032em;
-  font-weight: 600;
-  color: var(--text-on-dark-strong);
-  margin: 0 0 24px;
-  max-width: 900px;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 6.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+  color: var(--color-white);
+  margin: 0 0 32px;
+  max-width: 20ch;
 }
 
 .heroLead {
-  font-size: 18px;
-  line-height: 1.65;
-  color: var(--text-on-dark-body);
-  max-width: 560px;
-  margin: 0 0 36px;
+  font-size: clamp(1rem, 1.4vw, 1.1875rem);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 52ch;
+  margin: 0 0 40px;
 }
 
 .heroActions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin: 0 0 48px;
+  margin: 0 0 56px;
   width: 100%;
 }
 
@@ -137,9 +122,10 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 10px 16px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--text-on-dark-muted);
   width: 100%;
@@ -159,10 +145,9 @@
   gap: 10px;
   min-height: 52px;
   padding: 0 26px;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: 15px;
   font-weight: 500;
-  border-radius: var(--radius);
   text-decoration: none;
   transition:
     background 220ms ease-out,
@@ -180,7 +165,7 @@
 
 .btnPrimary:hover,
 .ctaPrimary:hover {
-  background: #cfae7e;
+  background: var(--gold-on-dark);
   transform: translateY(-1px);
 }
 
@@ -222,7 +207,7 @@
    ========================================================= */
 
 .intro {
-  padding: 128px 0;
+  padding: clamp(96px, 11vw, 160px) 0;
   background: var(--color-white);
 }
 
@@ -236,8 +221,9 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -245,7 +231,7 @@
 
 .introIndexNum {
   color: var(--text-strong);
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .introIndexLine {
@@ -257,27 +243,28 @@
 .introBody { max-width: 780px; }
 
 .introTitle {
-  font-size: 42px;
-  line-height: 1.12;
-  letter-spacing: -0.03em;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  font-weight: 500;
   color: var(--text-strong);
   margin: 0 0 28px;
 }
 
 .introText {
-  font-size: 17px;
-  line-height: 1.72;
+  font-size: clamp(1rem, 1.35vw, 1.125rem);
+  line-height: 1.65;
   color: var(--text-body);
   margin: 0 0 20px;
-  max-width: 64ch;
+  max-width: 62ch;
 }
 
 .introText em {
   font-style: normal;
   color: var(--text-strong);
-  font-weight: 600;
-  border-bottom: 2px solid var(--color-gold);
+  font-weight: 500;
+  border-bottom: 1px solid var(--color-gold);
   padding-bottom: 1px;
 }
 
@@ -289,54 +276,56 @@
 
 .sectionHead {
   max-width: 720px;
-  margin-bottom: 56px;
+  margin-bottom: clamp(48px, 6vw, 72px);
 }
 
 .sectionLabel {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--text-muted);
-  margin-bottom: 18px;
+  margin-bottom: 24px;
 }
 
 .sectionTitle {
-  font-size: 38px;
-  line-height: 1.14;
-  letter-spacing: -0.03em;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.6vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  font-weight: 500;
   color: var(--text-strong);
-  margin: 0 0 18px;
+  margin: 0 0 20px;
 }
 
 .sectionLead {
-  font-size: 17px;
-  line-height: 1.7;
+  font-size: clamp(1rem, 1.35vw, 1.125rem);
+  line-height: 1.6;
   color: var(--text-body);
   margin: 0;
-  max-width: 60ch;
+  max-width: 56ch;
 }
 
 .inlineLink {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   color: var(--text-strong);
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-weight: 500;
   font-size: 15px;
   text-decoration: none;
-  border-bottom: 1px solid rgba(12, 39, 72, 0.3);
-  padding-bottom: 3px;
-  transition: border-color 180ms ease-out, gap 220ms ease-out;
+  border-bottom: 1px solid var(--text-strong);
+  padding-bottom: 2px;
+  transition: color 180ms ease-out, border-color 180ms ease-out, gap 220ms ease-out;
 }
 
 .inlineLink:hover {
-  border-color: var(--color-gold);
-  gap: 12px;
+  color: var(--gold-on-light);
+  border-color: var(--gold-on-light);
+  gap: 14px;
 }
 
 .inlineLink svg {
@@ -344,13 +333,12 @@
 }
 
 .inlineLink:hover svg {
-  transform: translateX(3px);
+  transform: translateX(4px);
 }
 
 .inlineLink:focus-visible {
   outline: 2px solid var(--color-navy);
-  outline-offset: 3px;
-  border-radius: 2px;
+  outline-offset: 4px;
 }
 
 /* =========================================================
@@ -374,9 +362,9 @@
 
 .pinnedInner {
   width: 100%;
-  max-width: 1200px;
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: 24px;
+  padding: 32px var(--container-pad);
   max-height: 100vh;
   max-height: 100dvh;
   display: flex;
@@ -385,15 +373,16 @@
 }
 
 .pinnedHead {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
   flex-shrink: 0;
 }
 
 .pinnedTitle {
-  font-size: 30px;
-  line-height: 1.18;
-  letter-spacing: -0.03em;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.6vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  font-weight: 500;
   color: var(--text-strong);
   margin: 0;
   max-width: 22ch;
@@ -411,7 +400,6 @@
   position: relative;
   aspect-ratio: 5 / 4;
   max-height: 42vh;
-  border-radius: var(--radius);
   overflow: hidden;
   background: var(--color-navy);
   flex-shrink: 0;
@@ -441,19 +429,18 @@
 
 .pinnedCounter {
   position: absolute;
-  bottom: 14px;
-  left: 14px;
-  padding: 5px 10px;
-  background: rgba(12, 39, 72, 0.78);
+  bottom: 16px;
+  left: 16px;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.7);
   color: var(--color-white);
-  border-radius: 4px;
+  font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-weight: 500;
+  letter-spacing: 0.2em;
   display: inline-flex;
   align-items: baseline;
-  gap: 4px;
-  backdrop-filter: blur(6px);
+  gap: 6px;
 }
 
 .pinnedCounterNum { color: var(--color-gold); }
@@ -469,8 +456,8 @@
 }
 
 .pinnedItem {
-  padding: 10px 14px 10px 18px;
-  border-left: 2px solid rgba(12, 39, 72, 0.12);
+  padding: 12px 16px 12px 20px;
+  border-left: 1px solid var(--hairline);
   opacity: 0.4;
   transition:
     opacity 400ms ease-out,
@@ -482,68 +469,80 @@
 .pinnedItem.active {
   opacity: 1;
   border-left-color: var(--color-gold);
-  padding-left: 24px;
-  background: rgba(217, 185, 140, 0.1);
+  padding-left: 26px;
+  background: rgba(217, 185, 140, 0.08);
 }
 
 .pinnedItemHead {
   display: flex;
   align-items: baseline;
-  gap: 10px;
-  margin-bottom: 4px;
+  gap: 12px;
+  margin-bottom: 6px;
 }
 
 .pinnedNum {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.24em;
-  color: var(--gold-on-light);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
+.pinnedItem.active .pinnedNum {
+  color: var(--gold-on-light);
+}
+
 .pinnedItemTitle {
-  font-size: 16px;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 500;
   color: var(--text-strong);
   margin: 0;
-  letter-spacing: -0.008em;
-  line-height: 1.25;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
 .pinnedItemText {
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 13.5px;
+  line-height: 1.55;
   color: var(--text-body);
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   max-width: 54ch;
 }
 
 .pinnedLink {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   color: var(--text-strong);
-  font-weight: 600;
-  font-size: 12.5px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 13px;
   text-decoration: none;
-  transition: gap 180ms ease-out;
-  line-height: 1;
+  border-bottom: 1px solid var(--text-strong);
+  padding-bottom: 2px;
+  transition: color 180ms ease-out, border-color 180ms ease-out, gap 200ms ease-out;
+  line-height: 1.2;
 }
 
-.pinnedLink:hover { gap: 8px; }
+.pinnedLink:hover {
+  color: var(--gold-on-light);
+  border-bottom-color: var(--gold-on-light);
+  gap: 10px;
+}
 
 .pinnedLink svg {
   transition: transform 180ms cubic-bezier(0.2, 0.85, 0.2, 1);
 }
 
 .pinnedLink:hover svg {
-  transform: translateX(3px);
+  transform: translateX(4px);
 }
 
 .pinnedLink:focus-visible {
   outline: 2px solid var(--color-navy);
-  outline-offset: 3px;
-  border-radius: 2px;
+  outline-offset: 4px;
 }
 
 /* =========================================================
@@ -551,7 +550,7 @@
    ========================================================= */
 
 .splits {
-  padding: 128px 0;
+  padding: clamp(96px, 11vw, 160px) 0;
   background: var(--color-white);
 }
 
@@ -568,7 +567,6 @@
 .splitMedia {
   position: relative;
   aspect-ratio: 4 / 3;
-  border-radius: var(--radius);
   overflow: hidden;
   will-change: clip-path;
 }
@@ -584,26 +582,28 @@
 
 .splitEyebrow {
   display: inline-block;
+  font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
+  font-weight: 500;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--gold-on-light);
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .splitTitle {
-  font-size: 30px;
-  line-height: 1.18;
-  letter-spacing: -0.03em;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  font-weight: 500;
   color: var(--text-strong);
   margin: 0 0 16px;
 }
 
 .splitText {
   font-size: 16px;
-  line-height: 1.72;
+  line-height: 1.65;
   color: var(--text-body);
   margin: 0;
   max-width: 56ch;
@@ -614,7 +614,7 @@
    ========================================================= */
 
 .process {
-  padding: 128px 0;
+  padding: clamp(96px, 11vw, 160px) 0;
   background: var(--color-off-white);
 }
 
@@ -653,8 +653,7 @@
   align-items: center;
   justify-content: center;
   background: var(--color-white);
-  border: 1px solid rgba(12, 39, 72, 0.14);
-  border-radius: var(--radius);
+  border: 1px solid var(--hairline);
   color: var(--color-navy);
   z-index: 1;
   transition:
@@ -671,36 +670,38 @@
 
 .timelineIndex {
   display: block;
-  font-size: 12px;
-  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--text-muted);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .timelineTitle {
-  font-size: 22px;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 500;
   color: var(--text-strong);
   margin: 0 0 8px;
-  letter-spacing: -0.012em;
+  letter-spacing: -0.015em;
 }
 
 .timelineText {
   font-size: 15px;
-  line-height: 1.68;
+  line-height: 1.6;
   color: var(--text-body);
   margin: 0;
   max-width: 54ch;
 }
 
 /* =========================================================
-   TEAM (4 members)
+   TEAM
    ========================================================= */
 
 .team {
-  padding: 128px 0;
+  padding: clamp(96px, 11vw, 160px) 0;
   background: var(--color-white);
 }
 
@@ -727,28 +728,25 @@
   width: 170px;
   aspect-ratio: 4 / 5;
   padding: 0;
-  border: 1px solid rgba(12, 39, 72, 0.08);
-  border-radius: var(--radius);
+  border: 1px solid var(--hairline);
   overflow: hidden;
   background: var(--color-off-white);
   cursor: pointer;
   appearance: none;
   transition:
     transform 400ms cubic-bezier(0.2, 0.85, 0.2, 1),
-    border-color 300ms ease-out,
-    box-shadow 300ms ease-out;
+    border-color 300ms ease-out;
   will-change: transform;
 }
 
 .teamPhoto:hover {
-  border-color: rgba(12, 39, 72, 0.2);
-  box-shadow: 0 18px 36px -22px rgba(12, 39, 72, 0.4);
+  border-color: var(--color-navy);
   z-index: 10;
 }
 
 .teamPhoto:focus-visible {
   outline: 2px solid var(--color-navy);
-  outline-offset: 3px;
+  outline-offset: 4px;
   z-index: 10;
 }
 
@@ -771,8 +769,8 @@
 }
 
 .teamPhoto[aria-pressed="true"] {
-  border-color: rgba(217, 185, 140, 0.6);
-  box-shadow: 0 0 0 2px rgba(217, 185, 140, 0.25);
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 1px var(--color-gold);
 }
 
 .teamContent { max-width: 520px; }
@@ -788,7 +786,7 @@
 
 .ctaBand {
   position: relative;
-  padding: 128px 0;
+  padding: clamp(112px, 14vw, 176px) 0;
   color: var(--text-on-dark-strong);
   overflow: hidden;
   isolation: isolate;
@@ -812,8 +810,8 @@
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(12, 39, 72, 0.9) 0%,
-    rgba(12, 39, 72, 0.95) 100%
+    rgba(0, 0, 0, 0.75) 0%,
+    rgba(0, 0, 0, 0.85) 100%
   );
 }
 
@@ -825,17 +823,18 @@
 }
 
 .ctaTitle {
-  font-size: 42px;
-  line-height: 1.14;
-  letter-spacing: -0.03em;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  font-weight: 500;
   color: var(--text-on-dark-strong);
-  margin: 0 0 14px;
+  margin: 0 0 16px;
 }
 
 .ctaText {
-  font-size: 17px;
-  line-height: 1.68;
+  font-size: clamp(1rem, 1.35vw, 1.125rem);
+  line-height: 1.6;
   color: var(--text-on-dark-body);
   margin: 0;
   max-width: 52ch;
@@ -870,295 +869,15 @@
   }
 }
 
-@media (max-width: 1200px) {
-  .hero { padding: 120px 24px 72px; }
-  .heroTitle { font-size: 58px; max-width: 800px; }
-  .introTitle { font-size: 38px; }
-  .sectionTitle { font-size: 34px; }
-  .splitTitle { font-size: 28px; }
-  .ctaTitle { font-size: 38px; }
-}
-
-@media (max-width: 1024px) {
-  .pinnedInner { padding: 24px; }
-  .pinnedHead { margin-bottom: 24px; }
-  .pinnedTitle { font-size: 28px; }
-}
-
 @media (min-width: 1024px) {
-  .pinnedInner { padding: 32px 24px; }
+  .pinnedInner { padding: 32px var(--container-pad); }
   .pinnedHead { margin-bottom: 32px; }
-  .pinnedTitle { font-size: 34px; }
   .pinnedLayout {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 48px;
+    gap: 56px;
     align-items: center;
   }
   .pinnedVisual { aspect-ratio: 5 / 4; max-height: 58vh; }
-  .pinnedItem { padding: 12px 16px 12px 20px; }
-  .pinnedItem.active { padding-left: 26px; }
-  .pinnedItemTitle { font-size: 17px; }
-  .pinnedItemText { font-size: 13.5px; line-height: 1.55; margin-bottom: 8px; }
-  .pinnedLink { font-size: 13px; }
-}
-
-@media (max-width: 900px) {
-  .hero { padding: 110px 24px 64px; }
-  .heroTitle { font-size: 48px; line-height: 1.08; letter-spacing: -0.028em; margin-bottom: 20px; }
-  .heroLead { font-size: 17px; max-width: 520px; margin-bottom: 32px; }
-  .heroActions { margin-bottom: 40px; }
-  .heroEyebrow { margin-bottom: 20px; }
-
-  .intro { padding: 104px 0; }
-  .splits { padding: 104px 0; }
-  .process { padding: 104px 0; }
-  .team { padding: 104px 0; }
-  .ctaBand { padding: 104px 0; }
-
-  .introTitle { font-size: 34px; }
-  .sectionTitle { font-size: 30px; }
-  .splitTitle { font-size: 26px; }
-  .ctaTitle { font-size: 34px; }
-
-  .introGrid { grid-template-columns: 1fr; gap: 24px; }
-  .introIndexLine { width: 40px; }
-
-  .pinnedInner { padding: 20px 24px; }
-  .pinnedHead { margin-bottom: 20px; }
-  .pinnedTitle { font-size: 26px; max-width: 100%; }
-  .pinnedLayout { gap: 20px; }
-  .pinnedVisual { max-height: 38vh; }
-  .pinnedItemText { font-size: 12.5px; line-height: 1.5; }
-
-  .split {
-    grid-template-columns: 1fr;
-    gap: 32px;
-    margin-bottom: 80px;
-  }
-  .splitReverse .splitMedia   { order: 0; }
-  .splitReverse .splitContent { order: 0; }
-
-  .teamGrid { grid-template-columns: 1fr; gap: 48px; }
-
-  .ctaGrid { grid-template-columns: 1fr; gap: 32px; }
-}
-
-@media (max-width: 640px) {
-  .container { padding: 0 20px; }
-
-  .hero {
-    padding: 96px 20px 56px;
-    justify-content: center;
-  }
-  .heroImageInner { object-position: center 35%; }
-  .heroEyebrow { font-size: 11px; letter-spacing: 0.2em; margin-bottom: 18px; gap: 8px; }
-  .heroTitle { font-size: 38px; line-height: 1.1; letter-spacing: -0.028em; margin-bottom: 18px; max-width: 100%; }
-  .heroLead { font-size: 15px; line-height: 1.6; margin-bottom: 28px; max-width: 100%; }
-  .heroActions { gap: 10px; margin-bottom: 32px; }
-  .heroMeta { font-size: 11px; letter-spacing: 0.18em; gap: 8px 12px; }
-
-  .btnPrimary,
-  .btnGhost,
-  .ctaPrimary,
-  .ctaSecondary {
-    font-size: 14px;
-    padding: 0 22px;
-    min-height: 50px;
-  }
-
-  .intro { padding: 80px 0; }
-  .introTitle { font-size: 30px; }
-  .introText { font-size: 16px; }
-
-  .sectionHead { margin-bottom: 40px; }
-  .sectionLabel { font-size: 11px; letter-spacing: 0.2em; margin-bottom: 14px; }
-  .sectionTitle { font-size: 28px; margin-bottom: 14px; }
-  .sectionLead { font-size: 16px; }
-
-  .pinned { height: 340vh; }
-  .pinnedInner { padding: 18px 20px; }
-  .pinnedHead { margin-bottom: 16px; }
-  .pinnedTitle { font-size: 22px; line-height: 1.2; }
-  .pinnedLayout { gap: 16px; }
-  .pinnedVisual { max-height: 30vh; }
-  .pinnedItem { padding: 8px 12px 8px 14px; }
-  .pinnedItem.active { padding-left: 18px; }
-  .pinnedItemHead { gap: 8px; margin-bottom: 3px; }
-  .pinnedNum { font-size: 9px; letter-spacing: 0.2em; }
-  .pinnedItemTitle { font-size: 14px; line-height: 1.2; }
-  .pinnedItemText { font-size: 12px; line-height: 1.45; margin-bottom: 5px; }
-  .pinnedLink { font-size: 12px; }
-  .pinnedCounter { font-size: 10px; padding: 4px 8px; bottom: 10px; left: 10px; }
-
-  .splits { padding: 80px 0; }
-  .split { margin-bottom: 64px; gap: 28px; }
-  .splitTitle { font-size: 24px; }
-  .splitText { font-size: 15px; }
-
-  .process { padding: 80px 0; }
-  .timelineStep { padding: 0 0 36px 48px; }
-  .timelineMarker { width: 28px; height: 28px; }
-  .timelineTitle { font-size: 20px; }
-  .timelineText { font-size: 14px; }
-  .timelineRail { left: 13px; }
-
-  .team { padding: 80px 0; }
-  .teamGrid { gap: 40px; }
-  .teamImages { width: 280px; height: 340px; }
-  .teamPhoto { width: 145px; }
-  .teamPhoto[data-slot="1"] { top: 0;    left: 0;    }
-  .teamPhoto[data-slot="2"] { top: 14px; left: 122px; }
-  .teamPhoto[data-slot="3"] { top: 172px; left: 16px; }
-  .teamPhoto[data-slot="4"] { top: 190px; left: 130px; }
-
-  .ctaBand { padding: 80px 0; }
-  .ctaTitle { font-size: 28px; }
-  .ctaText { font-size: 16px; }
-}
-
-@media (max-width: 480px) {
-  .container { padding: 0 16px; }
-
-  .hero { padding: 88px 18px 48px; }
-  .heroImageInner { object-position: center 30%; }
-  .heroEyebrow { font-size: 10px; letter-spacing: 0.18em; gap: 6px; margin-bottom: 16px; }
-  .heroTitle { font-size: 32px; line-height: 1.12; letter-spacing: -0.026em; margin-bottom: 16px; }
-  .heroLead { font-size: 14.5px; line-height: 1.6; margin-bottom: 24px; }
-  .heroActions { margin-bottom: 28px; gap: 8px; flex-direction: column; align-items: stretch; width: 100%; }
-  .heroActions > a { width: 100%; justify-content: center; }
-  .heroMeta { font-size: 10px; letter-spacing: 0.16em; gap: 6px 10px; }
-
-  .btnPrimary,
-  .btnGhost,
-  .ctaPrimary,
-  .ctaSecondary {
-    font-size: 14px;
-    padding: 0 18px;
-    min-height: 48px;
-  }
-
-  .intro { padding: 64px 0; }
-  .introTitle { font-size: 26px; letter-spacing: -0.028em; }
-  .introText { font-size: 15px; line-height: 1.65; }
-  .introIndex { font-size: 10px; gap: 12px; }
-  .introIndexLine { width: 32px; }
-
-  .sectionHead { margin-bottom: 32px; }
-  .sectionTitle { font-size: 24px; }
-  .sectionLead { font-size: 15px; }
-
-  .pinned { height: 320vh; }
-  .pinnedInner { padding: 16px; }
-  .pinnedHead { margin-bottom: 14px; }
-  .pinnedTitle { font-size: 20px; line-height: 1.22; }
-  .pinnedLayout { gap: 14px; }
-  .pinnedVisual { max-height: 26vh; }
-  .pinnedItem { padding: 7px 10px 7px 12px; }
-  .pinnedItem.active { padding-left: 16px; }
-  .pinnedItemHead { gap: 6px; margin-bottom: 2px; }
-  .pinnedItemTitle { font-size: 13px; }
-  .pinnedItemText { font-size: 11.5px; line-height: 1.4; margin-bottom: 4px; }
-  .pinnedLink { font-size: 11px; }
-  .pinnedCounter { font-size: 9px; padding: 3px 7px; bottom: 8px; left: 8px; }
-
-  .splits { padding: 64px 0; }
-  .split { gap: 24px; margin-bottom: 52px; }
-  .splitEyebrow { font-size: 10px; letter-spacing: 0.2em; margin-bottom: 10px; }
-  .splitTitle { font-size: 22px; margin-bottom: 12px; }
-  .splitText { font-size: 14.5px; line-height: 1.65; }
-
-  .process { padding: 64px 0; }
-  .timelineStep { padding: 0 0 32px 44px; }
-  .timelineMarker { width: 24px; height: 24px; top: 6px; }
-  .timelineMarker svg { width: 14px; height: 14px; }
-  .timelineIndex { font-size: 11px; letter-spacing: 0.2em; }
-  .timelineTitle { font-size: 18px; }
-  .timelineText { font-size: 13.5px; }
-  .timelineRail { left: 11px; top: 28px; }
-
-  .team { padding: 64px 0; }
-  .teamImages { width: 240px; height: 300px; }
-  .teamPhoto { width: 125px; }
-  .teamPhoto[data-slot="1"] { top: 0;    left: 0;    }
-  .teamPhoto[data-slot="2"] { top: 12px; left: 104px; }
-  .teamPhoto[data-slot="3"] { top: 148px; left: 14px; }
-  .teamPhoto[data-slot="4"] { top: 164px; left: 112px; }
-
-  .ctaBand { padding: 64px 0; }
-  .ctaTitle { font-size: 24px; }
-  .ctaText { font-size: 15px; }
-  .ctaActions { flex-direction: column; }
-  .ctaActions > a { width: 100%; }
-}
-
-@media (max-width: 360px) {
-  .hero { padding: 80px 16px 40px; }
-  .heroTitle { font-size: 28px; line-height: 1.14; }
-  .heroLead { font-size: 14px; line-height: 1.55; }
-  .heroEyebrow { font-size: 9px; letter-spacing: 0.16em; }
-  .heroMeta { font-size: 9px; letter-spacing: 0.14em; }
-
-  .introTitle { font-size: 24px; }
-  .sectionTitle { font-size: 22px; }
-  .splitTitle { font-size: 20px; }
-  .ctaTitle { font-size: 22px; }
-
-  .pinnedTitle { font-size: 18px; }
-  .pinnedVisual { max-height: 24vh; }
-  .pinnedItemTitle { font-size: 12.5px; }
-  .pinnedItemText { font-size: 11px; line-height: 1.4; }
-
-  .teamImages { width: 220px; height: 280px; }
-  .teamPhoto { width: 115px; }
-  .teamPhoto[data-slot="2"] { top: 10px; left: 96px; }
-  .teamPhoto[data-slot="3"] { top: 138px; left: 12px; }
-  .teamPhoto[data-slot="4"] { top: 152px; left: 102px; }
-}
-
-@media (max-height: 640px) and (min-width: 641px) {
-  .hero {
-    min-height: auto;
-    padding: 120px 24px 56px;
-  }
-  .pinnedInner { padding: 16px 24px; }
-  .pinnedHead { margin-bottom: 16px; }
-  .pinnedTitle { font-size: 24px; }
-  .pinnedVisual { max-height: 42vh; }
-  .pinnedItem { padding: 8px 12px 8px 16px; }
-  .pinnedItemTitle { font-size: 15px; }
-  .pinnedItemText { font-size: 12.5px; line-height: 1.45; margin-bottom: 5px; }
-  .pinnedLink { font-size: 12px; }
-}
-
-@media (max-height: 560px) {
-  .hero {
-    min-height: auto;
-    padding: 100px 20px 40px;
-  }
-  .heroTitle { font-size: 32px; margin-bottom: 14px; }
-  .heroLead { font-size: 15px; margin-bottom: 24px; }
-  .heroActions { margin-bottom: 24px; }
-  .heroMeta { font-size: 10px; }
-}
-
-@media (max-height: 540px) {
-  .pinnedInner { padding: 12px 20px; }
-  .pinnedHead { margin-bottom: 12px; }
-  .pinnedTitle { font-size: 20px; }
-  .pinnedVisual { max-height: 34vh; }
-  .pinnedItem { padding: 6px 10px 6px 14px; }
-  .pinnedItemHead { margin-bottom: 2px; }
-  .pinnedItemTitle { font-size: 14px; }
-  .pinnedItemText { font-size: 12px; line-height: 1.4; margin-bottom: 4px; }
-  .pinnedLink { font-size: 11.5px; }
-}
-
-@media (max-height: 480px) {
-  .hero { padding: 88px 16px 32px; }
-  .heroTitle { font-size: 28px; line-height: 1.12; margin-bottom: 12px; }
-  .heroLead { font-size: 14px; margin-bottom: 20px; }
-  .heroEyebrow { font-size: 10px; margin-bottom: 12px; }
-  .heroActions { margin-bottom: 20px; }
 }
 
 @media (min-width: 900px) {
@@ -1208,6 +927,64 @@
   }
   .timelineStep { padding: 68px 0 0; }
   .timelineMarker { top: 0; left: 0; }
+}
+
+@media (max-width: 900px) {
+  .split {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin-bottom: 80px;
+  }
+  .splitReverse .splitMedia   { order: 0; }
+  .splitReverse .splitContent { order: 0; }
+
+  .teamGrid { grid-template-columns: 1fr; gap: 48px; }
+  .ctaGrid { grid-template-columns: 1fr; gap: 32px; }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 100px var(--container-pad) 56px;
+  }
+  .heroImageInner { object-position: center 35%; }
+  .heroActions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .heroActions > a { width: 100%; justify-content: center; }
+
+  .pinned { height: 340vh; }
+  .pinnedInner { padding: 24px var(--container-pad); }
+  .pinnedVisual { max-height: 30vh; }
+
+  .split { margin-bottom: 64px; gap: 28px; }
+
+  .timelineStep { padding: 0 0 36px 48px; }
+
+  .teamImages { width: 280px; height: 340px; }
+  .teamPhoto { width: 145px; }
+  .teamPhoto[data-slot="1"] { top: 0;    left: 0;    }
+  .teamPhoto[data-slot="2"] { top: 14px; left: 122px; }
+  .teamPhoto[data-slot="3"] { top: 172px; left: 16px; }
+  .teamPhoto[data-slot="4"] { top: 190px; left: 130px; }
+
+  .ctaActions { flex-direction: column; align-items: stretch; }
+  .ctaActions > a { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .hero { padding: 88px var(--container-pad) 48px; }
+
+  .pinned { height: 320vh; }
+  .pinnedVisual { max-height: 26vh; }
+
+  .teamImages { width: 240px; height: 300px; }
+  .teamPhoto { width: 125px; }
+  .teamPhoto[data-slot="1"] { top: 0;    left: 0;    }
+  .teamPhoto[data-slot="2"] { top: 12px; left: 104px; }
+  .teamPhoto[data-slot="3"] { top: 148px; left: 14px; }
+  .teamPhoto[data-slot="4"] { top: 164px; left: 112px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

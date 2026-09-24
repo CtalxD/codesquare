@@ -1,5 +1,5 @@
 /* =========================================================
-   Navbar - floating pill, morphs on scroll
+   Navbar — flat bar, right-aligned rectangular CTA
    ========================================================= */
 
 .header {
@@ -8,42 +8,31 @@
   left: 0;
   right: 0;
   z-index: 100;
-  padding: 16px 24px;
-  pointer-events: none;
-  transition: padding 320ms cubic-bezier(0.2, 0.85, 0.2, 1);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition:
+    background 260ms ease-out,
+    border-color 260ms ease-out;
 }
 
 .headerScrolled {
-  padding: 12px 24px;
+  background: var(--color-white);
+  border-bottom-color: var(--hairline);
 }
 
 .shell {
-  pointer-events: auto;
-  max-width: 1200px;
+  max-width: var(--container-max);
   margin: 0 auto;
-  height: 68px;
+  padding: 0 var(--container-pad);
+  height: 72px;
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 0 12px 0 20px;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  transition:
-    height 320ms cubic-bezier(0.2, 0.85, 0.2, 1),
-    background 320ms ease-out,
-    border-color 320ms ease-out,
-    box-shadow 320ms ease-out,
-    backdrop-filter 320ms ease-out;
+  gap: 40px;
+  transition: height 260ms ease-out;
 }
 
 .headerScrolled .shell {
-  height: 60px;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: saturate(160%) blur(12px);
-  -webkit-backdrop-filter: saturate(160%) blur(12px);
-  border-color: rgba(12, 39, 72, 0.08);
-  box-shadow: 0 10px 30px -18px rgba(12, 39, 72, 0.25);
+  height: 64px;
 }
 
 /* ---------- Brand ---------- */
@@ -54,11 +43,8 @@
   gap: 10px;
   color: var(--color-white);
   text-decoration: none;
-  border-radius: 8px;
-  padding: 6px;
-  margin-left: -6px;
-  transition: color 300ms ease-out;
   flex-shrink: 0;
+  transition: color 260ms ease-out;
 }
 
 .headerScrolled .brand {
@@ -67,249 +53,190 @@
 
 .brand:focus-visible {
   outline: 2px solid var(--color-gold);
-  outline-offset: 2px;
+  outline-offset: 4px;
 }
 
 .brandMark {
   display: inline-flex;
-  transition: transform 400ms cubic-bezier(0.2, 0.85, 0.2, 1);
+  transition: transform 320ms cubic-bezier(0.2, 0.85, 0.2, 1);
 }
 
 .brand:hover .brandMark {
-  transform: rotate(-8deg);
+  transform: rotate(-6deg);
 }
 
 .brandSquare {
   fill: var(--color-gold);
 }
 
-.brandText {
-  display: inline-flex;
-  flex-direction: column;
-  line-height: 1;
-}
-
 .brandName {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  color: currentColor;
-}
-
-.brandSuffix {
-  margin-top: 4px;
-  font-size: 9px;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.24em;
   color: currentColor;
-  opacity: 0.7;
-}
-
-.divider {
-  width: 1px;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 0 4px;
-  transition: background 300ms ease-out;
-  flex-shrink: 0;
-}
-
-.headerScrolled .divider {
-  background: rgba(12, 39, 72, 0.12);
 }
 
 /* ---------- Links ---------- */
 
 .links {
-  position: relative;
   display: none;
+  margin-left: auto;
+}
+
+.linksList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
   align-items: center;
   gap: 4px;
-  margin: 0 auto;
-  padding: 0;
-  list-style: none;
 }
 
 .link {
   position: relative;
   display: inline-flex;
   align-items: center;
-  height: 40px;
-  padding: 0 16px;
+  padding: 10px 16px;
+  font-family: var(--font-display, var(--font-sans));
   font-size: 15px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.78);
+  letter-spacing: -0.005em;
   text-decoration: none;
-  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.72);
   transition: color 220ms ease-out;
-  white-space: nowrap;
 }
 
 .headerScrolled .link {
-  color: var(--color-slate);
+  color: var(--text-muted);
 }
 
-.link:hover,
-.link:focus-visible {
+.link:hover {
   color: var(--color-white);
-  outline: none;
 }
 
-.headerScrolled .link:hover,
-.headerScrolled .link:focus-visible {
-  color: var(--color-navy);
+.headerScrolled .link:hover {
+  color: var(--text-strong);
 }
 
 .link:focus-visible {
-  box-shadow: inset 0 0 0 2px var(--color-gold);
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
 }
 
 .linkActive {
   color: var(--color-white);
-  font-weight: 600;
 }
 
 .headerScrolled .linkActive {
-  color: var(--color-navy);
+  color: var(--text-strong);
 }
 
-.linkDot {
+/* Active underline — thin gold rule that fades in */
+.linkLabel {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 4px;
+}
+
+.linkLabel::after {
+  content: "";
   position: absolute;
-  top: 4px;
-  left: 50%;
-  width: 4px;
-  height: 4px;
-  border-radius: 1px;
-  background: var(--color-gold);
-  transform: translate(-50%, -6px) scale(0);
-  opacity: 0;
-  transition:
-    transform 240ms cubic-bezier(0.2, 0.85, 0.2, 1),
-    opacity 200ms ease-out;
-}
-
-.link:hover .linkDot,
-.link:focus-visible .linkDot,
-.linkActive .linkDot {
-  transform: translate(-50%, 0) scale(1);
-  opacity: 1;
-}
-
-.indicator {
-  position: absolute;
-  bottom: 2px;
   left: 0;
-  height: 2px;
+  right: 0;
+  bottom: 0;
+  height: 1px;
   background: var(--color-gold);
-  border-radius: 2px;
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    transform 300ms cubic-bezier(0.2, 0.85, 0.2, 1),
-    width 300ms cubic-bezier(0.2, 0.85, 0.2, 1),
-    opacity 200ms ease-out;
-  will-change: transform, width;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 320ms cubic-bezier(0.2, 0.85, 0.2, 1);
 }
 
-.indicatorVisible {
-  opacity: 1;
+.link:hover .linkLabel::after {
+  transform: scaleX(1);
 }
 
-/* ---------- CTA ---------- */
+.linkActive .linkLabel::after {
+  transform: scaleX(1);
+}
+
+/* ---------- CTA (rectangular, right-aligned) ---------- */
 
 .cta {
   display: none;
   align-items: center;
-  gap: 8px;
-  height: 44px;
-  padding: 0 18px 0 14px;
+  justify-content: center;
+  height: 42px;
+  padding: 0 22px;
+  font-family: var(--font-display, var(--font-sans));
   font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   color: var(--color-navy);
   background: var(--color-gold);
-  border-radius: 999px;
   text-decoration: none;
+  flex-shrink: 0;
   transition:
     background 200ms ease-out,
-    box-shadow 200ms ease-out,
-    transform 200ms ease-out;
-  white-space: nowrap;
-  flex-shrink: 0;
+    color 200ms ease-out;
 }
 
 .cta:hover {
-  background: #cfae7e;
-  box-shadow: 0 8px 20px -10px rgba(12, 39, 72, 0.35);
-  transform: translateY(-1px);
+  background: var(--gold-on-dark);
+  color: var(--color-navy);
+}
+
+.headerScrolled .cta {
+  background: var(--color-navy);
+  color: var(--color-white);
+}
+
+.headerScrolled .cta:hover {
+  background: #163257;
 }
 
 .cta:focus-visible {
-  outline: 2px solid var(--color-navy);
+  outline: 2px solid var(--color-gold);
   outline-offset: 3px;
-}
-
-.ctaSquare {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  background: var(--color-navy);
-  border-radius: 1px;
-  transition: transform 320ms cubic-bezier(0.2, 0.85, 0.2, 1);
-  flex-shrink: 0;
-}
-
-.cta:hover .ctaSquare,
-.drawerCta:hover .ctaSquare {
-  transform: rotate(45deg);
-}
-
-.cta svg {
-  transition: transform 220ms cubic-bezier(0.2, 0.85, 0.2, 1);
-}
-
-.cta:hover svg {
-  transform: translateX(3px);
 }
 
 /* ---------- Mobile toggle ---------- */
 
 .menuButton {
   margin-left: auto;
-  width: 44px;
-  height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: 999px;
+  padding: 8px 0;
+  background: transparent;
+  border: none;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
   color: var(--color-white);
   cursor: pointer;
-  transition:
-    background 200ms ease-out,
-    border-color 200ms ease-out,
-    color 300ms ease-out;
+  transition: color 260ms ease-out;
   flex-shrink: 0;
 }
 
 .headerScrolled .menuButton {
-  background: transparent;
-  border-color: rgba(12, 39, 72, 0.14);
-  color: var(--color-navy);
+  color: var(--text-strong);
 }
 
 .menuButton:hover {
-  background: rgba(255, 255, 255, 0.18);
+  color: var(--color-gold);
 }
 
 .headerScrolled .menuButton:hover {
-  background: var(--color-off-white);
+  color: var(--gold-on-light);
 }
 
 .menuButton:focus-visible {
   outline: 2px solid var(--color-gold);
-  outline-offset: 2px;
+  outline-offset: 4px;
+}
+
+.menuLabel {
+  display: inline-block;
 }
 
 /* ---------- Backdrop ---------- */
@@ -317,12 +244,10 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(12, 39, 72, 0.35);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.5);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 300ms ease-out;
+  transition: opacity 260ms ease-out;
   z-index: 90;
 }
 
@@ -338,16 +263,16 @@
   top: 0;
   right: 0;
   bottom: 0;
-  width: 420px;
-  max-width: 88vw;
-  background: var(--color-white);
+  width: 400px;
+  max-width: 90vw;
+  background: var(--color-navy);
+  color: var(--text-on-dark-strong);
   z-index: 95;
-  padding: 24px;
+  padding: 32px;
   display: flex;
   flex-direction: column;
   transform: translateX(100%);
-  transition: transform 380ms cubic-bezier(0.2, 0.85, 0.2, 1);
-  box-shadow: -20px 0 40px -20px rgba(12, 39, 72, 0.3);
+  transition: transform 320ms cubic-bezier(0.2, 0.85, 0.2, 1);
   overflow-y: auto;
 }
 
@@ -359,38 +284,41 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  padding-bottom: 20px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--hairline-dark);
 }
 
 .drawerEyebrow {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.3em;
+  font-weight: 500;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: rgba(12, 39, 72, 0.55);
+  color: var(--color-gold);
 }
 
 .drawerClose {
-  width: 44px;
-  height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-navy);
-  background: var(--color-off-white);
+  padding: 6px 0;
+  background: transparent;
   border: none;
-  border-radius: 999px;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-on-dark-muted);
   cursor: pointer;
-  transition: background 200ms ease-out;
+  transition: color 200ms ease-out;
 }
 
 .drawerClose:hover {
-  background: #e7ecf3;
+  color: var(--text-on-dark-strong);
 }
 
 .drawerClose:focus-visible {
-  outline: 2px solid var(--color-navy);
-  outline-offset: 2px;
+  outline: 2px solid var(--color-gold);
+  outline-offset: 4px;
 }
 
 .drawerLinks {
@@ -399,15 +327,15 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
 .drawerLinks li {
   opacity: 0;
   transform: translateY(10px);
   transition:
-    opacity 300ms ease-out,
-    transform 300ms cubic-bezier(0.2, 0.85, 0.2, 1);
+    opacity 260ms ease-out,
+    transform 260ms cubic-bezier(0.2, 0.85, 0.2, 1);
+  border-bottom: 1px solid var(--hairline-dark);
 }
 
 .drawerOpen .drawerLinks li {
@@ -416,54 +344,45 @@
 }
 
 .drawerLink {
-  display: grid;
-  grid-template-columns: 36px 1fr auto;
-  align-items: center;
-  gap: 12px;
-  min-height: 56px;
-  padding: 0 12px;
-  color: var(--color-slate);
-  font-size: 20px;
-  font-weight: 500;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 0;
   text-decoration: none;
-  border-radius: 8px;
-  transition:
-    background 200ms ease-out,
-    color 200ms ease-out,
-    padding 200ms ease-out;
+  color: var(--text-on-dark-body);
+  transition: color 200ms ease-out;
 }
 
-.drawerLink:hover,
+.drawerLink:hover {
+  color: var(--text-on-dark-strong);
+}
+
 .drawerLink:focus-visible {
-  background: var(--color-off-white);
-  color: var(--color-navy);
-  padding-left: 16px;
-  outline: none;
+  outline: 2px solid var(--color-gold);
+  outline-offset: 4px;
 }
 
 .drawerLinkActive {
-  color: var(--color-navy);
-  font-weight: 600;
+  color: var(--text-on-dark-strong);
 }
 
-.drawerIndex {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  color: rgba(12, 39, 72, 0.4);
-}
-
-.drawerLinkActive .drawerIndex {
-  color: var(--color-gold);
+.drawerLabel {
+  font-family: var(--font-display, var(--font-sans));
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
 }
 
 .drawerArrow {
+  font-size: 18px;
+  color: var(--color-gold);
   opacity: 0;
   transform: translateX(-4px);
   transition:
     opacity 200ms ease-out,
     transform 240ms cubic-bezier(0.2, 0.85, 0.2, 1);
-  color: var(--color-navy);
 }
 
 .drawerLink:hover .drawerArrow,
@@ -474,47 +393,49 @@
 }
 
 .drawerCta {
-  margin-top: 24px;
+  margin-top: 40px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 56px;
-  padding: 0 22px;
-  font-size: 16px;
-  font-weight: 600;
+  padding: 0 24px;
+  font-family: var(--font-display, var(--font-sans));
+  font-size: 15px;
+  font-weight: 500;
   color: var(--color-navy);
   background: var(--color-gold);
-  border-radius: 8px;
   text-decoration: none;
   transition: background 200ms ease-out;
 }
 
 .drawerCta:hover {
-  background: #cfae7e;
+  background: var(--gold-on-dark);
 }
 
 .drawerCta:focus-visible {
-  outline: 2px solid var(--color-navy);
-  outline-offset: 2px;
+  outline: 2px solid var(--color-gold);
+  outline-offset: 4px;
 }
 
 .drawerFoot {
   margin-top: auto;
-  padding-top: 24px;
-  border-top: 1px solid rgba(12, 39, 72, 0.1);
+  padding-top: 32px;
+  border-top: 1px solid var(--hairline-dark);
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-size: 13px;
-  color: rgba(12, 39, 72, 0.55);
+  gap: 6px;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-on-dark-muted);
 }
 
 /* =========================================================
    Breakpoints
    ========================================================= */
 
-/* Large - show full nav */
 @media (min-width: 960px) {
   .links,
   .cta {
@@ -525,110 +446,64 @@
   }
 }
 
-/* Medium - hide divider, tighter shell */
 @media (max-width: 959px) {
   .shell {
     height: 60px;
-    padding: 0 8px 0 16px;
-    gap: 12px;
-  }
-  .divider {
-    display: none;
+    gap: 20px;
   }
 }
 
-/* Small phones */
 @media (max-width: 640px) {
-  .header {
-    padding: 12px 16px;
-  }
-  .headerScrolled {
-    padding: 8px 12px;
-  }
   .shell {
+    padding: 0 24px;
     height: 56px;
-    padding: 0 6px 0 14px;
-    gap: 10px;
-  }
-  .brandMark svg {
-    width: 26px;
-    height: 26px;
   }
   .brandName {
-    font-size: 12px;
-    letter-spacing: 0.18em;
-  }
-  .brandSuffix {
-    font-size: 8px;
-    letter-spacing: 0.26em;
-  }
-  .menuButton {
-    width: 40px;
-    height: 40px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
   }
   .drawer {
-    padding: 20px;
+    padding: 24px;
   }
-  .drawerLink {
-    font-size: 18px;
-    min-height: 52px;
+  .drawerLabel {
+    font-size: 22px;
   }
 }
 
-/* XSmall phones */
 @media (max-width: 420px) {
-  .header {
-    padding: 10px 12px;
-  }
   .shell {
-    height: 52px;
-    padding: 0 4px 0 12px;
+    padding: 0 20px;
   }
-  .brandText {
+  .brandName {
     display: none;
-  }
-  .brandMark svg {
-    width: 24px;
-    height: 24px;
   }
   .drawer {
     width: 100%;
     max-width: 100vw;
-    padding: 20px 16px;
+    padding: 24px 20px;
   }
   .drawerLink {
-    font-size: 17px;
-    grid-template-columns: 30px 1fr auto;
-    gap: 10px;
+    padding: 20px 0;
   }
-  .drawerIndex {
-    font-size: 11px;
+  .drawerLabel {
+    font-size: 20px;
   }
 }
 
-/* XXLarge - keep content centered on ultrawide */
 @media (min-width: 1600px) {
   .shell {
     max-width: 1280px;
   }
 }
 
-/* =========================================================
-   Reduced motion
-   ========================================================= */
-
 @media (prefers-reduced-motion: reduce) {
   .header,
   .shell,
   .brand,
   .brandMark,
-  .divider,
   .link,
-  .linkDot,
-  .indicator,
+  .linkLabel::after,
   .cta,
-  .ctaSquare,
-  .cta svg,
   .menuButton,
   .backdrop,
   .drawer,

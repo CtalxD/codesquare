@@ -1,27 +1,30 @@
 /* =========================================================
-   Footer - light, compact
+   Footer — light, compact, fully responsive
    ========================================================= */
 
 .footer {
   background: var(--color-off-white);
   color: var(--text-body);
-  border-top: 1px solid rgba(12, 39, 72, 0.08);
+  border-top: 1px solid var(--hairline);
 }
 
 .container {
-  max-width: 1200px;
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 var(--container-pad);
+  width: 100%;
 }
 
-/* ---------- Top row ---------- */
+/* =========================================================
+   Top row
+   ========================================================= */
 
 .top {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 24px;
-  padding: 40px 0 32px;
+  gap: 32px;
+  padding: clamp(56px, 7vw, 88px) 0 clamp(40px, 5vw, 56px);
 }
 
 .brand {
@@ -40,8 +43,7 @@
 
 .brand:focus-visible {
   outline: 2px solid var(--color-navy);
-  outline-offset: 3px;
-  border-radius: 4px;
+  outline-offset: 4px;
 }
 
 .brandMark {
@@ -49,18 +51,27 @@
   color: var(--color-navy);
 }
 
+.brandMark svg {
+  width: 26px;
+  height: 26px;
+}
+
 .brandSquare {
   fill: var(--color-gold);
 }
 
 .brandName {
-  font-size: 13px;
-  font-weight: 700;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
+  font-size: 12px;
+  font-weight: 500;
   letter-spacing: 0.24em;
   color: var(--color-navy);
+  white-space: nowrap;
 }
 
-/* ---------- Contact list ---------- */
+/* =========================================================
+   Contact list
+   ========================================================= */
 
 .contactList {
   list-style: none;
@@ -68,15 +79,16 @@
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 28px;
+  gap: 14px 40px;
 }
 
 .contactList li {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
+  gap: 10px;
+  font-size: 14.5px;
   color: var(--text-body);
+  min-width: 0;
 }
 
 .contactIcon {
@@ -91,8 +103,12 @@
   color: var(--text-body);
   text-decoration: none;
   border-bottom: 1px solid transparent;
-  transition: color 200ms ease-out, border-color 200ms ease-out;
+  padding-bottom: 1px;
+  transition:
+    color 180ms ease-out,
+    border-color 180ms ease-out;
   word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .contactLink:hover {
@@ -103,23 +119,28 @@
 .contactLink:focus-visible {
   outline: 2px solid var(--color-navy);
   outline-offset: 3px;
-  border-radius: 2px;
 }
 
-/* ---------- Bottom row ---------- */
+/* =========================================================
+   Bottom row
+   ========================================================= */
 
 .bottom {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 20px 0 24px;
-  border-top: 1px solid rgba(12, 39, 72, 0.08);
+  gap: 16px;
+  padding: 24px 0 32px;
+  border-top: 1px solid var(--hairline);
 }
 
 .copy {
-  font-size: 13px;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   color: var(--text-muted);
   margin: 0;
 }
@@ -128,14 +149,18 @@
   display: inline-flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 20px;
 }
 
 .legalLink {
-  font-size: 13px;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   color: var(--text-muted);
   text-decoration: none;
-  transition: color 200ms ease-out;
+  transition: color 180ms ease-out;
 }
 
 .legalLink:hover {
@@ -144,45 +169,46 @@
 
 .legalLink:focus-visible {
   outline: 2px solid var(--color-navy);
-  outline-offset: 3px;
-  border-radius: 2px;
+  outline-offset: 4px;
 }
 
 .legalDot {
   width: 3px;
   height: 3px;
-  background: rgba(12, 39, 72, 0.28);
+  background: rgba(12, 39, 72, 0.24);
   border-radius: 50%;
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .backToTop {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-muted);
+  gap: 8px;
+  padding: 8px 0;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-navy);
   background: transparent;
-  border: 1px solid rgba(12, 39, 72, 0.14);
-  border-radius: 6px;
+  border: none;
+  border-bottom: 1px solid rgba(12, 39, 72, 0.3);
   cursor: pointer;
   transition:
-    background 180ms ease-out,
-    border-color 180ms ease-out,
-    color 180ms ease-out;
+    color 180ms ease-out,
+    border-color 180ms ease-out;
 }
 
 .backToTop:hover {
-  background: var(--color-white);
-  border-color: rgba(12, 39, 72, 0.28);
-  color: var(--color-navy);
+  color: var(--gold-on-light);
+  border-bottom-color: var(--gold-on-light);
 }
 
 .backToTop svg {
-  transition: transform 200ms cubic-bezier(0.2, 0.85, 0.2, 1);
+  transition: transform 220ms cubic-bezier(0.2, 0.85, 0.2, 1);
+  flex-shrink: 0;
 }
 
 .backToTop:hover svg {
@@ -191,66 +217,32 @@
 
 .backToTop:focus-visible {
   outline: 2px solid var(--color-navy);
-  outline-offset: 3px;
+  outline-offset: 4px;
 }
 
 /* =========================================================
-   Breakpoints
+   XXLarge — ultrawide monitors (>= 1600px)
    ========================================================= */
 
-/* Large - two column, brand left, contact right */
-@media (min-width: 720px) {
-  .top {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 32px;
-    padding: 36px 0 28px;
+@media (min-width: 1600px) {
+  .container {
+    max-width: 1280px;
   }
 }
 
-/* Small - stack bottom row */
-@media (max-width: 640px) {
+@media (min-width: 1920px) {
   .container {
-    padding: 0 20px;
+    max-width: 1400px;
   }
-  .top {
-    padding: 32px 0 24px;
-    gap: 20px;
-  }
-  .bottom {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 18px 0 22px;
-  }
-  .legal {
-    width: 100%;
-  }
-  .contactList {
-    gap: 8px 20px;
-  }
-}
 
-/* XSmall */
-@media (max-width: 420px) {
-  .container {
-    padding: 0 16px;
-  }
   .top {
-    padding: 28px 0 20px;
+    padding: 104px 0 64px;
   }
-  .brandName {
-    font-size: 12px;
-    letter-spacing: 0.2em;
-  }
-  .contactList {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
+
   .contactList li {
-    font-size: 13px;
+    font-size: 15px;
   }
+
   .copy,
   .legalLink,
   .backToTop {
@@ -258,10 +250,166 @@
   }
 }
 
-/* XXLarge - keep content centered */
-@media (min-width: 1600px) {
-  .container {
-    max-width: 1280px;
+/* =========================================================
+   Large desktop (>= 1200px)
+   ========================================================= */
+
+@media (min-width: 1200px) {
+  .top {
+    gap: 48px;
+  }
+}
+
+/* =========================================================
+   Medium — small laptops / tablets landscape (<= 1024px)
+   ========================================================= */
+
+@media (max-width: 1024px) {
+  .top {
+    gap: 28px;
+  }
+
+  .contactList {
+    gap: 12px 32px;
+  }
+}
+
+/* =========================================================
+   Tablet — (<= 900px)
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .top {
+    padding: 64px 0 40px;
+  }
+
+  .contactList li {
+    font-size: 14px;
+  }
+}
+
+/* =========================================================
+   Large — two column brand left, contact right (>= 720px)
+   ========================================================= */
+
+@media (min-width: 720px) {
+  .top {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    padding: clamp(64px, 8vw, 96px) 0 clamp(40px, 5vw, 56px);
+  }
+}
+
+/* =========================================================
+   Small — phones (<= 640px)
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .top {
+    gap: 24px;
+    padding: 56px 0 32px;
+  }
+
+  .bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px 0 28px;
+  }
+
+  .legal {
+    width: 100%;
+    gap: 16px;
+  }
+
+  .contactList {
+    gap: 12px 28px;
+  }
+
+  .contactList li {
+    font-size: 14px;
+  }
+}
+
+/* =========================================================
+   XSmall — small phones (<= 480px)
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .brandName {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+  }
+
+  .brandMark svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .contactList {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .contactList li {
+    font-size: 14px;
+  }
+
+  .copy,
+  .legalLink,
+  .backToTop {
+    font-size: 10.5px;
+  }
+
+  .legal {
+    gap: 14px;
+  }
+
+  .backToTop {
+    gap: 6px;
+  }
+}
+
+/* =========================================================
+   XXSmall — very narrow phones (<= 360px)
+   ========================================================= */
+
+@media (max-width: 360px) {
+  .brandName {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+  }
+
+  .brandMark svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .contactList li {
+    font-size: 13px;
+  }
+
+  .copy,
+  .legalLink,
+  .backToTop {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+}
+
+/* =========================================================
+   Short viewport — landscape phones (height <= 500px)
+   ========================================================= */
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .top {
+    padding: 40px 0 24px;
+  }
+
+  .bottom {
+    padding: 16px 0 20px;
   }
 }
 

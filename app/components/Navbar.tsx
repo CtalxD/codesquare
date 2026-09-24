@@ -4,7 +4,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ArrowRight } from "lucide-react";
 import styles from "../css/navbar.module.css";
 
 const NAV_LINKS = [
@@ -18,15 +17,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [indicator, setIndicator] = useState({
-    left: 0,
-    width: 0,
-    visible: false,
-  });
-
   const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const linksRef = useRef<HTMLUListElement>(null);
-  const linkRefs = useRef<Array<HTMLAnchorElement | null>>([]);
 
   const isActive = useCallback(
     (href: string) =>
@@ -64,45 +55,21 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const moveIndicatorTo = useCallback((index: number) => {
-    const list = linksRef.current;
-    const el = linkRefs.current[index];
-    if (!list || !el) return;
-    const listRect = list.getBoundingClientRect();
-    const elRect = el.getBoundingClientRect();
-    setIndicator({
-      left: elRect.left - listRect.left,
-      width: elRect.width,
-      visible: true,
-    });
-  }, []);
-
-  const resetIndicatorToActive = useCallback(() => {
-    const activeIndex = NAV_LINKS.findIndex((l) => isActive(l.href));
-    if (activeIndex >= 0) moveIndicatorTo(activeIndex);
-    else setIndicator((s) => ({ ...s, visible: false }));
-  }, [isActive, moveIndicatorTo]);
-
-  useEffect(() => {
-    resetIndicatorToActive();
-    const onResize = () => resetIndicatorToActive();
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [resetIndicatorToActive]);
-
   return (
     <>
       <header
-        className={`${styles.header} ${isScrolled ? styles.headerScrolled : ""}`}
+        className={`${styles.header} ${
+          isScrolled ? styles.headerScrolled : ""
+        }`}
       >
         <div className={styles.shell}>
           <Link
             href="/"
             className={styles.brand}
-            aria-label="Code Square - Home"
+            aria-label="Code Square — Home"
           >
             <span className={styles.brandMark} aria-hidden="true">
-              <svg viewBox="0 0 40 40" width="30" height="30">
+              <svg viewBox="0 0 40 40" width="24" height="24">
                 <path
                   d="M20 3a17 17 0 1 0 0 34h6v-6h-6a11 11 0 1 1 0-22h6V3h-6z"
                   fill="currentColor"
@@ -116,57 +83,32 @@ export default function Navbar() {
                 />
               </svg>
             </span>
-            <span className={styles.brandText}>
-              <span className={styles.brandName}>CODE SQUARE</span>
-              <span className={styles.brandSuffix}>PVT. LTD.</span>
-            </span>
+            <span className={styles.brandName}>CODE SQUARE</span>
           </Link>
 
-          <span className={styles.divider} aria-hidden="true" />
-
-          <ul
-            ref={linksRef}
-            className={styles.links}
-            onMouseLeave={resetIndicatorToActive}
-          >
-            {NAV_LINKS.map((link, i) => {
-              const active = isActive(link.href);
-              return (
-                <li key={link.href}>
-                  <Link
-                    ref={(el) => {
-                      linkRefs.current[i] = el;
-                    }}
-                    href={link.href}
-                    className={`${styles.link} ${
-                      active ? styles.linkActive : ""
-                    }`}
-                    aria-current={active ? "page" : undefined}
-                    onMouseEnter={() => moveIndicatorTo(i)}
-                    onFocus={() => moveIndicatorTo(i)}
-                  >
-                    <span className={styles.linkDot} aria-hidden="true" />
-                    {link.label}
-                  </Link>
-                </li>
-              );
-            })}
-            <span
-              className={`${styles.indicator} ${
-                indicator.visible ? styles.indicatorVisible : ""
-              }`}
-              style={{
-                transform: `translateX(${indicator.left}px)`,
-                width: indicator.width,
-              }}
-              aria-hidden="true"
-            />
-          </ul>
+          <nav className={styles.links} aria-label="Primary">
+            <ul className={styles.linksList}>
+              {NAV_LINKS.map((link) => {
+                const active = isActive(link.href);
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className={`${styles.link} ${
+                        active ? styles.linkActive : ""
+                      }`}
+                      aria-current={active ? "page" : undefined}
+                    >
+                      <span className={styles.linkLabel}>{link.label}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
 
           <Link href="/contact" className={styles.cta}>
-            <span className={styles.ctaSquare} aria-hidden="true" />
             <span>Get a Quote</span>
-            <ArrowRight size={14} strokeWidth={2} aria-hidden="true" />
           </Link>
 
           <button
@@ -178,17 +120,17 @@ export default function Navbar() {
             aria-label={isOpen ? "Close menu" : "Open menu"}
             onClick={() => setIsOpen((v) => !v)}
           >
-            {isOpen ? (
-              <X size={22} strokeWidth={1.75} aria-hidden="true" />
-            ) : (
-              <Menu size={22} strokeWidth={1.75} aria-hidden="true" />
-            )}
+            <span className={styles.menuLabel}>
+              {isOpen ? "Close" : "Menu"}
+            </span>
           </button>
         </div>
       </header>
 
       <div
-        className={`${styles.backdrop} ${isOpen ? styles.backdropOpen : ""}`}
+        className={`${styles.backdrop} ${
+          isOpen ? styles.backdropOpen : ""
+        }`}
         onClick={() => setIsOpen(false)}
         aria-hidden="true"
       />
@@ -212,7 +154,7 @@ export default function Navbar() {
               menuButtonRef.current?.focus();
             }}
           >
-            <X size={20} strokeWidth={1.75} aria-hidden="true" />
+            <span>Close</span>
           </button>
         </div>
 
@@ -233,16 +175,10 @@ export default function Navbar() {
                   }`}
                   aria-current={active ? "page" : undefined}
                 >
-                  <span className={styles.drawerIndex}>
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
                   <span className={styles.drawerLabel}>{link.label}</span>
-                  <ArrowRight
-                    size={18}
-                    strokeWidth={1.75}
-                    className={styles.drawerArrow}
-                    aria-hidden="true"
-                  />
+                  <span className={styles.drawerArrow} aria-hidden="true">
+                    →
+                  </span>
                 </Link>
               </li>
             );
@@ -250,13 +186,11 @@ export default function Navbar() {
         </ul>
 
         <Link href="/contact" className={styles.drawerCta}>
-          <span className={styles.ctaSquare} aria-hidden="true" />
           <span>Get a Quote</span>
-          <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
         </Link>
 
         <div className={styles.drawerFoot}>
-          <span>Code Square Pvt. Ltd.</span>
+          <span>Code Square</span>
           <span>Kathmandu, Nepal</span>
         </div>
       </aside>

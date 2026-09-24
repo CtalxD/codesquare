@@ -1,13 +1,8 @@
 /* =========================================================
-   Services page
-   Rules first. Fewer labels. No shadows. Gold has one job.
+   Services page — scroll-driven animations, fully responsive
    ========================================================= */
 
 .page {
-  --hairline: rgba(12, 39, 72, 0.1);
-  --hairline-dark: rgba(255, 255, 255, 0.14);
-  --container-max: 1180px;
-  --container-pad: 40px;
   background: var(--color-white);
   color: var(--text-body);
   -webkit-font-smoothing: antialiased;
@@ -57,29 +52,77 @@
   position: relative;
   min-height: 100vh;
   min-height: 100dvh;
-  background: var(--color-navy);
-  color: var(--text-on-dark-body);
   display: flex;
-  flex-direction: column;
-  padding: 0;
+  align-items: flex-end;
+  padding: clamp(120px, 13vw, 168px) 0 clamp(56px, 7vw, 96px);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.heroBg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  will-change: transform;
+}
+
+.heroBgImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.heroBgTopScrim {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 45%;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.3) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  pointer-events: none;
+}
+
+.heroBgBottomScrim {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70%;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.55) 45%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+  pointer-events: none;
 }
 
 .heroInner {
-  flex: 1;
+  width: 100%;
+  will-change: transform, opacity;
+}
+
+.heroContent {
+  max-width: 720px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: clamp(120px, 13vw, 168px) 0 clamp(56px, 7vw, 96px);
-  gap: clamp(40px, 5vw, 72px);
+  gap: clamp(32px, 4vw, 56px);
 }
 
 .heroTitle {
-  font-size: clamp(3rem, 8vw, 7rem);
+  font-size: clamp(2.5rem, 8vw, 7rem);
   line-height: 0.96;
   letter-spacing: -0.045em;
   font-weight: 500;
-  color: var(--text-on-dark-strong);
-  margin: 0 0 40px;
+  color: var(--color-white);
+  margin: 0;
   max-width: 14ch;
 }
 
@@ -97,15 +140,13 @@
 .heroLead {
   font-size: clamp(1rem, 1.4vw, 1.1875rem);
   line-height: 1.6;
-  color: var(--text-on-dark-body);
+  color: rgba(255, 255, 255, 0.88);
   margin: 0;
   max-width: 52ch;
 }
 
 .heroNav {
   border-top: 1px solid var(--hairline-dark);
-  margin: 0 calc(var(--container-pad) * -1);
-  padding: 0 var(--container-pad);
 }
 
 .heroNavMoved {
@@ -122,24 +163,27 @@
 
 .heroNavList li {
   border-bottom: 1px solid var(--hairline-dark);
+  padding-right: 24px;
+  min-width: 0;
 }
 
 .heroNavLink {
   display: flex;
   align-items: baseline;
-  gap: 12px;
-  padding: 16px 4px;
+  gap: 16px;
+  padding: 20px 0;
   text-decoration: none;
-  color: var(--text-on-dark-muted);
+  color: rgba(255, 255, 255, 0.68);
   transition: color 180ms ease-out;
+  min-width: 0;
 }
 
 .heroNavLink:hover {
-  color: var(--text-on-dark-strong);
+  color: var(--color-white);
 }
 
 .heroNavLinkActive {
-  color: var(--text-on-dark-strong);
+  color: var(--color-white);
 }
 
 .heroNavLinkActive .heroNavNum {
@@ -151,12 +195,16 @@
   font-weight: 500;
   letter-spacing: 0.22em;
   transition: color 180ms ease-out;
+  flex-shrink: 0;
 }
 
 .heroNavLabel {
   font-size: 15px;
   font-weight: 500;
   letter-spacing: -0.005em;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* =========================================================
@@ -213,6 +261,7 @@
   font-size: 14.5px;
   line-height: 1.5;
   color: var(--text-body);
+  min-width: 0;
 }
 
 .handleNum {
@@ -278,7 +327,6 @@
 .link:focus-visible {
   outline: 2px solid var(--color-navy);
   outline-offset: 4px;
-  border-radius: 2px;
 }
 
 .linkLight {
@@ -300,7 +348,6 @@
 .linkLight:focus-visible {
   outline: 2px solid var(--color-gold);
   outline-offset: 4px;
-  border-radius: 2px;
 }
 
 /* =========================================================
@@ -318,7 +365,7 @@
 }
 
 .websiteTitle {
-  font-size: clamp(3rem, 8vw, 7rem);
+  font-size: clamp(2.5rem, 8vw, 7rem);
   line-height: 0.96;
   letter-spacing: -0.045em;
   font-weight: 500;
@@ -350,6 +397,7 @@
   background: var(--color-white);
   overflow: hidden;
   margin-bottom: clamp(48px, 6vw, 80px);
+  will-change: transform, clip-path;
 }
 
 .browserBar {
@@ -375,11 +423,13 @@
   padding: 6px 12px;
   background: var(--color-white);
   border: 1px solid var(--hairline);
-  border-radius: 4px;
   font-size: 11px;
   letter-spacing: 0.02em;
   color: var(--text-muted);
   max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .browserBody {
@@ -401,14 +451,15 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
 }
 
 .siteMark {
   width: 14px;
   height: 14px;
   background: var(--color-navy);
-  border-radius: 3px;
   position: relative;
+  flex-shrink: 0;
 }
 
 .siteMark::after {
@@ -419,7 +470,6 @@
   width: 5px;
   height: 5px;
   background: var(--color-white);
-  border-radius: 1px;
   transform: translate(-50%, -50%);
 }
 
@@ -428,6 +478,7 @@
   font-weight: 500;
   letter-spacing: 0.22em;
   color: var(--text-strong);
+  white-space: nowrap;
 }
 
 .siteNavLinks {
@@ -436,6 +487,7 @@
   gap: 28px;
   font-size: 13px;
   color: var(--text-muted);
+  flex-wrap: wrap;
 }
 
 .siteHero {
@@ -444,7 +496,7 @@
 
 .siteH1 {
   font-family: var(--font-display, var(--font-sans));
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(2rem, 5vw, 4rem);
   line-height: 1;
   letter-spacing: -0.04em;
   font-weight: 500;
@@ -477,6 +529,7 @@
   gap: 16px;
   padding: 28px;
   background: var(--color-white);
+  min-width: 0;
 }
 
 .siteCardNum {
@@ -498,7 +551,7 @@
    ========================================================= */
 
 .mobile {
-  background: var(--color-navy);
+  background: linear-gradient(135deg, #0c2748 0%, #1a3f6b 100%);
   color: var(--text-on-dark-body);
   padding: clamp(96px, 11vw, 160px) 0;
   scroll-margin-top: 80px;
@@ -513,10 +566,11 @@
 
 .mobileText {
   max-width: 560px;
+  min-width: 0;
 }
 
 .mobileTitle {
-  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-size: clamp(1.75rem, 4.5vw, 3.5rem);
   line-height: 1.05;
   letter-spacing: -0.04em;
   font-weight: 500;
@@ -540,6 +594,8 @@
   overflow: hidden;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--hairline-dark);
+  min-width: 0;
+  will-change: clip-path;
 }
 
 .mobileImage {
@@ -547,10 +603,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  will-change: transform;
 }
 
 /* =========================================================
-   SERVICE 03 — SOFTWARE (full-bleed dashboard)
+   SERVICE 03 — SOFTWARE
    ========================================================= */
 
 .software {
@@ -565,7 +622,7 @@
 }
 
 .softwareTitle {
-  font-size: clamp(1.75rem, 3.6vw, 2.75rem);
+  font-size: clamp(1.5rem, 3.6vw, 2.75rem);
   line-height: 1.1;
   letter-spacing: -0.035em;
   font-weight: 500;
@@ -584,8 +641,9 @@
   background: var(--color-white);
   border-top: 1px solid var(--hairline);
   border-bottom: 1px solid var(--hairline);
-  padding: clamp(32px, 5vw, 72px) clamp(24px, 8vw, 120px);
+  padding: clamp(24px, 5vw, 72px) clamp(20px, 8vw, 120px);
   margin-bottom: clamp(48px, 6vw, 72px);
+  will-change: transform, opacity;
 }
 
 .dashHeader {
@@ -610,6 +668,7 @@
 .dashHeaderRight {
   display: flex;
   gap: 6px;
+  flex-wrap: wrap;
 }
 
 .dashPill,
@@ -620,7 +679,6 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   border: 1px solid var(--hairline);
-  border-radius: 4px;
   color: var(--text-muted);
 }
 
@@ -633,7 +691,7 @@
 .dashKpis {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 32px;
+  gap: 24px;
   padding-bottom: 32px;
   margin-bottom: 32px;
   border-bottom: 1px solid var(--hairline);
@@ -643,6 +701,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
 }
 
 .dashKpiLabel {
@@ -654,7 +713,7 @@
 }
 
 .dashKpiValue {
-  font-size: 2.25rem;
+  font-size: clamp(1.5rem, 2.5vw, 2.25rem);
   font-weight: 500;
   letter-spacing: -0.03em;
   color: var(--text-strong);
@@ -669,16 +728,16 @@
 .dashChart {
   display: flex;
   align-items: flex-end;
-  gap: 10px;
-  height: 160px;
+  gap: 6px;
+  height: clamp(100px, 14vw, 160px);
 }
 
 .dashBar {
   flex: 1;
   background: rgba(12, 39, 72, 0.1);
-  border-radius: 2px;
   min-width: 0;
   transition: background 240ms ease-out;
+  will-change: height;
 }
 
 .dashBarActive {
@@ -708,7 +767,7 @@
 }
 
 .designTitle {
-  font-size: clamp(1.75rem, 3.6vw, 2.75rem);
+  font-size: clamp(1.5rem, 3.6vw, 2.75rem);
   line-height: 1.1;
   letter-spacing: -0.035em;
   font-weight: 500;
@@ -727,7 +786,8 @@
 .wireFront {
   background: var(--color-off-white);
   border: 1px solid var(--hairline);
-  padding: clamp(24px, 3vw, 36px);
+  padding: clamp(20px, 3vw, 36px);
+  will-change: transform, opacity;
 }
 
 .wireBack {
@@ -762,6 +822,10 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-muted);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .wireDot,
@@ -770,6 +834,7 @@
   height: 8px;
   border-radius: 50%;
   background: rgba(12, 39, 72, 0.12);
+  flex-shrink: 0;
 }
 
 .wireDotActive {
@@ -788,19 +853,18 @@
   height: 44px;
   background: rgba(12, 39, 72, 0.05);
   border: 1px solid var(--hairline);
-  border-radius: 4px;
 }
 
 .wireLines {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
 }
 
 .wireLines > span {
   height: 6px;
   background: rgba(12, 39, 72, 0.08);
-  border-radius: 3px;
 }
 
 .wireLines > span:nth-child(1) {
@@ -827,7 +891,6 @@
 .wireSwatchC,
 .wireSwatchD {
   height: 44px;
-  border-radius: 4px;
   border: 1px solid var(--hairline);
 }
 
@@ -871,13 +934,13 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
 }
 
 .wireTypeLine,
 .wireTypeLineShort {
   height: 6px;
   background: rgba(12, 39, 72, 0.08);
-  border-radius: 3px;
 }
 
 .wireTypeLine {
@@ -891,6 +954,7 @@
 .wireButtons {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .wireBtnPrimary,
@@ -898,7 +962,6 @@
   padding: 8px 16px;
   font-size: 12px;
   font-weight: 500;
-  border-radius: 4px;
   letter-spacing: 0.01em;
 }
 
@@ -925,55 +988,127 @@
    ========================================================= */
 
 .cta {
-  background: var(--color-navy);
-  padding: clamp(112px, 14vw, 176px) 0;
+  position: relative;
+  padding: clamp(96px, 14vw, 176px) 0;
+  color: var(--text-on-dark-strong);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.ctaBg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  will-change: transform;
+}
+
+.ctaBgImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.ctaBgOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.82) 100%
+  );
 }
 
 .ctaGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 40px;
+  gap: 32px;
   align-items: end;
 }
 
 .ctaTitle {
-  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-size: clamp(2rem, 6vw, 5rem);
   line-height: 1;
   letter-spacing: -0.045em;
   font-weight: 500;
   color: var(--text-on-dark-strong);
-  margin: 0;
+  margin: 0 0 20px;
   max-width: 16ch;
 }
 
-.ctaLink {
-  display: inline-block;
+.ctaText {
+  font-size: clamp(1rem, 1.35vw, 1.1875rem);
+  line-height: 1.6;
+  color: var(--text-on-dark-body);
+  margin: 0;
+  max-width: 52ch;
+}
+
+.ctaActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ctaPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 26px;
+  font-family: var(--font-display);
   font-size: 15px;
-  font-weight: 500;
-  color: var(--text-on-dark-strong);
+  font-weight: 600;
+  color: var(--color-navy);
+  background: var(--color-gold);
   text-decoration: none;
-  border-bottom: 1px solid var(--text-on-dark-strong);
-  padding-bottom: 2px;
-  justify-self: start;
-  transition: color 180ms ease-out, border-color 180ms ease-out;
+  transition:
+    background 220ms ease-out,
+    transform 200ms ease-out;
 }
 
-.ctaLink:hover {
-  color: var(--color-gold);
-  border-bottom-color: var(--color-gold);
+.ctaPrimary:hover {
+  background: var(--gold-on-dark);
+  transform: translateY(-1px);
 }
 
-.ctaLink:focus-visible {
+.ctaPrimary:focus-visible {
   outline: 2px solid var(--color-gold);
-  outline-offset: 4px;
-  border-radius: 2px;
+  outline-offset: 3px;
 }
 
 /* =========================================================
-   BREAKPOINTS
+   XXLarge — ultrawide (>= 1920px)
    ========================================================= */
 
-@media (min-width: 640px) {
+@media (min-width: 1920px) {
+  .container {
+    max-width: 1400px;
+  }
+
+  .heroTitle,
+  .websiteTitle {
+    font-size: 7rem;
+  }
+}
+
+/* =========================================================
+   XLarge (>= 1600px)
+   ========================================================= */
+
+@media (min-width: 1600px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+/* =========================================================
+   Large (>= 1200px)
+   ========================================================= */
+
+@media (min-width: 1200px) {
   .siteGrid {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -985,7 +1120,26 @@
   .handleGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+
+  .softwareFoot,
+  .designFoot {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 64px;
+  }
+
+  .ctaGrid {
+    grid-template-columns: 1.4fr 1fr;
+    gap: 56px;
+  }
+
+  .ctaActions {
+    justify-content: flex-end;
+  }
 }
+
+/* =========================================================
+   Desktop — hero nav 4 columns (>= 720px)
+   ========================================================= */
 
 @media (min-width: 720px) {
   .heroNavList {
@@ -995,27 +1149,22 @@
   .heroNavList li {
     border-bottom: none;
     border-right: 1px solid var(--hairline-dark);
+    padding: 0 24px;
+  }
+
+  .heroNavList li:first-child {
+    padding-left: 0;
   }
 
   .heroNavList li:last-child {
     border-right: none;
-  }
-
-  .ctaGrid {
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 64px;
-  }
-
-  .ctaLink {
-    justify-self: end;
-  }
-
-  .softwareFoot,
-  .designFoot {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 64px;
+    padding-right: 0;
   }
 }
+
+/* =========================================================
+   Mobile two-column layout (>= 900px)
+   ========================================================= */
 
 @media (min-width: 900px) {
   .mobileGrid {
@@ -1024,24 +1173,68 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .heroLineInner[data-hero-line],
-  .heroNav[data-hero-fade],
-  .heroLead[data-hero-fade],
-  .service[data-service] {
-    transform: none !important;
-    opacity: 1 !important;
-    animation: none !important;
+/* =========================================================
+   Tablet landscape (<= 1024px)
+   ========================================================= */
+
+@media (max-width: 1024px) {
+  .heroNavList li {
+    padding-right: 20px;
+  }
+
+  .heroNavLink {
+    gap: 12px;
   }
 }
+
+/* =========================================================
+   Small tablet (<= 720px)
+   ========================================================= */
+
+@media (max-width: 720px) {
+  .siteNav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .siteNavLinks {
+    gap: 18px;
+  }
+}
+
+/* =========================================================
+   Phones (<= 640px)
+   ========================================================= */
 
 @media (max-width: 640px) {
   .page {
     --container-pad: 24px;
   }
 
+  .container {
+    padding: 0 var(--container-pad);
+  }
+
+  .hero {
+    padding: clamp(96px, 14vw, 140px) 0 clamp(40px, 6vw, 72px);
+  }
+
+  .heroTitle {
+    font-size: clamp(2.25rem, 11vw, 3.75rem);
+  }
+
+  .heroNavLink {
+    gap: 12px;
+    padding: 18px 0;
+  }
+
+  .heroNavLabel {
+    font-size: 14px;
+  }
+
   .websiteTitle {
-    font-size: clamp(2.5rem, 12vw, 4rem);
+    font-size: clamp(2.25rem, 12vw, 3.75rem);
   }
 
   .websiteTitleSecond {
@@ -1049,12 +1242,12 @@
   }
 
   .mobileTitle {
-    font-size: clamp(1.75rem, 7vw, 2.5rem);
+    font-size: clamp(1.75rem, 8vw, 2.5rem);
   }
 
   .softwareTitle,
   .designTitle {
-    font-size: clamp(1.5rem, 6vw, 2rem);
+    font-size: clamp(1.4rem, 6.5vw, 2rem);
   }
 
   .mobileMedia {
@@ -1069,16 +1262,6 @@
     display: none;
   }
 
-  .siteNav {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-
-  .siteNavLinks {
-    gap: 18px;
-  }
-
   .wireRow {
     grid-template-columns: 60px 1fr;
   }
@@ -1089,15 +1272,213 @@
 
   .handleGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
   }
 
   .dashboard {
-    padding: 32px 24px;
+    padding: 32px 20px;
+  }
+
+  .dashKpis {
+    gap: 20px;
+    padding-bottom: 24px;
+    margin-bottom: 24px;
+  }
+
+  .dashChart {
+    gap: 4px;
+    height: 100px;
+  }
+
+  .ctaActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ctaActions > a {
+    width: 100%;
   }
 }
 
-@media (max-width: 400px) {
+/* =========================================================
+   Small phones (<= 480px)
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .page {
+    --container-pad: 20px;
+  }
+
+  .hero {
+    padding: 88px var(--container-pad) 48px;
+  }
+
+  .heroTitle {
+    font-size: clamp(2rem, 11vw, 3rem);
+  }
+
+  .heroNavList {
+    grid-template-columns: 1fr;
+  }
+
+  .heroNavList li {
+    padding-right: 0;
+  }
+
+  .heroNavLabel {
+    font-size: 14px;
+  }
+
+  .websiteTitle {
+    font-size: clamp(2rem, 12vw, 3rem);
+  }
+
+  .websiteRule {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .mobileTitle {
+    font-size: clamp(1.5rem, 8vw, 2rem);
+  }
+
+  .softwareTitle,
+  .designTitle {
+    font-size: clamp(1.25rem, 6vw, 1.75rem);
+  }
+
   .handleGrid {
     grid-template-columns: 1fr;
+    row-gap: 10px;
+  }
+
+  .wireframes {
+    padding: 20px 0 40px;
+  }
+
+  .wireFront {
+    margin-top: -40px;
+    max-width: 100%;
+  }
+
+  .wireRow {
+    grid-template-columns: 50px 1fr;
+    gap: 12px;
+  }
+
+  .wireBox {
+    height: 32px;
+  }
+
+  .wireSwatches {
+    gap: 6px;
+  }
+
+  .dashChart {
+    gap: 3px;
+    height: 90px;
+  }
+
+  .footRow,
+  .footRowDark {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .link,
+  .linkLight {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+/* =========================================================
+   Very narrow phones (<= 360px)
+   ========================================================= */
+
+@media (max-width: 360px) {
+  .page {
+    --container-pad: 16px;
+  }
+
+  .heroTitle {
+    font-size: 1.875rem;
+  }
+
+  .websiteTitle {
+    font-size: 1.875rem;
+  }
+
+  .mobileTitle {
+    font-size: 1.375rem;
+  }
+
+  .softwareTitle,
+  .designTitle {
+    font-size: 1.125rem;
+  }
+
+  .heroNavLabel {
+    font-size: 13px;
+  }
+
+  .dashChart {
+    height: 72px;
+  }
+}
+
+/* =========================================================
+   Landscape phones (height <= 500px)
+   ========================================================= */
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero {
+    min-height: auto;
+    padding: 96px 0 40px;
+  }
+
+  .website,
+  .mobile,
+  .software,
+  .design,
+  .cta {
+    padding: 72px 0;
+  }
+}
+
+/* =========================================================
+   Reduced motion — kill all GSAP initial states
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .heroLineInner[data-hero-line],
+  .heroBg[data-hero-image],
+  .heroInner[data-hero-content],
+  .heroLead[data-hero-fade],
+  .heroNav[data-hero-fade],
+  .websiteHead[data-website-head] > *,
+  .browserFrame[data-website-frame],
+  .websiteFoot[data-website-foot] > *,
+  .mobileText[data-mobile-text] > *,
+  .mobileMedia[data-mobile-media],
+  .mobileImage[data-mobile-image],
+  .softwareHead[data-software-head] > *,
+  .dashboard[data-dashboard],
+  .dashKpi[data-dash-kpi],
+  .dashBar[data-dash-bar],
+  .softwareFoot[data-software-foot] > *,
+  .designHead[data-design-head] > *,
+  .wireBack[data-wire-back],
+  .wireFront[data-wire-front],
+  .designFoot[data-design-foot] > *,
+  .ctaBg[data-cta-image],
+  .ctaGrid[data-cta-content] > * {
+    transform: none !important;
+    opacity: 1 !important;
+    clip-path: none !important;
+    animation: none !important;
+    transition: none !important;
   }
 }

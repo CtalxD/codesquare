@@ -7,8 +7,8 @@ import styles from "../css/footer.module.css";
 
 const CONTACT = {
   address: "Kathmandu, Nepal",
-  email: "codesquare2026@gmail.com", 
-  phone: "+977 9813301334", 
+  email: "codesquare2026@gmail.com",
+  phone: "+977 9813301334",
   phoneHref: "tel:+9779813301334",
   emailHref: "mailto:codesquare2026@gmail.com",
 };
@@ -30,7 +30,7 @@ export default function Footer() {
             aria-label="Code Square - Home"
           >
             <span className={styles.brandMark} aria-hidden="true">
-              <svg viewBox="0 0 40 40" width="28" height="28">
+              <svg viewBox="0 0 40 40" width="26" height="26">
                 <path
                   d="M20 3a17 17 0 1 0 0 34h6v-6h-6a11 11 0 1 1 0-22h6V3h-6z"
                   fill="currentColor"
@@ -93,7 +93,7 @@ export default function Footer() {
               className={styles.backToTop}
               aria-label="Back to top"
             >
-              Back to top
+              <span>Back to top</span>
               <ArrowUp size={13} strokeWidth={2} aria-hidden="true" />
             </button>
           </div>
