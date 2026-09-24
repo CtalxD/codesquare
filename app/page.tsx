@@ -499,7 +499,7 @@ export default function HomePage() {
                 </h2>
                 <p className={styles.introText}>
                   Code Square Pvt. Ltd. is a Nepal-based software company
-                  started in 2024 by four friends who&rsquo;d been building
+                  started in 2026 by four friends who&rsquo;d been building
                   products together for years. We work with local businesses,
                   startups, and international clients who want software that
                   actually fits how they operate.
