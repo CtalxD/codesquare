@@ -51,7 +51,6 @@ export default function ServicesPage() {
       const ctx = gsap.context(() => {
         /* ---------- HERO ---------- */
 
-        /* Line entrance on load */
         const heroLines = gsap.utils.toArray<HTMLElement>("[data-hero-line]");
         gsap.set(heroLines, { yPercent: 110 });
         gsap.to(heroLines, {
@@ -62,7 +61,6 @@ export default function ServicesPage() {
           delay: 0.1,
         });
 
-        /* Fade in eyebrow, lead and nav */
         const heroFades = gsap.utils.toArray<HTMLElement>("[data-hero-fade]");
         gsap.set(heroFades, { y: 24, opacity: 0 });
         gsap.to(heroFades, {
@@ -74,7 +72,6 @@ export default function ServicesPage() {
           delay: 0.5,
         });
 
-        /* Hero image parallax on scroll */
         gsap.to("[data-hero-image]", {
           yPercent: 15,
           ease: "none",
@@ -86,7 +83,6 @@ export default function ServicesPage() {
           },
         });
 
-        /* Hero content drifts up slightly and fades as you leave */
         gsap.to("[data-hero-content]", {
           yPercent: -10,
           opacity: 0.35,
@@ -137,7 +133,6 @@ export default function ServicesPage() {
             "-=0.5"
           );
 
-        /* Subtle parallax on the browser mockup's inner content */
         gsap.fromTo(
           "[data-website-frame]",
           { yPercent: 3 },
@@ -180,7 +175,6 @@ export default function ServicesPage() {
             "-=0.5"
           );
 
-        /* Image parallax inside the media frame */
         gsap.fromTo(
           "[data-mobile-image]",
           { scale: 1.12 },
@@ -235,7 +229,6 @@ export default function ServicesPage() {
             "-=0.4"
           );
 
-        /* Bars grow from 0 height as the dashboard enters view */
         const dashBars = gsap.utils.toArray<HTMLElement>("[data-dash-bar]");
         dashBars.forEach((bar) => {
           const targetHeight = bar.dataset.height || bar.style.height;
@@ -254,7 +247,6 @@ export default function ServicesPage() {
           );
         });
 
-        /* KPI values slide up */
         gsap.from("[data-dash-kpi]", {
           y: 16,
           opacity: 0,
@@ -318,7 +310,6 @@ export default function ServicesPage() {
 
         /* ---------- CTA ---------- */
 
-        /* Image parallax */
         gsap.fromTo(
           "[data-cta-image]",
           { yPercent: -6 },
@@ -334,7 +325,6 @@ export default function ServicesPage() {
           }
         );
 
-        /* Content fade-in */
         gsap.from("[data-cta-content] > *", {
           y: 24,
           opacity: 0,
@@ -370,6 +360,7 @@ export default function ServicesPage() {
             alt=""
             className={styles.heroBgImage}
             loading="eager"
+            fetchPriority="high"
             decoding="async"
           />
           <div className={styles.heroBgTopScrim} />

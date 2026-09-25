@@ -57,11 +57,18 @@
   padding: clamp(120px, 13vw, 168px) 0 clamp(56px, 7vw, 96px);
   overflow: hidden;
   isolation: isolate;
+  /* Fallback navy that matches the photo's dark base, so any
+     subpixel rounding or lazy-load gap is invisible. */
+  background-color: #0a1c34;
 }
 
 .heroBg {
   position: absolute;
-  inset: 0;
+  /* Bleed on every side - matches the home page hero exactly.
+     The vertical bleed lets the GSAP parallax move without ever
+     revealing the section edges; the horizontal bleed kills the
+     subpixel gap that appears on some mobile browsers. */
+  inset: -12% -2% -12% -2%;
   z-index: -1;
   will-change: transform;
 }
@@ -71,7 +78,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: center 40%;
 }
 
 .heroBgTopScrim {
@@ -993,11 +1000,12 @@
   color: var(--text-on-dark-strong);
   overflow: hidden;
   isolation: isolate;
+  background-color: #0b0b0c;
 }
 
 .ctaBg {
   position: absolute;
-  inset: 0;
+  inset: -10% -2% -10% -2%;
   z-index: -1;
   will-change: transform;
 }
@@ -1217,20 +1225,54 @@
   }
 
   .hero {
-    padding: clamp(96px, 14vw, 140px) 0 clamp(40px, 6vw, 72px);
+    padding: clamp(88px, 12vw, 120px) 0 clamp(32px, 5vw, 56px);
+    align-items: center;
+  }
+
+  .heroInner {
+    padding-bottom: 4px;
+  }
+
+  .heroContent {
+    gap: 20px;
   }
 
   .heroTitle {
-    font-size: clamp(2.25rem, 11vw, 3.75rem);
+    font-size: clamp(2rem, 10vw, 3.25rem);
+    line-height: 0.98;
+    max-width: 12ch;
+  }
+
+  .heroLead {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    max-width: 40ch;
   }
 
   .heroNavLink {
-    gap: 12px;
-    padding: 18px 0;
+    gap: 10px;
+    padding: 14px 0;
+  }
+
+  .heroNavNum {
+    font-size: 10px;
+    letter-spacing: 0.18em;
   }
 
   .heroNavLabel {
-    font-size: 14px;
+    font-size: 13px;
+  }
+
+  .heroBgImage {
+    object-position: center 35%;
+  }
+
+  .heroBgTopScrim {
+    height: 50%;
+  }
+
+  .heroBgBottomScrim {
+    height: 72%;
   }
 
   .websiteTitle {
@@ -1301,6 +1343,16 @@
 }
 
 /* =========================================================
+   Hero image object-position - biased for tablets
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .heroBgImage {
+    object-position: center 35%;
+  }
+}
+
+/* =========================================================
    Small phones (<= 480px)
    ========================================================= */
 
@@ -1310,23 +1362,29 @@
   }
 
   .hero {
-    padding: 88px var(--container-pad) 48px;
+    padding: 80px var(--container-pad) 40px;
   }
 
   .heroTitle {
-    font-size: clamp(2rem, 11vw, 3rem);
+    font-size: clamp(1.875rem, 10vw, 2.75rem);
+    max-width: 12ch;
   }
 
-  .heroNavList {
-    grid-template-columns: 1fr;
+  .heroLead {
+    font-size: 0.9375rem;
+    max-width: 38ch;
   }
 
-  .heroNavList li {
-    padding-right: 0;
+  .heroNavLink {
+    padding: 12px 0;
   }
 
   .heroNavLabel {
-    font-size: 14px;
+    font-size: 13px;
+  }
+
+  .heroBgImage {
+    object-position: center 35%;
   }
 
   .websiteTitle {
@@ -1395,6 +1453,34 @@
 }
 
 /* =========================================================
+   Very narrow phones (<= 380px)
+   - only here does the hero nav collapse to one column
+   ========================================================= */
+
+@media (max-width: 380px) {
+  .heroTitle {
+    font-size: 1.75rem;
+    max-width: 13ch;
+  }
+
+  .heroLead {
+    font-size: 0.9rem;
+  }
+
+  .heroNavList {
+    grid-template-columns: 1fr;
+  }
+
+  .heroNavLink {
+    padding: 10px 0;
+  }
+
+  .heroNavLabel {
+    font-size: 12.5px;
+  }
+}
+
+/* =========================================================
    Very narrow phones (<= 360px)
    ========================================================= */
 
@@ -1404,7 +1490,7 @@
   }
 
   .heroTitle {
-    font-size: 1.875rem;
+    font-size: 1.75rem;
   }
 
   .websiteTitle {
@@ -1421,7 +1507,7 @@
   }
 
   .heroNavLabel {
-    font-size: 13px;
+    font-size: 12.5px;
   }
 
   .dashChart {

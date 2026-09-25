@@ -25,7 +25,7 @@ export default function Navbar() {
     [pathname]
   );
 
-  const isQuoteActive = pathname === "/quote";
+  const isQuoteActive = pathname === "/conact";
 
   useEffect(() => {
     setIsOpen(false);
@@ -111,7 +111,7 @@ export default function Navbar() {
           </nav>
 
           <Link
-            href="/quote"
+            href="/contact"
             className={`${styles.cta} ${
               isQuoteActive ? styles.ctaActive : ""
             }`}
@@ -184,7 +184,7 @@ export default function Navbar() {
         </ul>
 
         <Link
-          href="/quote"
+          href="/contact"
           className={`${styles.drawerCta} ${
             isQuoteActive ? styles.drawerCtaActive : ""
           }`}
