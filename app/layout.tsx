@@ -26,26 +26,158 @@ const mono = IBM_Plex_Mono({
 });
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.codesquare.com.np";
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
+  "https://www.codesquare.com.np";
+
+const SITE_NAME = "Code Square";
+
+const SITE_DESCRIPTION =
+  "Code Square is a software studio in Kathmandu, Nepal building websites, mobile applications, custom software and digital experiences for businesses in Nepal and international markets.";
 
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
 
+  "@id": `${SITE_URL}/#organization`,
+
   name: "Code Square",
   legalName: "Code Square Pvt. Ltd.",
 
+  alternateName: [
+    "Code Square Nepal",
+    "Code Square Kathmandu",
+    "CodeSquare",
+    "Code Square Pvt Ltd",
+  ],
+
   url: SITE_URL,
 
-  logo: `${SITE_URL}/logo.png`,
+  logo: {
+    "@type": "ImageObject",
+    "@id": `${SITE_URL}/#logo`,
+    url: `${SITE_URL}/logo.png`,
+    contentUrl: `${SITE_URL}/logo.png`,
+    width: 512,
+    height: 512,
+    caption: "Code Square logo",
+  },
 
-  description:
-    "Code Square is a Nepal-based software studio building websites, mobile apps, and custom software for businesses in Nepal and abroad.",
+  image: `${SITE_URL}/og-image.png`,
+
+  description: SITE_DESCRIPTION,
 
   address: {
     "@type": "PostalAddress",
     addressLocality: "Kathmandu",
+    addressRegion: "Bagmati Province",
     addressCountry: "NP",
+  },
+
+  areaServed: [
+    {
+      "@type": "City",
+      name: "Kathmandu",
+    },
+    {
+      "@type": "Country",
+      name: "Nepal",
+    },
+    {
+      "@type": "Place",
+      name: "International",
+    },
+  ],
+
+  knowsAbout: [
+    "Web Development",
+    "Website Development",
+    "Software Development",
+    "Custom Software Development",
+    "Mobile App Development",
+    "UI UX Design",
+    "Frontend Development",
+    "Backend Development",
+    "Digital Product Development",
+  ],
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+
+  "@id": `${SITE_URL}/#website`,
+
+  name: SITE_NAME,
+
+  alternateName: [
+    "Code Square Nepal",
+    "Code Square Kathmandu",
+    "CodeSquare",
+  ],
+
+  url: SITE_URL,
+
+  publisher: {
+    "@id": `${SITE_URL}/#organization`,
+  },
+
+  inLanguage: "en",
+};
+
+const professionalServiceSchema = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+
+  "@id": `${SITE_URL}/#business`,
+
+  name: "Code Square Pvt. Ltd.",
+
+  alternateName: [
+    "Code Square",
+    "Code Square Nepal",
+    "Code Square Kathmandu",
+  ],
+
+  url: SITE_URL,
+
+  image: `${SITE_URL}/og-image.png`,
+
+  logo: `${SITE_URL}/logo.png`,
+
+  description: SITE_DESCRIPTION,
+
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Kathmandu",
+    addressRegion: "Bagmati Province",
+    addressCountry: "NP",
+  },
+
+  areaServed: [
+    {
+      "@type": "City",
+      name: "Kathmandu",
+    },
+    {
+      "@type": "Country",
+      name: "Nepal",
+    },
+    {
+      "@type": "Place",
+      name: "International",
+    },
+  ],
+
+  serviceType: [
+    "Website Development",
+    "Web Development",
+    "Mobile App Development",
+    "Custom Software Development",
+    "UI UX Design",
+  ],
+
+  parentOrganization: {
+    "@id": `${SITE_URL}/#organization`,
   },
 };
 
@@ -53,58 +185,100 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
 
   title: {
-    default: "Code Square Pvt. Ltd. - Software Studio in Kathmandu, Nepal",
+    default:
+      "Code Square | Software Company & Digital Product Studio in Kathmandu, Nepal",
+
     template: "%s | Code Square",
   },
 
-  description:
-    "Code Square is a Nepal-based software studio building websites, mobile apps, and custom software for businesses in Nepal and abroad.",
+  description: SITE_DESCRIPTION,
+
+  applicationName: "Code Square",
+
+  generator: "Next.js",
+
+  referrer: "origin-when-cross-origin",
 
   keywords: [
     "Code Square",
+    "CodeSquare",
     "Code Square Nepal",
     "Code Square Kathmandu",
-    "software company Nepal",
-    "software studio Kathmandu",
-    "web development Nepal",
-    "mobile app development Nepal",
-    "custom software Nepal",
-    "UI UX design Nepal",
+    "Code Square Pvt Ltd",
+    "Code Square software company",
+    "Code Square Nepal software company",
+
     "software company Kathmandu",
+    "software company in Kathmandu",
+    "IT company Kathmandu",
+    "IT company in Kathmandu",
+    "software development company Kathmandu",
+    "software development company Nepal",
+
+    "web development Kathmandu",
+    "web development Nepal",
+    "website development Kathmandu",
+    "website development Nepal",
+
+    "mobile app development Kathmandu",
+    "mobile app development Nepal",
+
+    "custom software development Nepal",
+    "custom software development Kathmandu",
+
+    "UI UX design Nepal",
+    "UI UX design Kathmandu",
+
+    "digital product development Nepal",
+    "software studio Kathmandu",
+    "software studio Nepal",
+    "technology company Nepal",
   ],
 
   authors: [
     {
       name: "Code Square Pvt. Ltd.",
+      url: SITE_URL,
     },
   ],
 
   creator: "Code Square Pvt. Ltd.",
   publisher: "Code Square Pvt. Ltd.",
 
+  category: "Technology",
+
+  classification: "Software Development",
+
   alternates: {
     canonical: SITE_URL,
+
+    languages: {
+      "en-NP": SITE_URL,
+      en: SITE_URL,
+    },
   },
 
   openGraph: {
     type: "website",
-    locale: "en_US",
+
+    locale: "en_NP",
 
     url: SITE_URL,
 
-    siteName: "Code Square",
+    siteName: SITE_NAME,
 
-    title: "Code Square Pvt. Ltd. - Software Studio in Kathmandu, Nepal",
+    title:
+      "Code Square | Software Company & Digital Product Studio in Kathmandu, Nepal",
 
-    description:
-      "A four-person software studio in Kathmandu building websites, mobile apps, and custom software for businesses in Nepal and abroad.",
+    description: SITE_DESCRIPTION,
 
     images: [
       {
-        url: "/og-image.png",
+        url: `${SITE_URL}/og-image.png`,
         width: 1200,
         height: 630,
-        alt: "Code Square - Software Studio in Kathmandu, Nepal",
+        alt: "Code Square - Software Company and Digital Product Studio in Kathmandu, Nepal",
+        type: "image/png",
       },
     ],
   },
@@ -112,12 +286,17 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
 
-    title: "Code Square Pvt. Ltd. - Software Studio in Kathmandu, Nepal",
+    title:
+      "Code Square | Software Company & Digital Product Studio in Kathmandu, Nepal",
 
-    description:
-      "A four-person software studio in Kathmandu building websites, mobile apps, and custom software.",
+    description: SITE_DESCRIPTION,
 
-    images: ["/og-image.png"],
+    images: [
+      {
+        url: `${SITE_URL}/og-image.png`,
+        alt: "Code Square - Software Company and Digital Product Studio",
+      },
+    ],
   },
 
   robots: {
@@ -127,16 +306,31 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
       "max-image-preview": "large",
+      "max-video-preview": -1,
       "max-snippet": -1,
     },
   },
 
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-icon.png",
+    icon: [
+      {
+        url: "/favicon.ico",
+      },
+      {
+        url: "/icon.png",
+        type: "image/png",
+      },
+    ],
+
+    apple: [
+      {
+        url: "/apple-icon.png",
+      },
+    ],
   },
+
+  manifest: "/manifest.webmanifest",
 };
 
 export default function RootLayout({
@@ -150,11 +344,14 @@ export default function RootLayout({
       className={`${display.variable} ${body.variable} ${mono.variable}`}
     >
       <body>
-        {/* Organization structured data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationSchema),
+            __html: JSON.stringify([
+              organizationSchema,
+              websiteSchema,
+              professionalServiceSchema,
+            ]),
           }}
         />
 
@@ -166,7 +363,7 @@ export default function RootLayout({
 
         <Navbar />
 
-        {children}
+        <main id="main">{children}</main>
 
         <Footer />
       </body>
