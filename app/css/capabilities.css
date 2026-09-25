@@ -9,7 +9,7 @@
   padding: 0;
 }
 
-/* Plain fallback for mobile — used when mask is skipped */
+/* Plain fallback for mobile - used when mask is skipped */
 .cs-plain {
   display: inline;
   overflow: visible;

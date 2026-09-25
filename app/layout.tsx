@@ -25,7 +25,7 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Code Square Pvt. Ltd. — Software studio in Nepal",
+  title: "Code Square Pvt. Ltd. - Software studio in Nepal",
   description:
     "Code Square is a Nepal-based software studio building websites, mobile apps, and custom software for businesses at home and abroad.",
 };

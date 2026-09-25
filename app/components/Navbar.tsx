@@ -25,6 +25,8 @@ export default function Navbar() {
     [pathname]
   );
 
+  const isQuoteActive = pathname === "/quote";
+
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
@@ -66,7 +68,7 @@ export default function Navbar() {
           <Link
             href="/"
             className={styles.brand}
-            aria-label="Code Square — Home"
+            aria-label="Code Square - Home"
           >
             <span className={styles.brandMark} aria-hidden="true">
               <svg viewBox="0 0 40 40" width="24" height="24">
@@ -107,7 +109,13 @@ export default function Navbar() {
             </ul>
           </nav>
 
-          <Link href="/contact" className={styles.cta}>
+          <Link
+            href="/quote"
+            className={`${styles.cta} ${
+              isQuoteActive ? styles.ctaActive : ""
+            }`}
+            aria-current={isQuoteActive ? "page" : undefined}
+          >
             <span>Get a Quote</span>
           </Link>
 
@@ -185,7 +193,13 @@ export default function Navbar() {
           })}
         </ul>
 
-        <Link href="/contact" className={styles.drawerCta}>
+        <Link
+          href="/quote"
+          className={`${styles.drawerCta} ${
+            isQuoteActive ? styles.drawerCtaActive : ""
+          }`}
+          aria-current={isQuoteActive ? "page" : undefined}
+        >
           <span>Get a Quote</span>
         </Link>
 

@@ -1,18 +1,10 @@
-//app/contact/page.tsx
+//app/quote/page.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Check, Copy } from "lucide-react";
-import styles from "../css/contact.module.css";
-
-const CONTACT = {
-  address: "Kathmandu, Nepal",
-  email: "codesquare2026@gmail.com",
-  phone: "+977 9813301334",
-  phoneHref: "tel:+9779813301334",
-  emailHref: "mailto:codesquare2026@gmail.com",
-};
+import { ArrowRight, Check } from "lucide-react";
+import styles from "../css/quote.module.css";
 
 const WEB3FORMS_ACCESS_KEY = "405d200a-2900-41f2-be2e-e8037215888a";
 
@@ -24,8 +16,13 @@ const SERVICE_OPTIONS = [
   { value: "other", label: "Something else" },
 ];
 
-/* A short, practical list - not every country. Includes Nepal +
-   the usual international client countries. */
+const TIMELINE_OPTIONS = [
+  { value: "asap", label: "As soon as possible" },
+  { value: "1-3-months", label: "Within 1–3 months" },
+  { value: "3-6-months", label: "Within 3–6 months" },
+  { value: "exploring", label: "Just exploring" },
+];
+
 const COUNTRY_CODES = [
   { value: "+977", label: "Nepal (+977)" },
   { value: "+1", label: "US / Canada (+1)" },
@@ -64,6 +61,7 @@ type FormState = {
   company: string;
   service: string;
   budget: string;
+  timeline: string;
   message: string;
 };
 
@@ -75,53 +73,11 @@ const EMPTY: FormState = {
   company: "",
   service: "website",
   budget: "",
+  timeline: "1-3-months",
   message: "",
 };
 
-function useCopy() {
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const timeoutRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current !== null) {
-        window.clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
-  const copy = async (key: string, value: string) => {
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(value);
-      } else {
-        const ta = document.createElement("textarea");
-        ta.value = value;
-        ta.setAttribute("readonly", "");
-        ta.style.position = "absolute";
-        ta.style.left = "-9999px";
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-      }
-
-      setCopiedKey(key);
-      if (timeoutRef.current !== null) {
-        window.clearTimeout(timeoutRef.current);
-      }
-      timeoutRef.current = window.setTimeout(() => {
-        setCopiedKey(null);
-      }, 1800);
-    } catch {
-      /* ignore */
-    }
-  };
-
-  return { copiedKey, copy };
-}
-
-export default function ContactPage() {
+export default function QuotePage() {
   const rootRef = useRef<HTMLDivElement>(null);
   const [form, setForm] = useState<FormState>(EMPTY);
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
@@ -130,7 +86,6 @@ export default function ContactPage() {
   const [errors, setErrors] = useState<
     Partial<Record<keyof FormState, string>>
   >({});
-  const { copiedKey, copy } = useCopy();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -183,18 +138,6 @@ export default function ContactPage() {
           delay: 0.4,
         });
 
-        gsap.from("[data-contact-card]", {
-          y: 32,
-          opacity: 0,
-          duration: 0.9,
-          ease: "power3.out",
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: "[data-contact-body]",
-            start: "top 80%",
-          },
-        });
-
         gsap.from("[data-contact-form]", {
           y: 32,
           opacity: 0,
@@ -235,7 +178,7 @@ export default function ContactPage() {
     if (!form.name.trim()) next.name = "Please tell us your name.";
 
     if (!form.email.trim()) {
-      next.email = "Please add an email so we can reply.";
+      next.email = "Please add an email so we can send the quote.";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
       next.email = "That email doesn't look right.";
     }
@@ -280,15 +223,15 @@ export default function ContactPage() {
         },
         body: JSON.stringify({
           access_key: WEB3FORMS_ACCESS_KEY,
-          subject: `New enquiry - ${form.name} (${form.company})`,
-          from_name: "Code Square website",
-          /* Web3Forms uses this as Reply-To. */
+          subject: `Quote request - ${form.name} (${form.company})`,
+          from_name: "Code Square - Quote request",
           email: form.email,
           name: form.name,
           phone: `${form.countryCode} ${form.phone}`,
           company: form.company,
           service: form.service,
           budget: form.budget,
+          timeline: form.timeline,
           message: form.message,
           botcheck: "",
         }),
@@ -304,31 +247,28 @@ export default function ContactPage() {
     }
   };
 
-  const emailCopied = copiedKey === "email";
-  const phoneCopied = copiedKey === "phone";
-
   return (
     <main id="main" ref={rootRef} className={styles.page}>
       {/* ================= HERO ================= */}
-      <section className={styles.hero} aria-labelledby="contact-title">
+      <section className={styles.hero} aria-labelledby="quote-title">
         <div className={styles.container}>
           <span className={styles.eyebrow} data-contact-fade>
-            05 - Contact
+            06 - Quote
           </span>
 
-          <h1 id="contact-title" className={styles.title}>
+          <h1 id="quote-title" className={styles.title}>
             <span className={styles.maskLine}>
-              <span data-contact-line>Tell us about</span>
+              <span data-contact-line>Get a quote</span>
             </span>
             <span className={styles.maskLine}>
-              <span data-contact-line>the project.</span>
+              <span data-contact-line>in one reply.</span>
             </span>
           </h1>
 
           <p className={styles.lead} data-contact-fade>
-            We reply within one business day - with honest thoughts on
-            scope, timeline, and cost. No discovery-call funnel, no
-            pressure.
+            Answer a few questions and we&rsquo;ll come back within one
+            business day with a written scope, a price, and a timeline.
+            No follow-up calls unless you ask.
           </p>
         </div>
       </section>
@@ -337,110 +277,38 @@ export default function ContactPage() {
       <section className={styles.body} data-contact-body>
         <div className={styles.container}>
           <div className={styles.grid}>
-            {/* ---------- Left: contact details ---------- */}
+            {/* ---------- Left: what you get ---------- */}
             <aside className={styles.aside}>
               <div className={styles.asideBlock} data-contact-card>
-                <span className={styles.asideLabel}>Email</span>
-                <div className={styles.asideRow}>
-                  <a
-                    href={CONTACT.emailHref}
-                    className={styles.asideValue}
-                  >
-                    {CONTACT.email}
-                  </a>
-                  <button
-                    type="button"
-                    className={`${styles.copyBtn} ${
-                      emailCopied ? styles.copyBtnDone : ""
-                    }`}
-                    onClick={() => copy("email", CONTACT.email)}
-                    aria-label={
-                      emailCopied
-                        ? "Email copied to clipboard"
-                        : "Copy email address"
-                    }
-                  >
-                    {emailCopied ? (
-                      <>
-                        <Check
-                          size={13}
-                          strokeWidth={2.25}
-                          aria-hidden="true"
-                        />
-                        <span className={styles.copyBtnLabel}>
-                          Copied
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={13} strokeWidth={2} aria-hidden="true" />
-                        <span className={styles.copyBtnLabel}>Copy</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              <div className={styles.asideBlock} data-contact-card>
-                <span className={styles.asideLabel}>Phone</span>
-                <div className={styles.asideRow}>
-                  <a
-                    href={CONTACT.phoneHref}
-                    className={styles.asideValue}
-                  >
-                    {CONTACT.phone}
-                  </a>
-                  <button
-                    type="button"
-                    className={`${styles.copyBtn} ${
-                      phoneCopied ? styles.copyBtnDone : ""
-                    }`}
-                    onClick={() => copy("phone", CONTACT.phone)}
-                    aria-label={
-                      phoneCopied
-                        ? "Phone number copied to clipboard"
-                        : "Copy phone number"
-                    }
-                  >
-                    {phoneCopied ? (
-                      <>
-                        <Check
-                          size={13}
-                          strokeWidth={2.25}
-                          aria-hidden="true"
-                        />
-                        <span className={styles.copyBtnLabel}>
-                          Copied
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={13} strokeWidth={2} aria-hidden="true" />
-                        <span className={styles.copyBtnLabel}>Copy</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              <div className={styles.asideBlock} data-contact-card>
-                <span className={styles.asideLabel}>Based in</span>
+                <span className={styles.asideLabel}>What you get</span>
                 <span className={styles.asideValue}>
-                  {CONTACT.address}
+                  A written scope of work, a fixed price, and a delivery
+                  timeline.
                 </span>
               </div>
 
               <div className={styles.asideBlock} data-contact-card>
-                <span className={styles.asideLabel}>Hours</span>
+                <span className={styles.asideLabel}>How long it takes</span>
                 <span className={styles.asideValue}>
-                  Sun – Fri, 10:00 – 18:00 NPT
+                  One business day from the moment you hit send.
+                </span>
+              </div>
+
+              <div className={styles.asideBlock} data-contact-card>
+                <span className={styles.asideLabel}>No cost to ask</span>
+                <span className={styles.asideValue}>
+                  Quotes are free. If we can&rsquo;t help, we&rsquo;ll say
+                  so.
                 </span>
               </div>
 
               <div className={styles.asideNote} data-contact-card>
                 <p>
-                  Prefer to write in your own format? Email us directly
-                  - same inbox, same reply time.
+                  Prefer the full contact form?{" "}
+                  <Link href="/contact" className={styles.asideLink}>
+                    Head over here
+                  </Link>
+                  .
                 </p>
               </div>
             </aside>
@@ -452,15 +320,18 @@ export default function ContactPage() {
                   <span className={styles.successIcon} aria-hidden="true">
                     <Check size={22} strokeWidth={2} />
                   </span>
-                  <h2 className={styles.successTitle}>Got it.</h2>
+                  <h2 className={styles.successTitle}>
+                    Request received.
+                  </h2>
                   <p className={styles.successText}>
-                    We&rsquo;ll read your message and reply within one
-                    business day. If it&rsquo;s urgent, call{" "}
+                    We&rsquo;ll send your quote within one business day.
+                    If you don&rsquo;t hear from us, check spam - and if
+                    it&rsquo;s urgent, call{" "}
                     <a
-                      href={CONTACT.phoneHref}
+                      href="tel:+9779813301334"
                       className={styles.successLink}
                     >
-                      {CONTACT.phone}
+                      +977 9813301334
                     </a>
                     .
                   </p>
@@ -469,7 +340,7 @@ export default function ContactPage() {
                     className={styles.secondaryBtn}
                     onClick={() => setStatus("idle")}
                   >
-                    Send another message
+                    Request another quote
                   </button>
                 </div>
               ) : (
@@ -491,12 +362,12 @@ export default function ContactPage() {
                     <div className={styles.field}>
                       <label
                         className={styles.label}
-                        htmlFor="contact-name"
+                        htmlFor="quote-name"
                       >
                         Your name
                       </label>
                       <input
-                        id="contact-name"
+                        id="quote-name"
                         className={styles.input}
                         type="text"
                         autoComplete="name"
@@ -504,12 +375,15 @@ export default function ContactPage() {
                         onChange={update("name")}
                         aria-invalid={Boolean(errors.name)}
                         aria-describedby={
-                          errors.name ? "err-name" : undefined
+                          errors.name ? "err-quote-name" : undefined
                         }
                         required
                       />
                       {errors.name && (
-                        <span id="err-name" className={styles.error}>
+                        <span
+                          id="err-quote-name"
+                          className={styles.error}
+                        >
                           {errors.name}
                         </span>
                       )}
@@ -518,12 +392,12 @@ export default function ContactPage() {
                     <div className={styles.field}>
                       <label
                         className={styles.label}
-                        htmlFor="contact-email"
+                        htmlFor="quote-email"
                       >
                         Email
                       </label>
                       <input
-                        id="contact-email"
+                        id="quote-email"
                         className={styles.input}
                         type="email"
                         autoComplete="email"
@@ -531,12 +405,15 @@ export default function ContactPage() {
                         onChange={update("email")}
                         aria-invalid={Boolean(errors.email)}
                         aria-describedby={
-                          errors.email ? "err-email" : undefined
+                          errors.email ? "err-quote-email" : undefined
                         }
                         required
                       />
                       {errors.email && (
-                        <span id="err-email" className={styles.error}>
+                        <span
+                          id="err-quote-email"
+                          className={styles.error}
+                        >
                           {errors.email}
                         </span>
                       )}
@@ -546,7 +423,7 @@ export default function ContactPage() {
                   <div className={styles.field}>
                     <label
                       className={styles.label}
-                      htmlFor="contact-phone"
+                      htmlFor="quote-phone"
                     >
                       Phone
                     </label>
@@ -564,7 +441,7 @@ export default function ContactPage() {
                         ))}
                       </select>
                       <input
-                        id="contact-phone"
+                        id="quote-phone"
                         className={`${styles.input} ${styles.inputPhone}`}
                         type="tel"
                         inputMode="tel"
@@ -574,13 +451,16 @@ export default function ContactPage() {
                         onChange={update("phone")}
                         aria-invalid={Boolean(errors.phone)}
                         aria-describedby={
-                          errors.phone ? "err-phone" : undefined
+                          errors.phone ? "err-quote-phone" : undefined
                         }
                         required
                       />
                     </div>
                     {errors.phone && (
-                      <span id="err-phone" className={styles.error}>
+                      <span
+                        id="err-quote-phone"
+                        className={styles.error}
+                      >
                         {errors.phone}
                       </span>
                     )}
@@ -590,12 +470,12 @@ export default function ContactPage() {
                     <div className={styles.field}>
                       <label
                         className={styles.label}
-                        htmlFor="contact-company"
+                        htmlFor="quote-company"
                       >
                         Company
                       </label>
                       <input
-                        id="contact-company"
+                        id="quote-company"
                         className={styles.input}
                         type="text"
                         autoComplete="organization"
@@ -603,12 +483,15 @@ export default function ContactPage() {
                         onChange={update("company")}
                         aria-invalid={Boolean(errors.company)}
                         aria-describedby={
-                          errors.company ? "err-company" : undefined
+                          errors.company ? "err-quote-company" : undefined
                         }
                         required
                       />
                       {errors.company && (
-                        <span id="err-company" className={styles.error}>
+                        <span
+                          id="err-quote-company"
+                          className={styles.error}
+                        >
                           {errors.company}
                         </span>
                       )}
@@ -617,12 +500,12 @@ export default function ContactPage() {
                     <div className={styles.field}>
                       <label
                         className={styles.label}
-                        htmlFor="contact-service"
+                        htmlFor="quote-service"
                       >
                         What do you need?
                       </label>
                       <select
-                        id="contact-service"
+                        id="quote-service"
                         className={styles.select}
                         value={form.service}
                         onChange={update("service")}
@@ -636,70 +519,99 @@ export default function ContactPage() {
                     </div>
                   </div>
 
-                  <div className={styles.field}>
-                    <label
-                      className={styles.label}
-                      htmlFor="contact-budget"
-                    >
-                      Rough budget
-                    </label>
-                    <div className={styles.budgetRow}>
-                      <span
-                        className={styles.budgetPrefix}
-                        aria-hidden="true"
+                  <div className={styles.row}>
+                    <div className={styles.field}>
+                      <label
+                        className={styles.label}
+                        htmlFor="quote-budget"
                       >
-                        $
+                        Rough budget
+                      </label>
+                      <div className={styles.budgetRow}>
+                        <span
+                          className={styles.budgetPrefix}
+                          aria-hidden="true"
+                        >
+                          $
+                        </span>
+                        <input
+                          id="quote-budget"
+                          className={`${styles.input} ${styles.inputBudget}`}
+                          type="number"
+                          min="0"
+                          step="100"
+                          inputMode="numeric"
+                          placeholder="5000"
+                          value={form.budget}
+                          onChange={update("budget")}
+                          aria-invalid={Boolean(errors.budget)}
+                          aria-describedby={
+                            errors.budget ? "err-quote-budget" : undefined
+                          }
+                          required
+                        />
+                      </div>
+                      <span className={styles.hint}>
+                        A rough number is enough. USD is fine - we
+                        convert on our side.
                       </span>
-                      <input
-                        id="contact-budget"
-                        className={`${styles.input} ${styles.inputBudget}`}
-                        type="number"
-                        min="0"
-                        step="100"
-                        inputMode="numeric"
-                        placeholder="5000"
-                        value={form.budget}
-                        onChange={update("budget")}
-                        aria-invalid={Boolean(errors.budget)}
-                        aria-describedby={
-                          errors.budget ? "err-budget" : undefined
-                        }
-                        required
-                      />
+                      {errors.budget && (
+                        <span
+                          id="err-quote-budget"
+                          className={styles.error}
+                        >
+                          {errors.budget}
+                        </span>
+                      )}
                     </div>
-                    <span className={styles.hint}>
-                      A rough number is enough. USD is fine - we convert
-                      on our side.
-                    </span>
-                    {errors.budget && (
-                      <span id="err-budget" className={styles.error}>
-                        {errors.budget}
-                      </span>
-                    )}
+
+                    <div className={styles.field}>
+                      <label
+                        className={styles.label}
+                        htmlFor="quote-timeline"
+                      >
+                        When do you need it?
+                      </label>
+                      <select
+                        id="quote-timeline"
+                        className={styles.select}
+                        value={form.timeline}
+                        onChange={update("timeline")}
+                      >
+                        {TIMELINE_OPTIONS.map((o) => (
+                          <option key={o.value} value={o.value}>
+                            {o.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
 
                   <div className={styles.field}>
                     <label
                       className={styles.label}
-                      htmlFor="contact-message"
+                      htmlFor="quote-message"
                     >
-                      About the project
+                      What are you building?
                     </label>
                     <textarea
-                      id="contact-message"
+                      id="quote-message"
                       className={styles.textarea}
                       rows={7}
                       value={form.message}
                       onChange={update("message")}
                       aria-invalid={Boolean(errors.message)}
                       aria-describedby={
-                        errors.message ? "err-message" : undefined
+                        errors.message ? "err-quote-message" : undefined
                       }
-                      placeholder="What are you building, who is it for, and when would you like it live?"
+                      placeholder="Describe the project: what it does, who uses it, and any hard requirements (deadlines, integrations, existing systems)."
                       required
                     />
                     {errors.message && (
-                      <span id="err-message" className={styles.error}>
+                      <span
+                        id="err-quote-message"
+                        className={styles.error}
+                      >
                         {errors.message}
                       </span>
                     )}
@@ -707,8 +619,8 @@ export default function ContactPage() {
 
                   <div className={styles.formFoot}>
                     <p className={styles.privacy}>
-                      We only use your details to reply. No lists, no
-                      forwarding.
+                      Your details are only used to send this quote. No
+                      lists, no forwarding.
                     </p>
                     <button
                       type="submit"
@@ -719,7 +631,7 @@ export default function ContactPage() {
                         "Sending…"
                       ) : (
                         <>
-                          Send message
+                          Request quote
                           <ArrowRight
                             size={16}
                             strokeWidth={2}
@@ -734,51 +646,16 @@ export default function ContactPage() {
                     <p className={styles.formError} role="alert">
                       Something went wrong. Please email us at{" "}
                       <a
-                        href={CONTACT.emailHref}
+                        href="mailto:codesquare2026@gmail.com"
                         className={styles.errorLink}
                       >
-                        {CONTACT.email}
+                        codesquare2026@gmail.com
                       </a>
                       .
                     </p>
                   )}
                 </form>
               )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= FOOTNOTE ================= */}
-      <section className={styles.foot} aria-labelledby="foot-title">
-        <div className={styles.container}>
-          <div className={styles.footRow}>
-            <div>
-              <h2 id="foot-title" className={styles.footTitle}>
-                Prefer a call?
-              </h2>
-              <p className={styles.footText}>
-                Ring us at{" "}
-                <a
-                  href={CONTACT.phoneHref}
-                  className={styles.footLink}
-                >
-                  {CONTACT.phone}
-                </a>{" "}
-                or drop us a line at{" "}
-                <a
-                  href={CONTACT.emailHref}
-                  className={styles.footLink}
-                >
-                  {CONTACT.email}
-                </a>
-                .
-              </p>
-            </div>
-            <div className={styles.footActions}>
-              <Link href="/services" className={styles.footSecondary}>
-                See what we do
-              </Link>
             </div>
           </div>
         </div>

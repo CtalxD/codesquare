@@ -99,7 +99,7 @@ export default function ServicesPage() {
           },
         });
 
-        /* ---------- SERVICE 01 — WEBSITE ---------- */
+        /* ---------- SERVICE 01 - WEBSITE ---------- */
 
         const websiteTl = gsap.timeline({
           scrollTrigger: {
@@ -153,7 +153,7 @@ export default function ServicesPage() {
           }
         );
 
-        /* ---------- SERVICE 02 — MOBILE ---------- */
+        /* ---------- SERVICE 02 - MOBILE ---------- */
 
         const mobileTl = gsap.timeline({
           scrollTrigger: {
@@ -196,7 +196,7 @@ export default function ServicesPage() {
           }
         );
 
-        /* ---------- SERVICE 03 — SOFTWARE ---------- */
+        /* ---------- SERVICE 03 - SOFTWARE ---------- */
 
         const softwareTl = gsap.timeline({
           scrollTrigger: {
@@ -267,7 +267,7 @@ export default function ServicesPage() {
           },
         });
 
-        /* ---------- SERVICE 04 — DESIGN ---------- */
+        /* ---------- SERVICE 04 - DESIGN ---------- */
 
         const designTl = gsap.timeline({
           scrollTrigger: {
@@ -431,7 +431,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* ================= SERVICE 01 — WEBSITE ================= */}
+      {/* ================= SERVICE 01 - WEBSITE ================= */}
       <section
         id="website"
         data-service
@@ -536,7 +536,7 @@ export default function ServicesPage() {
             </div>
 
             <div className={styles.footRow}>
-              <span className={styles.time}>3—6 weeks</span>
+              <span className={styles.time}>3-6 weeks</span>
               <Link
                 href="/contact?service=website"
                 className={styles.link}
@@ -548,7 +548,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* ================= SERVICE 02 — MOBILE ================= */}
+      {/* ================= SERVICE 02 - MOBILE ================= */}
       <section
         id="mobile"
         data-service
@@ -585,7 +585,7 @@ export default function ServicesPage() {
           </div>
 
           <div className={styles.footRowDark}>
-            <span className={styles.timeLight}>6—12 weeks</span>
+            <span className={styles.timeLight}>6-12 weeks</span>
             <Link
               href="/contact?service=mobile"
               className={styles.linkLight}
@@ -596,7 +596,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* ================= SERVICE 03 — SOFTWARE ================= */}
+      {/* ================= SERVICE 03 - SOFTWARE ================= */}
       <section
         id="software"
         data-service
@@ -748,7 +748,7 @@ export default function ServicesPage() {
             </div>
 
             <div className={styles.footRow}>
-              <span className={styles.time}>8—16 weeks</span>
+              <span className={styles.time}>8-16 weeks</span>
               <Link
                 href="/contact?service=software"
                 className={styles.link}
@@ -760,7 +760,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* ================= SERVICE 04 — DESIGN ================= */}
+      {/* ================= SERVICE 04 - DESIGN ================= */}
       <section
         id="design"
         data-service
@@ -860,7 +860,7 @@ export default function ServicesPage() {
             </div>
 
             <div className={styles.footRow}>
-              <span className={styles.time}>3—8 weeks</span>
+              <span className={styles.time}>3-8 weeks</span>
               <Link
                 href="/contact?service=design"
                 className={styles.link}

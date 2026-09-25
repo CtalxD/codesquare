@@ -1,5 +1,5 @@
 /* =========================================================
-   About page — cinematic pinned team sequence
+   About page - cinematic pinned team sequence
    ========================================================= */
 
 .page {
@@ -36,7 +36,7 @@
 }
 
 /* =========================================================
-   INTRO — blue → black gradient hero, exactly one viewport
+   INTRO - blue → black gradient hero, exactly one viewport
    ========================================================= */
 
 .intro {
@@ -248,7 +248,7 @@
 }
 
 /* =========================================================
-   TEAM — pinned cinematic sequence
+   TEAM - pinned cinematic sequence
    ========================================================= */
 
 .team {
@@ -456,7 +456,7 @@
 }
 
 /* =========================================================
-   CTA — image background with neutral (non-blue) overlay
+   CTA - image background with neutral (non-blue) overlay
    ========================================================= */
 
 .cta {
@@ -559,7 +559,7 @@
 }
 
 /* =========================================================
-   RESPONSIVE — layout scale
+   RESPONSIVE - layout scale
    ========================================================= */
 
 @media (min-width: 1920px) {
@@ -916,7 +916,7 @@
 }
 
 /* =========================================================
-   Reduced motion — show all four members as a static grid
+   Reduced motion - show all four members as a static grid
    ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {

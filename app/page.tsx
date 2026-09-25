@@ -433,7 +433,7 @@ export default function HomePage() {
 
           <div className={styles.heroContent}>
             <span className={styles.heroEyebrow} data-hero-fade>
-              Software studio — Kathmandu, Nepal
+              Software studio - Kathmandu, Nepal
             </span>
 
             <h1 className={styles.heroTitle}>
