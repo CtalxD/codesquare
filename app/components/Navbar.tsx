@@ -25,7 +25,7 @@ export default function Navbar() {
     [pathname]
   );
 
-  const isQuoteActive = pathname === "/conact";
+  const isQuoteActive = pathname === "/contact";
 
   useEffect(() => {
     setIsOpen(false);
