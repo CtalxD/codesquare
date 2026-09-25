@@ -202,6 +202,8 @@ export const metadata: Metadata = {
   keywords: [
     "Code Square",
     "CodeSquare",
+    "codesquare",
+    "codequare",
     "Code Square Nepal",
     "Code Square Kathmandu",
     "Code Square Pvt Ltd",
