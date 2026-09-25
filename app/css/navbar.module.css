@@ -13,12 +13,20 @@
   border-bottom: 1px solid transparent;
   transition:
     background 260ms ease-out,
-    border-color 260ms ease-out;
+    border-color 260ms ease-out,
+    z-index 0ms;
 }
 
 .headerScrolled {
   background: var(--color-white);
   border-bottom-color: var(--hairline);
+}
+
+.header[data-drawer-open="true"],
+.headerScrolled[data-drawer-open="true"] {
+  background: transparent;
+  border-bottom-color: transparent;
+  z-index: 200;
 }
 
 .shell {
@@ -50,6 +58,10 @@
 
 .headerScrolled .brand {
   color: var(--color-navy);
+}
+
+.header[data-drawer-open="true"] .brand {
+  color: var(--color-white);
 }
 
 .brand:focus-visible {
@@ -133,7 +145,6 @@
   color: var(--text-strong);
 }
 
-/* Active underline - thin gold rule that fades in */
 .linkLabel {
   position: relative;
   display: inline-block;
@@ -179,7 +190,8 @@
   flex-shrink: 0;
   transition:
     background 200ms ease-out,
-    color 200ms ease-out;
+    color 200ms ease-out,
+    box-shadow 200ms ease-out;
 }
 
 .cta:hover {
@@ -201,8 +213,6 @@
   outline-offset: 3px;
 }
 
-/* Active state - you are on /quote. */
-
 .ctaActive,
 .headerScrolled .ctaActive {
   background: transparent;
@@ -222,22 +232,20 @@
   box-shadow: inset 0 0 0 1px var(--color-gold);
 }
 
-/* ---------- Mobile toggle ---------- */
+/* ---------- Mobile toggle (burger) ---------- */
 
 .menuButton {
   margin-left: auto;
-  padding: 8px 0;
+  padding: 10px;
   background: transparent;
   border: none;
-  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--color-white);
+  border-radius: 6px;
   cursor: pointer;
-  transition: color 260ms ease-out;
+  color: var(--color-white);
   flex-shrink: 0;
+  transition:
+    color 260ms ease-out,
+    background 200ms ease-out;
 }
 
 .headerScrolled .menuButton {
@@ -257,8 +265,46 @@
   outline-offset: 4px;
 }
 
-.menuLabel {
-  display: inline-block;
+.burger {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 22px;
+  height: 16px;
+  position: relative;
+}
+
+.burgerLine {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  transform-origin: center;
+  transition:
+    transform 320ms cubic-bezier(0.2, 0.85, 0.2, 1),
+    opacity 220ms ease-out;
+}
+
+.menuButtonOpen .burgerLine:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.menuButtonOpen .burgerLine:nth-child(2) {
+  opacity: 0;
+}
+
+.menuButtonOpen .burgerLine:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.menuButton[aria-expanded="true"] {
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.menuButton[aria-expanded="true"]:hover {
+  color: var(--color-gold);
+  background: rgba(255, 255, 255, 0.14);
 }
 
 /* ---------- Backdrop ---------- */
@@ -290,7 +336,7 @@
   background: var(--color-navy);
   color: var(--text-on-dark-strong);
   z-index: 95;
-  padding: 32px;
+  padding: 96px 32px 32px;
   display: flex;
   flex-direction: column;
   transform: translateX(100%);
@@ -300,47 +346,6 @@
 
 .drawerOpen {
   transform: translateX(0);
-}
-
-.drawerHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 20px;
-  margin-bottom: 32px;
-  border-bottom: 1px solid var(--hairline-dark);
-}
-
-.drawerEyebrow {
-  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--color-gold);
-}
-
-.drawerClose {
-  padding: 6px 0;
-  background: transparent;
-  border: none;
-  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--text-on-dark-muted);
-  cursor: pointer;
-  transition: color 200ms ease-out;
-}
-
-.drawerClose:hover {
-  color: var(--text-on-dark-strong);
-}
-
-.drawerClose:focus-visible {
-  outline: 2px solid var(--color-gold);
-  outline-offset: 4px;
 }
 
 .drawerLinks {
@@ -428,7 +433,9 @@
   color: var(--color-navy);
   background: var(--color-gold);
   text-decoration: none;
-  transition: background 200ms ease-out, color 200ms ease-out,
+  transition:
+    background 200ms ease-out,
+    color 200ms ease-out,
     box-shadow 200ms ease-out;
 }
 
@@ -440,8 +447,6 @@
   outline: 2px solid var(--color-gold);
   outline-offset: 4px;
 }
-
-/* Active state - you are on /quote. */
 
 .drawerCtaActive {
   background: transparent;
@@ -488,6 +493,20 @@
     height: 60px;
     gap: 20px;
   }
+
+  .drawer {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    padding: 96px 32px 32px;
+    padding-top: calc(96px + env(safe-area-inset-top, 0px));
+    z-index: 150;
+  }
+
+  .backdrop {
+    background: transparent;
+    z-index: 140;
+  }
 }
 
 @media (max-width: 640px) {
@@ -500,7 +519,8 @@
     letter-spacing: 0.2em;
   }
   .drawer {
-    padding: 24px;
+    padding: 88px 24px 24px;
+    padding-top: calc(88px + env(safe-area-inset-top, 0px));
   }
   .drawerLabel {
     font-size: 22px;
@@ -515,9 +535,8 @@
     display: none;
   }
   .drawer {
-    width: 100%;
-    max-width: 100vw;
-    padding: 24px 20px;
+    padding: 80px 20px 24px;
+    padding-top: calc(80px + env(safe-area-inset-top, 0px));
   }
   .drawerLink {
     padding: 20px 0;
@@ -542,6 +561,7 @@
   .linkLabel::after,
   .cta,
   .menuButton,
+  .burgerLine,
   .backdrop,
   .drawer,
   .drawerLinks li,

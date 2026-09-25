@@ -63,6 +63,7 @@ export default function Navbar() {
         className={`${styles.header} ${
           isScrolled ? styles.headerScrolled : ""
         }`}
+        data-drawer-open={isOpen}
       >
         <div className={styles.shell}>
           <Link
@@ -122,14 +123,18 @@ export default function Navbar() {
           <button
             ref={menuButtonRef}
             type="button"
-            className={styles.menuButton}
+            className={`${styles.menuButton} ${
+              isOpen ? styles.menuButtonOpen : ""
+            }`}
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
             aria-label={isOpen ? "Close menu" : "Open menu"}
             onClick={() => setIsOpen((v) => !v)}
           >
-            <span className={styles.menuLabel}>
-              {isOpen ? "Close" : "Menu"}
+            <span className={styles.burger} aria-hidden="true">
+              <span className={styles.burgerLine} />
+              <span className={styles.burgerLine} />
+              <span className={styles.burgerLine} />
             </span>
           </button>
         </div>
@@ -151,21 +156,6 @@ export default function Navbar() {
         aria-label="Site menu"
         hidden={!isOpen}
       >
-        <div className={styles.drawerHead}>
-          <span className={styles.drawerEyebrow}>Menu</span>
-          <button
-            type="button"
-            className={styles.drawerClose}
-            aria-label="Close menu"
-            onClick={() => {
-              setIsOpen(false);
-              menuButtonRef.current?.focus();
-            }}
-          >
-            <span>Close</span>
-          </button>
-        </div>
-
         <ul className={styles.drawerLinks}>
           {NAV_LINKS.map((link, i) => {
             const active = isActive(link.href);
