@@ -30,16 +30,16 @@ export default function Footer() {
             aria-label="Code Square - Home"
           >
             <span className={styles.brandMark} aria-hidden="true">
-              <svg viewBox="0 0 40 40" width="26" height="26">
+              <svg viewBox="0 0 164 177" width="26" height="26">
                 <path
-                  d="M20 3a17 17 0 1 0 0 34h6v-6h-6a11 11 0 1 1 0-22h6V3h-6z"
+                  d="M40,0 L164,0 L164,42 L50,42 L50,135 L164,135 L164,177 L40,177 L0,135 L0,42 Z"
                   fill="currentColor"
                 />
                 <rect
-                  x="17"
-                  y="17"
-                  width="6"
-                  height="6"
+                  x="86"
+                  y="66"
+                  width="45"
+                  height="45"
                   className={styles.brandSquare}
                 />
               </svg>
