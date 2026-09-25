@@ -25,7 +25,28 @@ const mono = IBM_Plex_Mono({
 });
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://codesquare.com.np";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.codesquare.com.np";
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+
+  name: "Code Square",
+  legalName: "Code Square Pvt. Ltd.",
+
+  url: SITE_URL,
+
+  logo: `${SITE_URL}/logo.png`,
+
+  description:
+    "Code Square is a Nepal-based software studio building websites, mobile apps, and custom software for businesses in Nepal and abroad.",
+
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Kathmandu",
+    addressCountry: "NP",
+  },
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -36,7 +57,7 @@ export const metadata: Metadata = {
   },
 
   description:
-    "Code Square is a Nepal-based software studio building websites, mobile apps, and custom software for businesses in Nepal and abroad. Four-person team, one project at a time.",
+    "Code Square is a Nepal-based software studio building websites, mobile apps, and custom software for businesses in Nepal and abroad.",
 
   keywords: [
     "Code Square",
@@ -51,43 +72,57 @@ export const metadata: Metadata = {
     "software company Kathmandu",
   ],
 
-  authors: [{ name: "Code Square Pvt. Ltd." }],
+  authors: [
+    {
+      name: "Code Square Pvt. Ltd.",
+    },
+  ],
+
   creator: "Code Square Pvt. Ltd.",
   publisher: "Code Square Pvt. Ltd.",
 
   alternates: {
-    canonical: "/",
+    canonical: SITE_URL,
   },
 
   openGraph: {
     type: "website",
     locale: "en_US",
+
     url: SITE_URL,
+
     siteName: "Code Square",
+
     title: "Code Square Pvt. Ltd. - Software Studio in Kathmandu, Nepal",
+
     description:
       "A four-person software studio in Kathmandu building websites, mobile apps, and custom software for businesses in Nepal and abroad.",
+
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Code Square - Software Studio in Kathmandu",
+        alt: "Code Square - Software Studio in Kathmandu, Nepal",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
+
     title: "Code Square Pvt. Ltd. - Software Studio in Kathmandu, Nepal",
+
     description:
       "A four-person software studio in Kathmandu building websites, mobile apps, and custom software.",
+
     images: ["/og-image.png"],
   },
 
   robots: {
     index: true,
     follow: true,
+
     googleBot: {
       index: true,
       follow: true,
@@ -105,20 +140,31 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html
       lang="en"
       className={`${display.variable} ${body.variable} ${mono.variable}`}
     >
       <body>
+        {/* Organization structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+
         <a href="#main" className="skipLink">
           Skip to content
         </a>
+
         <Navbar />
+
         {children}
+
         <Footer />
       </body>
     </html>
