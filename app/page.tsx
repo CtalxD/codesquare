@@ -469,7 +469,7 @@ export default function HomePage() {
               Code Square is a four-person studio building websites, mobile apps,
               and custom software for businesses in Nepal and abroad. We work in
               small teams, ship in short cycles, and stay reachable long after
-              launch so that your product builds on the foundation we create.
+              launch because your product builds on the foundation we create.
 
             </p>
 

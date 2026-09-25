@@ -45,7 +45,7 @@
   min-height: 100dvh;
   display: flex;
   align-items: center;
-  padding: clamp(96px, 12vw, 140px) 0 clamp(64px, 8vw, 96px);
+  padding: 120px 0 96px;
   background: linear-gradient(
     160deg,
     #0c2748 0%,
@@ -98,7 +98,7 @@
 }
 
 .introTitle {
-  font-size: clamp(2.25rem, 5.5vw, 4.5rem);
+  font-size: 56px;
   line-height: 1.02;
   letter-spacing: -0.04em;
   font-weight: 500;
@@ -119,7 +119,7 @@
 }
 
 .introText {
-  font-size: clamp(1rem, 1.35vw, 1.125rem);
+  font-size: 15px;
   line-height: 1.68;
   color: var(--text-on-dark-body);
   margin: 0 0 20px;
@@ -164,7 +164,7 @@
 
 .sectionHead {
   max-width: 720px;
-  margin-bottom: clamp(48px, 6vw, 72px);
+  margin-bottom: 64px;
 }
 
 .sectionLabel {
@@ -178,7 +178,7 @@
 }
 
 .sectionTitle {
-  font-size: clamp(1.75rem, 3.6vw, 2.75rem);
+  font-size: 32px;
   line-height: 1.1;
   letter-spacing: -0.035em;
   font-weight: 500;
@@ -187,7 +187,7 @@
 }
 
 .sectionLead {
-  font-size: clamp(1rem, 1.35vw, 1.125rem);
+  font-size: 15px;
   line-height: 1.6;
   color: var(--text-body);
   margin: 0;
@@ -199,7 +199,7 @@
    ========================================================= */
 
 .values {
-  padding: clamp(96px, 11vw, 160px) 0;
+  padding: 120px 0;
   background: var(--color-off-white);
 }
 
@@ -269,7 +269,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: clamp(32px, 5vw, 56px);
+  gap: 48px;
+  min-height: 520px;
 }
 
 .teamHead {
@@ -285,7 +286,7 @@
 }
 
 .teamTitle {
-  font-size: clamp(1.75rem, 3.6vw, 2.75rem);
+  font-size: 32px;
   line-height: 1.1;
   letter-spacing: -0.035em;
   font-weight: 500;
@@ -331,13 +332,16 @@
   will-change: opacity;
 }
 
+/* Vertical portrait rectangle — like a phone-camera photo (3:4) */
 .memberPhoto {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
   overflow: hidden;
   background: var(--color-off-white);
   border: 1px solid var(--hairline);
+  align-self: center;
 }
 
 .memberImage {
@@ -345,7 +349,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 30%;
+  object-position: center 25%;
   will-change: filter, transform;
 }
 
@@ -357,7 +361,7 @@
 }
 
 .memberName {
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-size: 40px;
   font-weight: 500;
   color: var(--text-strong);
   margin: 0;
@@ -378,7 +382,7 @@
 }
 
 .memberBio {
-  font-size: clamp(0.9375rem, 1.35vw, 1.125rem);
+  font-size: 17px;
   line-height: 1.6;
   color: var(--text-body);
   margin: 0;
@@ -407,7 +411,7 @@
    ========================================================= */
 
 .approach {
-  padding: clamp(96px, 11vw, 160px) 0;
+  padding: 120px 0;
   background: var(--color-off-white);
 }
 
@@ -461,7 +465,7 @@
 
 .cta {
   position: relative;
-  padding: clamp(96px, 12vw, 160px) 0;
+  padding: 140px 0;
   overflow: hidden;
   isolation: isolate;
   background: #0b0b0c;
@@ -507,7 +511,7 @@
 }
 
 .ctaTitle {
-  font-size: clamp(2rem, 5vw, 4rem);
+  font-size: 48px;
   line-height: 1;
   letter-spacing: -0.045em;
   font-weight: 500;
@@ -517,7 +521,7 @@
 }
 
 .ctaText {
-  font-size: clamp(1rem, 1.35vw, 1.1875rem);
+  font-size: 15px;
   line-height: 1.6;
   color: var(--text-on-dark-body);
   margin: 0;
@@ -535,10 +539,10 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  min-height: 52px;
-  padding: 0 26px;
+  min-height: 48px;
+  padding: 0 24px;
   font-family: var(--font-display);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--color-navy);
   background: var(--color-gold);
@@ -570,6 +574,20 @@
   .teamStageInner {
     max-width: 1400px;
   }
+
+  .introTitle,
+  .ctaTitle {
+    font-size: 64px;
+  }
+
+  .sectionTitle,
+  .teamTitle {
+    font-size: 36px;
+  }
+
+  .memberName {
+    font-size: 44px;
+  }
 }
 
 @media (min-width: 1600px) {
@@ -579,6 +597,19 @@
 
   .teamStageInner {
     max-width: 1280px;
+  }
+
+  .introTitle {
+    font-size: 60px;
+  }
+
+  .ctaTitle {
+    font-size: 52px;
+  }
+
+  .sectionTitle,
+  .teamTitle {
+    font-size: 34px;
   }
 }
 
@@ -607,15 +638,18 @@
     gap: 24px 40px;
   }
 
+  /* Portrait photo column — narrower so 3:4 fits nicely */
   .member {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-columns: minmax(0, 380px) minmax(0, 1fr);
     gap: 64px;
+    align-items: center;
   }
 
   .memberPhoto {
     width: 100%;
-    height: 100%;
+    height: auto;
     max-height: 68vh;
+    aspect-ratio: 3 / 4;
   }
 
   .ctaGrid {
@@ -630,12 +664,29 @@
 
 @media (min-width: 1200px) {
   .member {
-    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-    gap: 88px;
+    grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
+    gap: 80px;
   }
 }
 
 @media (max-width: 1024px) {
+  .introTitle {
+    font-size: 48px;
+  }
+
+  .ctaTitle {
+    font-size: 40px;
+  }
+
+  .sectionTitle,
+  .teamTitle {
+    font-size: 28px;
+  }
+
+  .memberName {
+    font-size: 34px;
+  }
+
   .member {
     gap: 48px;
   }
@@ -652,16 +703,18 @@
 
   .member {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(0, 1.1fr) auto;
+    grid-template-rows: minmax(0, 1fr) auto;
     gap: 24px;
     align-items: stretch;
   }
 
+  /* Portrait frame on mobile — 3:4, capped so it fits in the stage */
   .memberPhoto {
     width: 100%;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 3 / 4;
     max-height: 46vh;
     height: auto;
+    margin: 0 auto;
   }
 
   .memberBody {
@@ -680,11 +733,11 @@
   }
 
   .intro {
-    padding: clamp(88px, 14vw, 112px) 0 clamp(48px, 7vw, 72px);
+    padding: 88px 0 72px;
   }
 
   .introTitle {
-    font-size: clamp(2rem, 9vw, 3rem);
+    font-size: 34px;
   }
 
   .introMeta {
@@ -713,7 +766,12 @@
   }
 
   .memberPhoto {
+    aspect-ratio: 3 / 4;
     max-height: 42vh;
+  }
+
+  .memberName {
+    font-size: 30px;
   }
 
   .memberBio {
@@ -734,6 +792,14 @@
     font-size: 15px;
   }
 
+  .cta {
+    padding: 96px 0;
+  }
+
+  .ctaTitle {
+    font-size: 32px;
+  }
+
   .ctaActions {
     flex-direction: column;
     align-items: stretch;
@@ -750,12 +816,12 @@
   }
 
   .introTitle {
-    font-size: clamp(1.75rem, 9vw, 2.5rem);
+    font-size: 30px;
   }
 
   .sectionTitle,
   .teamTitle {
-    font-size: clamp(1.5rem, 8vw, 2rem);
+    font-size: 24px;
   }
 
   .sectionLabel {
@@ -769,7 +835,7 @@
   }
 
   .memberName {
-    font-size: clamp(1.375rem, 7vw, 1.75rem);
+    font-size: 26px;
   }
 
   .teamViewport {
@@ -777,7 +843,11 @@
   }
 
   .memberPhoto {
-    max-height: 40vh;
+    max-height: 38vh;
+  }
+
+  .ctaTitle {
+    font-size: 28px;
   }
 
   .teamHead {
@@ -793,7 +863,7 @@
   }
 
   .introTitle {
-    font-size: 1.75rem;
+    font-size: 26px;
   }
 
   .valueTitle,
@@ -802,7 +872,11 @@
   }
 
   .memberPhoto {
-    max-height: 36vh;
+    max-height: 34vh;
+  }
+
+  .memberName {
+    font-size: 24px;
   }
 }
 
@@ -837,25 +911,25 @@
   }
 
   .memberPhoto {
-    max-height: 44vh;
+    max-height: 48vh;
   }
 }
 
 @media (max-height: 700px) {
   .intro {
-    padding-top: clamp(96px, 14vh, 132px);
-    padding-bottom: clamp(48px, 8vh, 88px);
+    padding-top: 100px;
+    padding-bottom: 72px;
   }
 
   .values,
   .approach {
-    padding-top: clamp(64px, 10vh, 120px);
-    padding-bottom: clamp(64px, 10vh, 120px);
+    padding-top: 80px;
+    padding-bottom: 80px;
   }
 
   .cta {
-    padding-top: clamp(72px, 12vh, 140px);
-    padding-bottom: clamp(72px, 12vh, 140px);
+    padding-top: 96px;
+    padding-bottom: 96px;
   }
 
   .teamViewport {
@@ -863,7 +937,7 @@
   }
 
   .memberPhoto {
-    max-height: 40vh;
+    max-height: 44vh;
   }
 }
 
@@ -886,7 +960,7 @@
   }
 
   .memberPhoto {
-    max-height: 32vh;
+    max-height: 36vh;
   }
 
   .memberBio {
@@ -896,7 +970,7 @@
 
 @media (max-width: 360px) and (max-height: 640px) {
   .memberPhoto {
-    max-height: 28vh;
+    max-height: 32vh;
   }
 
   .memberName {
@@ -911,7 +985,7 @@
 
 @media (min-resolution: 2dppx) and (max-width: 899px) {
   .memberPhoto {
-    max-height: 44vh;
+    max-height: 46vh;
   }
 }
 
@@ -950,7 +1024,7 @@
     position: static;
     min-height: auto;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 32px;
   }
 
@@ -962,7 +1036,7 @@
   }
 
   .memberPhoto {
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 3 / 4;
     height: auto;
     max-height: none;
   }

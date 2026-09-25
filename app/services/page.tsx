@@ -3,6 +3,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import CircuitCanvas from "../components/CircuitCanvas";
 import styles from "../css/services.module.css";
 
 export default function ServicesPage() {
@@ -353,16 +354,8 @@ export default function ServicesPage() {
     <main id="main" ref={rootRef} className={styles.page}>
       {/* ================= HERO ================= */}
       <section className={styles.hero} data-hero>
-        <div className={styles.heroBg} data-hero-image aria-hidden="true">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=2400&q=80&auto=format&fit=crop"
-            alt=""
-            className={styles.heroBgImage}
-            loading="eager"
-            fetchPriority="high"
-            decoding="async"
-          />
+        <div className={styles.heroCanvas} data-hero-image aria-hidden="true">
+          <CircuitCanvas className={styles.heroCanvasInner} />
           <div className={styles.heroBgTopScrim} />
           <div className={styles.heroBgBottomScrim} />
         </div>
