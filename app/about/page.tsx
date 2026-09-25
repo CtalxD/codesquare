@@ -11,28 +11,28 @@ const TEAM = [
     role: "Systems Engineer · Backend",
     bio: "Builds and maintains the systems that keep everything running. Handles servers, databases, and the parts nobody sees until they break.",
     photo:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&q=80&auto=format&fit=crop",
+      "",
   },
   {
     name: "Shrijan Thapa",
     role: "Project Manager",
     bio: "Keeps projects moving and clients in the loop. Handles data work and integrates AI where it actually helps.",
     photo:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=1200&q=80&auto=format&fit=crop",
+      "/sbt.jpg",
   },
   {
     name: "Sital Aryal",
     role: "Full-Stack · UI / UX",
     bio: "Works across the stack. Comfortable in the frontend, the backend, and the design files in between.",
     photo:
-      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=1200&q=80&auto=format&fit=crop",
+      "/sba.jpeg",
   },
   {
     name: "Sudil Maharjan",
     role: "Frontend · UI / UX",
     bio: "Builds the interfaces you actually use. Focused on the details that make a product feel finished.",
     photo:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=1200&q=80&auto=format&fit=crop",
+      "",
   },
 ];
 
@@ -249,11 +249,12 @@ export default function AboutPage() {
                 0.1
               );
 
-              /* Photo scale settles as the color comes in */
+              /* Photo scale settles as the color comes in — ends at 1.02
+                 so any 1px light edge on the source image stays cropped. */
               tl.fromTo(
                 photo,
-                { scale: 1.08 },
-                { scale: 1, duration: 0.6, ease: "power2.out" },
+                { scale: 1.1 },
+                { scale: 1.02, duration: 0.6, ease: "power2.out" },
                 0.1
               );
             }
@@ -601,7 +602,7 @@ export default function AboutPage() {
       </section>
 
       {/* ================= CTA ================= */}
- <section
+      <section
         className={styles.cta}
         data-cta
         aria-labelledby="cta-title"

@@ -332,7 +332,8 @@
   will-change: opacity;
 }
 
-/* Vertical portrait rectangle — like a phone-camera photo (3:4) */
+/* Vertical portrait rectangle — like a phone-camera photo (3:4).
+   Border removed (was reading as a white line on bright photos). */
 .memberPhoto {
   position: relative;
   width: 100%;
@@ -340,7 +341,6 @@
   aspect-ratio: 3 / 4;
   overflow: hidden;
   background: var(--color-off-white);
-  border: 1px solid var(--hairline);
   align-self: center;
 }
 
@@ -350,6 +350,8 @@
   height: 100%;
   object-fit: cover;
   object-position: center 25%;
+  /* Slight overscale crops out any 1px light edge baked into the photo */
+  transform: scale(1.02);
   will-change: filter, transform;
 }
 

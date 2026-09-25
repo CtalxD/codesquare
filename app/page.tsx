@@ -76,10 +76,10 @@ const SPLIT_ROWS = [
 ];
 
 const TEAM_PHOTOS = [
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&q=80&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=80&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=80&auto=format&fit=crop",
+  "",
+  "/sbt.jpg",
+  "/sba.jpeg",
+  "",
 ];
 
 const PROCESS_STEPS = [
