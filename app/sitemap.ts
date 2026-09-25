@@ -2,7 +2,7 @@
 import type { MetadataRoute } from "next";
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://codesquare.com.np";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.codesquare.com.np";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
