@@ -10,6 +10,7 @@ import {
   Code2,
   Rocket,
 } from "lucide-react";
+import CircuitCanvas from "./components/CircuitCanvas";
 import styles from "./css/page.module.css";
 
 const SERVICES = [
@@ -128,8 +129,11 @@ export default function HomePage() {
     ).matches;
     if (prefersReduced) return;
 
-    let cleanup: (() => void) | undefined;
     let cancelled = false;
+    let ctx: { revert: () => void } | undefined;
+    let stRef: { refresh: () => void } | undefined;
+    let refreshTimeout: ReturnType<typeof setTimeout> | undefined;
+    let onLoad: (() => void) | undefined;
 
     (async () => {
       const gsapMod = await import("gsap");
@@ -139,11 +143,13 @@ export default function HomePage() {
 
       if (cancelled) return;
       gsap.registerPlugin(ScrollTrigger);
+      stRef = ScrollTrigger;
 
       const root = rootRef.current;
       if (!root) return;
 
-      const ctx = gsap.context(() => {
+      ctx = gsap.context(() => {
+        /* ---------- HERO ---------- */
         const heroLines = gsap.utils.toArray<HTMLElement>("[data-hero-line]");
         gsap.set(heroLines, { yPercent: 110, opacity: 0 });
         gsap.to(heroLines, {
@@ -177,6 +183,7 @@ export default function HomePage() {
           },
         });
 
+        /* ---------- INTRO ---------- */
         gsap.set("[data-intro-line]", { yPercent: 100, opacity: 0 });
         gsap.to("[data-intro-line]", {
           yPercent: 0,
@@ -200,6 +207,7 @@ export default function HomePage() {
           scrollTrigger: { trigger: "[data-intro]", start: "top 80%" },
         });
 
+        /* ---------- SCROLL-FILL HEADLINES ---------- */
         gsap.utils.toArray<HTMLElement>("[data-fill]").forEach((block) => {
           const words = block.querySelectorAll("[data-fill-word]");
           if (!words.length) return;
@@ -218,6 +226,7 @@ export default function HomePage() {
           });
         });
 
+        /* ---------- PINNED SERVICES ---------- */
         const serviceSection = document.querySelector<HTMLElement>(
           "[data-services]"
         );
@@ -255,6 +264,7 @@ export default function HomePage() {
             pinSpacing: false,
             anticipatePin: 1,
             invalidateOnRefresh: true,
+            refreshPriority: 1,
             onUpdate: (self) => {
               const idx = Math.floor(self.progress * SERVICES.length);
               setActive(idx);
@@ -284,6 +294,7 @@ export default function HomePage() {
           });
         }
 
+        /* ---------- SPLIT ROWS ---------- */
         gsap.utils.toArray<HTMLElement>("[data-split]").forEach((row) => {
           const media = row.querySelector("[data-split-media]");
           const img = row.querySelector("[data-split-img]");
@@ -330,6 +341,7 @@ export default function HomePage() {
           }
         });
 
+        /* ---------- PROCESS TIMELINE ---------- */
         const rail = document.querySelector("[data-timeline-rail]");
         if (rail) {
           gsap.fromTo(
@@ -358,6 +370,7 @@ export default function HomePage() {
           scrollTrigger: { trigger: "[data-timeline]", start: "top 80%" },
         });
 
+        /* ---------- TEAM ---------- */
         gsap.set("[data-team-photo]", { y: 40, opacity: 0, scale: 0.94 });
         gsap.to("[data-team-photo]", {
           y: 0,
@@ -379,6 +392,7 @@ export default function HomePage() {
           scrollTrigger: { trigger: "[data-team]", start: "top 80%" },
         });
 
+        /* ---------- CTA ---------- */
         gsap.fromTo(
           "[data-cta-image]",
           { yPercent: -6 },
@@ -407,12 +421,20 @@ export default function HomePage() {
         ScrollTrigger.refresh();
       }, root);
 
-      cleanup = () => ctx.revert();
+      onLoad = () => stRef?.refresh();
+      if (document.readyState === "complete") {
+        onLoad();
+      } else {
+        window.addEventListener("load", onLoad);
+      }
+      refreshTimeout = setTimeout(() => stRef?.refresh(), 800);
     })();
 
     return () => {
       cancelled = true;
-      if (cleanup) cleanup();
+      if (refreshTimeout) clearTimeout(refreshTimeout);
+      if (onLoad) window.removeEventListener("load", onLoad);
+      if (ctx) ctx.revert();
     };
   }, []);
 
@@ -421,13 +443,8 @@ export default function HomePage() {
       <main id="main" className={styles.page}>
         {/* HERO */}
         <section className={styles.hero} data-hero>
-          <div className={styles.heroImage} data-hero-image aria-hidden="true">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=2000&q=80&auto=format&fit=crop"
-              alt=""
-              className={styles.heroImageInner}
-            />
+          <div className={styles.heroCanvas} data-hero-image aria-hidden="true">
+            <CircuitCanvas className={styles.heroCanvasInner} />
             <div className={styles.heroOverlay} />
           </div>
 
@@ -449,8 +466,11 @@ export default function HomePage() {
             </h1>
 
             <p className={styles.heroLead} data-hero-fade>
-              Code Square is a four-person studio building websites, mobile
-              apps, and custom software for businesses in Nepal and abroad.
+              Code Square is a four-person studio building websites, mobile apps,
+              and custom software for businesses in Nepal and abroad. We work in
+              small teams, ship in short cycles, and stay reachable long after
+              launch so that your product builds on the foundation we create.
+
             </p>
 
             <div className={styles.heroActions} data-hero-fade>

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Instrument_Sans, IBM_Plex_Mono } from "next/font/google";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
 import "./globals.css";
 
 const display = Instrument_Sans({
@@ -160,6 +161,8 @@ export default function RootLayout({
         <a href="#main" className="skipLink">
           Skip to content
         </a>
+
+        <ScrollToTop />
 
         <Navbar />
 

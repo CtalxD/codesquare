@@ -28,7 +28,7 @@
 }
 
 /* =========================================================
-   HERO - image with black scrim
+   HERO
    ========================================================= */
 
 .hero {
@@ -44,6 +44,25 @@
   color: var(--text-on-dark-strong);
 }
 
+/* Circuit canvas wrapper — fills the entire hero edge to edge */
+.heroCanvas {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: #06162b;
+  will-change: transform;
+}
+
+.heroCanvasInner {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Legacy hero image rules — kept for other pages that may still use <img> */
 .heroImage {
   position: absolute;
   inset: -12% 0 -12% 0;
@@ -58,15 +77,17 @@
   object-position: center 40%;
 }
 
+/* Bottom-weighted scrim only — keeps the board visible behind the text */
 .heroOverlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(0, 0, 0, 0.55) 0%,
-    rgba(0, 0, 0, 0.65) 45%,
-    rgba(0, 0, 0, 0.8) 100%
+    rgba(4, 12, 24, 0) 0%,
+    rgba(4, 12, 24, 0.25) 40%,
+    rgba(4, 12, 24, 0.72) 100%
   );
+  pointer-events: none;
 }
 
 .heroContent {
@@ -87,33 +108,33 @@
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--gold-on-dark);
-  margin: 0 0 32px;
+  margin: 0 0 24px;
 }
 
 .heroTitle {
   font-family: var(--font-display);
-  font-size: clamp(3rem, 7vw, 6.5rem);
-  line-height: 0.98;
-  letter-spacing: -0.04em;
+  font-size: clamp(2.25rem, 5.2vw, 4.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
   font-weight: 500;
   color: var(--color-white);
-  margin: 0 0 32px;
-  max-width: 20ch;
+  margin: 0 0 24px;
+  max-width: 22ch;
 }
 
 .heroLead {
-  font-size: clamp(1rem, 1.4vw, 1.1875rem);
+  font-size: clamp(0.9375rem, 1.15vw, 1.0625rem);
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.88);
-  max-width: 52ch;
-  margin: 0 0 40px;
+  max-width: 56ch;
+  margin: 0 0 32px;
 }
 
 .heroActions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin: 0 0 56px;
+  gap: 10px;
+  margin: 0 0 44px;
   width: 100%;
 }
 
@@ -358,6 +379,7 @@
   height: 100dvh;
   display: flex;
   align-items: center;
+  overflow: hidden;
 }
 
 .pinnedInner {
@@ -370,6 +392,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  min-height: 0;
 }
 
 .pinnedHead {
@@ -940,6 +963,51 @@
 
   .teamGrid { grid-template-columns: 1fr; gap: 48px; }
   .ctaGrid { grid-template-columns: 1fr; gap: 32px; }
+
+  .pinnedInner {
+    justify-content: center;
+    padding: 24px var(--container-pad);
+  }
+
+  .pinnedHead {
+    margin-bottom: 20px;
+  }
+
+  .pinnedLayout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 20px;
+    align-items: center;
+    min-height: 0;
+  }
+
+  .pinnedVisual {
+    aspect-ratio: 16 / 10;
+    max-height: 34vh;
+    width: 100%;
+  }
+
+  .pinnedList {
+    gap: 0;
+  }
+
+  .pinnedItem {
+    padding: 10px 14px 10px 18px;
+  }
+
+  .pinnedItem.active {
+    padding-left: 24px;
+  }
+
+  .pinnedItemHead {
+    margin-bottom: 4px;
+  }
+
+  .pinnedItemText {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -954,9 +1022,50 @@
   }
   .heroActions > a { width: 100%; justify-content: center; }
 
-  .pinned { height: 340vh; }
-  .pinnedInner { padding: 24px var(--container-pad); }
-  .pinnedVisual { max-height: 30vh; }
+  .pinnedInner {
+    padding: 20px var(--container-pad);
+  }
+
+  .pinnedHead {
+    margin-bottom: 14px;
+  }
+
+  .pinnedTitle {
+    font-size: clamp(1.4rem, 6vw, 1.9rem);
+  }
+
+  .pinnedLayout {
+    gap: 14px;
+  }
+
+  .pinnedVisual {
+    aspect-ratio: 16 / 9;
+    max-height: 26vh;
+  }
+
+  .pinnedCounter {
+    bottom: 10px;
+    left: 10px;
+    padding: 4px 10px;
+    font-size: 10px;
+  }
+
+  .pinnedItem {
+    padding: 8px 12px 8px 16px;
+  }
+
+  .pinnedItem.active {
+    padding-left: 22px;
+  }
+
+  .pinnedItemHead {
+    gap: 10px;
+    margin-bottom: 2px;
+  }
+
+  .pinnedItemTitle { font-size: 15px; }
+  .pinnedItemText  { font-size: 12.5px; line-height: 1.45; margin-bottom: 4px; }
+  .pinnedLink      { font-size: 12px; }
 
   .split { margin-bottom: 64px; gap: 28px; }
 
@@ -976,8 +1085,14 @@
 @media (max-width: 480px) {
   .hero { padding: 88px var(--container-pad) 48px; }
 
-  .pinned { height: 320vh; }
-  .pinnedVisual { max-height: 26vh; }
+  .pinnedInner { padding: 16px var(--container-pad); }
+
+  .pinnedVisual { max-height: 22vh; }
+
+  .pinnedItem { padding: 6px 10px 6px 14px; }
+  .pinnedItem.active { padding-left: 18px; }
+  .pinnedItemTitle { font-size: 14px; }
+  .pinnedItemText  { font-size: 12px; }
 
   .teamImages { width: 240px; height: 300px; }
   .teamPhoto { width: 125px; }
@@ -989,6 +1104,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .heroImage,
+  .heroCanvas,
   .pinnedImageWrap,
   .splitMedia,
   .splitImage,
