@@ -740,3 +740,8 @@ a.asideValue:focus-visible {
     animation-duration: 0.001ms !important;
   }
 }
+
+.formErrorDetail {
+  opacity: 0.7;
+  font-size: 13px;
+}

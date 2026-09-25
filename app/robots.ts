@@ -1,15 +1,19 @@
+//app/robots.ts
 import type { MetadataRoute } from "next";
 
-export default function robots(): MetadataRoute.Robots {
-  const baseUrl = "https://codesquare-eight.vercel.app";
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://codesquare.com.np";
 
+export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: ["/api/", "/_next/"],
-    },
-    sitemap: `${baseUrl}/sitemap.xml`,
-    host: baseUrl,
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/api/"],
+      },
+    ],
+    sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   };
 }

@@ -5,53 +5,22 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import styles from "../css/quote.module.css";
-
-const WEB3FORMS_ACCESS_KEY = "405d200a-2900-41f2-be2e-e8037215888a";
-
-const SERVICE_OPTIONS = [
-  { value: "website", label: "Website" },
-  { value: "mobile", label: "Mobile app" },
-  { value: "software", label: "Custom software" },
-  { value: "design", label: "UI / UX design" },
-  { value: "other", label: "Something else" },
-];
-
-const TIMELINE_OPTIONS = [
-  { value: "asap", label: "As soon as possible" },
-  { value: "1-3-months", label: "Within 1–3 months" },
-  { value: "3-6-months", label: "Within 3–6 months" },
-  { value: "exploring", label: "Just exploring" },
-];
-
-const COUNTRY_CODES = [
-  { value: "+977", label: "Nepal (+977)" },
-  { value: "+1", label: "US / Canada (+1)" },
-  { value: "+44", label: "United Kingdom (+44)" },
-  { value: "+61", label: "Australia (+61)" },
-  { value: "+64", label: "New Zealand (+64)" },
-  { value: "+91", label: "India (+91)" },
-  { value: "+971", label: "UAE (+971)" },
-  { value: "+966", label: "Saudi Arabia (+966)" },
-  { value: "+65", label: "Singapore (+65)" },
-  { value: "+60", label: "Malaysia (+60)" },
-  { value: "+81", label: "Japan (+81)" },
-  { value: "+82", label: "South Korea (+82)" },
-  { value: "+86", label: "China (+86)" },
-  { value: "+49", label: "Germany (+49)" },
-  { value: "+33", label: "France (+33)" },
-  { value: "+31", label: "Netherlands (+31)" },
-  { value: "+34", label: "Spain (+34)" },
-  { value: "+39", label: "Italy (+39)" },
-  { value: "+41", label: "Switzerland (+41)" },
-  { value: "+46", label: "Sweden (+46)" },
-  { value: "+47", label: "Norway (+47)" },
-  { value: "+45", label: "Denmark (+45)" },
-  { value: "+353", label: "Ireland (+353)" },
-  { value: "+27", label: "South Africa (+27)" },
-  { value: "+55", label: "Brazil (+55)" },
-  { value: "+52", label: "Mexico (+52)" },
-  { value: "+other", label: "Other" },
-];
+import {
+  AMOUNT_RE,
+  buildMailtoFallback,
+  CONTACT,
+  COUNTRY_CODES,
+  EMAIL_RE,
+  MIN_SUBMIT_MS,
+  PHONE_RE,
+  SERVICE_OPTIONS,
+  SUBMIT_COOLDOWN_MS,
+  TIMELINE_OPTIONS,
+  trackEvent,
+  WEB3FORMS_ENDPOINT,
+  WEB3FORMS_KEY,
+  type Web3FormsPayload,
+} from "../../lib/contactConfig";
 
 type FormState = {
   name: string;
@@ -79,6 +48,10 @@ const EMPTY: FormState = {
 
 export default function QuotePage() {
   const rootRef = useRef<HTMLDivElement>(null);
+  const mountedAtRef = useRef<number>(0);
+  const lastSubmitAtRef = useRef<number>(0);
+  const successHeadingRef = useRef<HTMLHeadingElement>(null);
+
   const [form, setForm] = useState<FormState>(EMPTY);
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle"
@@ -86,18 +59,26 @@ export default function QuotePage() {
   const [errors, setErrors] = useState<
     Partial<Record<keyof FormState, string>>
   >({});
+  const [serverMessage, setServerMessage] = useState<string>("");
+
+  useEffect(() => {
+    mountedAtRef.current = Date.now();
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const svc = params.get("service");
     if (!svc) return;
-
     const match = SERVICE_OPTIONS.find((o) => o.value === svc);
-    if (match) {
-      setForm((f) => ({ ...f, service: match.value }));
-    }
+    if (match) setForm((f) => ({ ...f, service: match.value }));
   }, []);
+
+  useEffect(() => {
+    if (status === "sent") {
+      successHeadingRef.current?.focus();
+    }
+  }, [status]);
 
   useEffect(() => {
     const prefersReduced = window.matchMedia(
@@ -179,14 +160,14 @@ export default function QuotePage() {
 
     if (!form.email.trim()) {
       next.email = "Please add an email so we can send the quote.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+    } else if (!EMAIL_RE.test(form.email.trim())) {
       next.email = "That email doesn't look right.";
     }
 
     if (!form.phone.trim()) {
       next.phone = "Please add a phone number.";
-    } else if (!/^[0-9\s\-()]{5,}$/.test(form.phone.trim())) {
-      next.phone = "Digits only, please.";
+    } else if (!PHONE_RE.test(form.phone.trim())) {
+      next.phone = "Digits, spaces, and dashes only.";
     }
 
     if (!form.company.trim()) {
@@ -195,7 +176,7 @@ export default function QuotePage() {
 
     if (!form.budget.trim()) {
       next.budget = "A rough number is enough.";
-    } else if (!/^\d+(\.\d+)?$/.test(form.budget.trim())) {
+    } else if (!AMOUNT_RE.test(form.budget.trim())) {
       next.budget = "Numbers only, please.";
     }
 
@@ -212,38 +193,82 @@ export default function QuotePage() {
     if (status === "sending") return;
     if (!validate()) return;
 
+    if (Date.now() - mountedAtRef.current < MIN_SUBMIT_MS) {
+      setStatus("error");
+      setServerMessage(
+        "That was a little too quick. Please try again in a moment."
+      );
+      return;
+    }
+
+    if (Date.now() - lastSubmitAtRef.current < SUBMIT_COOLDOWN_MS) {
+      const wait = Math.ceil(
+        (SUBMIT_COOLDOWN_MS - (Date.now() - lastSubmitAtRef.current)) / 1000
+      );
+      setStatus("error");
+      setServerMessage(
+        `Please wait ${wait}s before sending another request.`
+      );
+      return;
+    }
+
     setStatus("sending");
+    setServerMessage("");
+
+    const payload: Web3FormsPayload = {
+      access_key: WEB3FORMS_KEY,
+      subject: `Quote request - ${form.name} (${form.company})`,
+      from_name: "Code Square - Quote request",
+      email: form.email.trim(),
+      name: form.name.trim(),
+      phone: `${form.countryCode} ${form.phone.trim()}`,
+      company: form.company.trim(),
+      service: form.service,
+      budget: form.budget.trim(),
+      timeline: form.timeline,
+      message: form.message.trim(),
+      botcheck: "",
+      submitted_at: new Date().toISOString(),
+      page_source:
+        typeof window !== "undefined" ? window.location.pathname : "",
+      referrer:
+        typeof document !== "undefined" ? document.referrer || "direct" : "",
+      user_agent:
+        typeof navigator !== "undefined" ? navigator.userAgent : "",
+    };
 
     try {
-      const res = await fetch("https://api.web3forms.com/submit", {
+      const res = await fetch(WEB3FORMS_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
-          subject: `Quote request - ${form.name} (${form.company})`,
-          from_name: "Code Square - Quote request",
-          email: form.email,
-          name: form.name,
-          phone: `${form.countryCode} ${form.phone}`,
-          company: form.company,
-          service: form.service,
-          budget: form.budget,
-          timeline: form.timeline,
-          message: form.message,
-          botcheck: "",
-        }),
+        body: JSON.stringify(payload),
       });
 
-      const data = (await res.json()) as { success?: boolean };
-      if (!res.ok || !data.success) throw new Error("send failed");
+      const data = (await res.json()) as {
+        success?: boolean;
+        message?: string;
+      };
 
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "send failed");
+      }
+
+      trackEvent("quote_submit", {
+        service: form.service,
+        timeline: form.timeline,
+      });
+
+      lastSubmitAtRef.current = Date.now();
       setStatus("sent");
       setForm(EMPTY);
-    } catch {
+    } catch (err) {
+      const detail = err instanceof Error ? err.message : "unknown";
+      setServerMessage(detail);
       setStatus("error");
+      trackEvent("quote_submit_error", { detail });
     }
   };
 
@@ -320,7 +345,11 @@ export default function QuotePage() {
                   <span className={styles.successIcon} aria-hidden="true">
                     <Check size={22} strokeWidth={2} />
                   </span>
-                  <h2 className={styles.successTitle}>
+                  <h2
+                    className={styles.successTitle}
+                    ref={successHeadingRef}
+                    tabIndex={-1}
+                  >
                     Request received.
                   </h2>
                   <p className={styles.successText}>
@@ -328,10 +357,10 @@ export default function QuotePage() {
                     If you don&rsquo;t hear from us, check spam - and if
                     it&rsquo;s urgent, call{" "}
                     <a
-                      href="tel:+9779813301334"
+                      href={CONTACT.phoneHref}
                       className={styles.successLink}
                     >
-                      +977 9813301334
+                      {CONTACT.phone}
                     </a>
                     .
                   </p>
@@ -644,14 +673,28 @@ export default function QuotePage() {
 
                   {status === "error" && (
                     <p className={styles.formError} role="alert">
-                      Something went wrong. Please email us at{" "}
+                      We couldn&rsquo;t send your request automatically.{" "}
                       <a
-                        href="mailto:codesquare2026@gmail.com"
+                        href={buildMailtoFallback({
+                          name: form.name,
+                          company: form.company,
+                          phone: `${form.countryCode} ${form.phone}`.trim(),
+                          service: form.service,
+                          budget: form.budget,
+                          timeline: form.timeline,
+                          message: form.message,
+                        })}
                         className={styles.errorLink}
                       >
-                        codesquare2026@gmail.com
-                      </a>
-                      .
+                        Send it by email instead
+                      </a>{" "}
+                      - your message is already in that link.
+                      {serverMessage && (
+                        <span className={styles.formErrorDetail}>
+                          {" "}
+                          ({serverMessage})
+                        </span>
+                      )}
                     </p>
                   )}
                 </form>

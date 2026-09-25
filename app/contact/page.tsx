@@ -5,56 +5,23 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, Copy } from "lucide-react";
 import styles from "../css/contact.module.css";
-
-const CONTACT = {
-  address: "Kathmandu, Nepal",
-  email: "codesquare2026@gmail.com",
-  phone: "+977 9813301334",
-  phoneHref: "tel:+9779813301334",
-  emailHref: "mailto:codesquare2026@gmail.com",
-};
-
-const WEB3FORMS_ACCESS_KEY = "405d200a-2900-41f2-be2e-e8037215888a";
-
-const SERVICE_OPTIONS = [
-  { value: "website", label: "Website" },
-  { value: "mobile", label: "Mobile app" },
-  { value: "software", label: "Custom software" },
-  { value: "design", label: "UI / UX design" },
-  { value: "other", label: "Something else" },
-];
-
-/* A short, practical list - not every country. Includes Nepal +
-   the usual international client countries. */
-const COUNTRY_CODES = [
-  { value: "+977", label: "Nepal (+977)" },
-  { value: "+1", label: "US / Canada (+1)" },
-  { value: "+44", label: "United Kingdom (+44)" },
-  { value: "+61", label: "Australia (+61)" },
-  { value: "+64", label: "New Zealand (+64)" },
-  { value: "+91", label: "India (+91)" },
-  { value: "+971", label: "UAE (+971)" },
-  { value: "+966", label: "Saudi Arabia (+966)" },
-  { value: "+65", label: "Singapore (+65)" },
-  { value: "+60", label: "Malaysia (+60)" },
-  { value: "+81", label: "Japan (+81)" },
-  { value: "+82", label: "South Korea (+82)" },
-  { value: "+86", label: "China (+86)" },
-  { value: "+49", label: "Germany (+49)" },
-  { value: "+33", label: "France (+33)" },
-  { value: "+31", label: "Netherlands (+31)" },
-  { value: "+34", label: "Spain (+34)" },
-  { value: "+39", label: "Italy (+39)" },
-  { value: "+41", label: "Switzerland (+41)" },
-  { value: "+46", label: "Sweden (+46)" },
-  { value: "+47", label: "Norway (+47)" },
-  { value: "+45", label: "Denmark (+45)" },
-  { value: "+353", label: "Ireland (+353)" },
-  { value: "+27", label: "South Africa (+27)" },
-  { value: "+55", label: "Brazil (+55)" },
-  { value: "+52", label: "Mexico (+52)" },
-  { value: "+other", label: "Other" },
-];
+import { useCopy } from "../../lib/useCopy";
+import {
+  AMOUNT_RE,
+  buildMailtoFallback,
+  CONTACT,
+  CONTACT_EMAIL_HREF,
+  COUNTRY_CODES,
+  EMAIL_RE,
+  MIN_SUBMIT_MS,
+  PHONE_RE,
+  SERVICE_OPTIONS,
+  SUBMIT_COOLDOWN_MS,
+  trackEvent,
+  WEB3FORMS_ENDPOINT,
+  WEB3FORMS_KEY,
+  type Web3FormsPayload,
+} from "../../lib/contactConfig";
 
 type FormState = {
   name: string;
@@ -78,51 +45,12 @@ const EMPTY: FormState = {
   message: "",
 };
 
-function useCopy() {
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const timeoutRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current !== null) {
-        window.clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
-  const copy = async (key: string, value: string) => {
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(value);
-      } else {
-        const ta = document.createElement("textarea");
-        ta.value = value;
-        ta.setAttribute("readonly", "");
-        ta.style.position = "absolute";
-        ta.style.left = "-9999px";
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-      }
-
-      setCopiedKey(key);
-      if (timeoutRef.current !== null) {
-        window.clearTimeout(timeoutRef.current);
-      }
-      timeoutRef.current = window.setTimeout(() => {
-        setCopiedKey(null);
-      }, 1800);
-    } catch {
-      /* ignore */
-    }
-  };
-
-  return { copiedKey, copy };
-}
-
 export default function ContactPage() {
   const rootRef = useRef<HTMLDivElement>(null);
+  const mountedAtRef = useRef<number>(0);
+  const lastSubmitAtRef = useRef<number>(0);
+  const successHeadingRef = useRef<HTMLHeadingElement>(null);
+
   const [form, setForm] = useState<FormState>(EMPTY);
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle"
@@ -130,19 +58,27 @@ export default function ContactPage() {
   const [errors, setErrors] = useState<
     Partial<Record<keyof FormState, string>>
   >({});
+  const [serverMessage, setServerMessage] = useState<string>("");
   const { copiedKey, copy } = useCopy();
+
+  useEffect(() => {
+    mountedAtRef.current = Date.now();
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const svc = params.get("service");
     if (!svc) return;
-
     const match = SERVICE_OPTIONS.find((o) => o.value === svc);
-    if (match) {
-      setForm((f) => ({ ...f, service: match.value }));
-    }
+    if (match) setForm((f) => ({ ...f, service: match.value }));
   }, []);
+
+  useEffect(() => {
+    if (status === "sent") {
+      successHeadingRef.current?.focus();
+    }
+  }, [status]);
 
   useEffect(() => {
     const prefersReduced = window.matchMedia(
@@ -236,14 +172,14 @@ export default function ContactPage() {
 
     if (!form.email.trim()) {
       next.email = "Please add an email so we can reply.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+    } else if (!EMAIL_RE.test(form.email.trim())) {
       next.email = "That email doesn't look right.";
     }
 
     if (!form.phone.trim()) {
       next.phone = "Please add a phone number.";
-    } else if (!/^[0-9\s\-()]{5,}$/.test(form.phone.trim())) {
-      next.phone = "Digits only, please.";
+    } else if (!PHONE_RE.test(form.phone.trim())) {
+      next.phone = "Digits, spaces, and dashes only.";
     }
 
     if (!form.company.trim()) {
@@ -252,7 +188,7 @@ export default function ContactPage() {
 
     if (!form.budget.trim()) {
       next.budget = "A rough number is enough.";
-    } else if (!/^\d+(\.\d+)?$/.test(form.budget.trim())) {
+    } else if (!AMOUNT_RE.test(form.budget.trim())) {
       next.budget = "Numbers only, please.";
     }
 
@@ -269,38 +205,83 @@ export default function ContactPage() {
     if (status === "sending") return;
     if (!validate()) return;
 
+    /* Bot check - silent reject if the form was filled too fast. */
+    if (Date.now() - mountedAtRef.current < MIN_SUBMIT_MS) {
+      setStatus("error");
+      setServerMessage(
+        "That was a little too quick. Please try again in a moment."
+      );
+      return;
+    }
+
+    /* Rate limit - client-side, catches accidental double-submits. */
+    if (Date.now() - lastSubmitAtRef.current < SUBMIT_COOLDOWN_MS) {
+      const wait = Math.ceil(
+        (SUBMIT_COOLDOWN_MS - (Date.now() - lastSubmitAtRef.current)) / 1000
+      );
+      setStatus("error");
+      setServerMessage(
+        `Please wait ${wait}s before sending another message.`
+      );
+      return;
+    }
+
     setStatus("sending");
+    setServerMessage("");
+
+    const payload: Web3FormsPayload = {
+      access_key: WEB3FORMS_KEY,
+      subject: `New enquiry - ${form.name} (${form.company})`,
+      from_name: "Code Square website",
+      email: form.email.trim(),
+      name: form.name.trim(),
+      phone: `${form.countryCode} ${form.phone.trim()}`,
+      company: form.company.trim(),
+      service: form.service,
+      budget: form.budget.trim(),
+      message: form.message.trim(),
+      botcheck: "",
+      submitted_at: new Date().toISOString(),
+      page_source:
+        typeof window !== "undefined" ? window.location.pathname : "",
+      referrer:
+        typeof document !== "undefined" ? document.referrer || "direct" : "",
+      user_agent:
+        typeof navigator !== "undefined" ? navigator.userAgent : "",
+    };
 
     try {
-      const res = await fetch("https://api.web3forms.com/submit", {
+      const res = await fetch(WEB3FORMS_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
-          subject: `New enquiry - ${form.name} (${form.company})`,
-          from_name: "Code Square website",
-          /* Web3Forms uses this as Reply-To. */
-          email: form.email,
-          name: form.name,
-          phone: `${form.countryCode} ${form.phone}`,
-          company: form.company,
-          service: form.service,
-          budget: form.budget,
-          message: form.message,
-          botcheck: "",
-        }),
+        body: JSON.stringify(payload),
       });
 
-      const data = (await res.json()) as { success?: boolean };
-      if (!res.ok || !data.success) throw new Error("send failed");
+      const data = (await res.json()) as {
+        success?: boolean;
+        message?: string;
+      };
 
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "send failed");
+      }
+
+      trackEvent("contact_submit", {
+        service: form.service,
+        has_company: Boolean(form.company),
+      });
+
+      lastSubmitAtRef.current = Date.now();
       setStatus("sent");
       setForm(EMPTY);
-    } catch {
+    } catch (err) {
+      const detail = err instanceof Error ? err.message : "unknown";
+      setServerMessage(detail);
       setStatus("error");
+      trackEvent("contact_submit_error", { detail });
     }
   };
 
@@ -343,7 +324,7 @@ export default function ContactPage() {
                 <span className={styles.asideLabel}>Email</span>
                 <div className={styles.asideRow}>
                   <a
-                    href={CONTACT.emailHref}
+                    href={CONTACT_EMAIL_HREF}
                     className={styles.asideValue}
                   >
                     {CONTACT.email}
@@ -432,9 +413,7 @@ export default function ContactPage() {
 
               <div className={styles.asideBlock} data-contact-card>
                 <span className={styles.asideLabel}>Hours</span>
-                <span className={styles.asideValue}>
-                  Sun – Fri, 10:00 – 18:00 NPT
-                </span>
+                <span className={styles.asideValue}>{CONTACT.hours}</span>
               </div>
 
               <div className={styles.asideNote} data-contact-card>
@@ -452,7 +431,13 @@ export default function ContactPage() {
                   <span className={styles.successIcon} aria-hidden="true">
                     <Check size={22} strokeWidth={2} />
                   </span>
-                  <h2 className={styles.successTitle}>Got it.</h2>
+                  <h2
+                    className={styles.successTitle}
+                    ref={successHeadingRef}
+                    tabIndex={-1}
+                  >
+                    Got it.
+                  </h2>
                   <p className={styles.successText}>
                     We&rsquo;ll read your message and reply within one
                     business day. If it&rsquo;s urgent, call{" "}
@@ -732,14 +717,27 @@ export default function ContactPage() {
 
                   {status === "error" && (
                     <p className={styles.formError} role="alert">
-                      Something went wrong. Please email us at{" "}
+                      We couldn&rsquo;t send your message automatically.{" "}
                       <a
-                        href={CONTACT.emailHref}
+                        href={buildMailtoFallback({
+                          name: form.name,
+                          company: form.company,
+                          phone: `${form.countryCode} ${form.phone}`.trim(),
+                          service: form.service,
+                          budget: form.budget,
+                          message: form.message,
+                        })}
                         className={styles.errorLink}
                       >
-                        {CONTACT.email}
-                      </a>
-                      .
+                        Send it by email instead
+                      </a>{" "}
+                      - your message is already in that link.
+                      {serverMessage && (
+                        <span className={styles.formErrorDetail}>
+                          {" "}
+                          ({serverMessage})
+                        </span>
+                      )}
                     </p>
                   )}
                 </form>
@@ -767,7 +765,7 @@ export default function ContactPage() {
                 </a>{" "}
                 or drop us a line at{" "}
                 <a
-                  href={CONTACT.emailHref}
+                  href={CONTACT_EMAIL_HREF}
                   className={styles.footLink}
                 >
                   {CONTACT.email}
