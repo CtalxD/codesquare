@@ -1,3 +1,4 @@
+// app/components/JsonLd.tsx
 export function JsonLd({ data }: { data: Record<string, unknown> }) {
   const json = JSON.stringify(data).replace(/</g, "\\u003c");
   return (
