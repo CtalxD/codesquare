@@ -1,4 +1,5 @@
-//app/layout.tsx
+// app/layout.tsx
+
 import type { Metadata } from "next";
 import { Instrument_Sans, IBM_Plex_Mono } from "next/font/google";
 import Navbar from "./components/Navbar";
@@ -37,17 +38,13 @@ const SITE_DESCRIPTION =
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-
   "@id": `${SITE_URL}/#organization`,
-
   name: "Code Square",
   legalName: "Code Square Pvt. Ltd.",
-
   alternateName: [
     "Code Square Nepal",
     "codesquare",
     "codesquare.com.np",
-    
     "Code Square Kathmandu",
     "CodeSquare",
     "Code Square Pvt Ltd",
@@ -62,9 +59,7 @@ const organizationSchema = {
     "Code Square Pvt. Ltd. Nepal Kathmandu Bagmati Province NP 44600",
     "Code Square Pvt. Ltd. Nepal Kathmandu Bagmati Province NP 44600 Nepal",
   ],
-
   url: SITE_URL,
-
   logo: {
     "@type": "ImageObject",
     "@id": `${SITE_URL}/#logo`,
@@ -74,18 +69,14 @@ const organizationSchema = {
     height: 512,
     caption: "Code Square logo",
   },
-
   image: `${SITE_URL}/og-image.png`,
-
   description: SITE_DESCRIPTION,
-
   address: {
     "@type": "PostalAddress",
     addressLocality: "Kathmandu",
     addressRegion: "Bagmati Province",
     addressCountry: "NP",
   },
-
   areaServed: [
     {
       "@type": "City",
@@ -100,7 +91,6 @@ const organizationSchema = {
       name: "International",
     },
   ],
-
   knowsAbout: [
     "Web Development",
     "Website Development",
@@ -117,55 +107,40 @@ const organizationSchema = {
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-
   "@id": `${SITE_URL}/#website`,
-
   name: SITE_NAME,
-
   alternateName: [
     "Code Square Nepal",
     "Code Square Kathmandu",
     "CodeSquare",
   ],
-
   url: SITE_URL,
-
   publisher: {
     "@id": `${SITE_URL}/#organization`,
   },
-
   inLanguage: "en",
 };
 
 const professionalServiceSchema = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
-
   "@id": `${SITE_URL}/#business`,
-
   name: "Code Square Pvt. Ltd.",
-
   alternateName: [
     "Code Square",
     "Code Square Nepal",
     "Code Square Kathmandu",
   ],
-
   url: SITE_URL,
-
   image: `${SITE_URL}/og-image.png`,
-
   logo: `${SITE_URL}/logo.png`,
-
   description: SITE_DESCRIPTION,
-
   address: {
     "@type": "PostalAddress",
     addressLocality: "Kathmandu",
     addressRegion: "Bagmati Province",
     addressCountry: "NP",
   },
-
   areaServed: [
     {
       "@type": "City",
@@ -180,7 +155,6 @@ const professionalServiceSchema = {
       name: "International",
     },
   ],
-
   serviceType: [
     "Website Development",
     "Web Development",
@@ -188,7 +162,6 @@ const professionalServiceSchema = {
     "Custom Software Development",
     "UI UX Design",
   ],
-
   parentOrganization: {
     "@id": `${SITE_URL}/#organization`,
   },
@@ -200,7 +173,6 @@ export const metadata: Metadata = {
   title: {
     default:
       "Code Square | Software Company & Digital Product Studio in Kathmandu, Nepal",
-
     template: "%s | Code Square",
   },
 
@@ -223,28 +195,22 @@ export const metadata: Metadata = {
     "Code Square Pvt Ltd",
     "Code Square software company",
     "Code Square Nepal software company",
-
     "software company Kathmandu",
     "software company in Kathmandu",
     "IT company Kathmandu",
     "IT company in Kathmandu",
     "software development company Kathmandu",
     "software development company Nepal",
-
     "web development Kathmandu",
     "web development Nepal",
     "website development Kathmandu",
     "website development Nepal",
-
     "mobile app development Kathmandu",
     "mobile app development Nepal",
-
     "custom software development Nepal",
     "custom software development Kathmandu",
-
     "UI UX design Nepal",
     "UI UX design Kathmandu",
-
     "digital product development Nepal",
     "software studio Kathmandu",
     "software studio Nepal",
@@ -267,7 +233,6 @@ export const metadata: Metadata = {
 
   alternates: {
     canonical: SITE_URL,
-
     languages: {
       "en-NP": SITE_URL,
       en: SITE_URL,
@@ -326,22 +291,6 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
       "max-snippet": -1,
     },
-  },
-
-  icons: {
-    icon: [
-      {
-        url: "/favicon.ico",
-        sizes: "48x48",
-      },
-      {
-        url: "/icon.png",
-        sizes: "128x128",
-        type: "image/png",
-      },
-    ],
-    shortcut: "/favicon.ico",
-    apple: "/apple-icon.png",
   },
 
   manifest: "/manifest.webmanifest",
