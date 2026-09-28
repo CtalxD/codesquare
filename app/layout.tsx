@@ -45,9 +45,22 @@ const organizationSchema = {
 
   alternateName: [
     "Code Square Nepal",
+    "codesquare",
+    "codesquare.com.np",
+    
     "Code Square Kathmandu",
     "CodeSquare",
     "Code Square Pvt Ltd",
+    "Code Square software company",
+    "Code Square Nepal software company",
+    "Code Square Pvt. Ltd.",
+    "Code Square Pvt. Ltd. Nepal",
+    "Code Square Pvt. Ltd. Kathmandu",
+    "Code Square Pvt. Ltd. Nepal Kathmandu",
+    "Code Square Pvt. Ltd. Nepal Kathmandu Bagmati Province",
+    "Code Square Pvt. Ltd. Nepal Kathmandu Bagmati Province NP",
+    "Code Square Pvt. Ltd. Nepal Kathmandu Bagmati Province NP 44600",
+    "Code Square Pvt. Ltd. Nepal Kathmandu Bagmati Province NP 44600 Nepal",
   ],
 
   url: SITE_URL,
