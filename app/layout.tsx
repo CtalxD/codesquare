@@ -319,12 +319,16 @@ export const metadata: Metadata = {
     icon: [
       {
         url: "/favicon.ico",
+        sizes: "48x48",
       },
       {
         url: "/icon.png",
+        sizes: "128x128",
         type: "image/png",
       },
     ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-icon.png",
   },
 
   manifest: "/manifest.webmanifest",
