@@ -1,4 +1,4 @@
-//app/components/Footer.tsx
+// app/components/Footer.tsx
 import Link from "next/link";
 import styles from "../css/footer.module.css";
 import Logo from "./logo";
@@ -11,6 +11,12 @@ const nav: [string, string][] = [
   ["Services", "/services"],
   ["About us", "/about"],
   ["Contact", "/contact"],
+];
+
+/* Legal pages, shown to the right of the copyright line */
+const legal: [string, string][] = [
+  ["Privacy Policy", "/privacy"],
+  ["Terms of Service", "/terms"],
 ];
 
 export default function Footer() {
@@ -50,9 +56,19 @@ export default function Footer() {
           </div>
         </div>
 
-        <p className={styles.copy}>
-          © {new Date().getFullYear()} Code Square. All rights reserved.
-        </p>
+        <div className={styles.bottom}>
+          <p className={styles.copy}>
+            © {new Date().getFullYear()} Code Square. All rights reserved.
+          </p>
+
+          <nav className={styles.legal} aria-label="Legal">
+            {legal.map(([l, href]) => (
+              <Link key={href} href={href}>
+                {l}
+              </Link>
+            ))}
+          </nav>
+        </div>
       </div>
     </footer>
   );

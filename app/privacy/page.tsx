@@ -1,195 +1,239 @@
-//app/privacy/page.tsx
+// app/privacy/page.tsx
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Link from "next/link";
-import styles from "../css/legal.module.css";
-import { CONTACT, CONTACT_EMAIL_HREF } from "../../lib/contactConfig";
+import styles from "../css/privacy.module.css";
 
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description:
+    "How Code Square Pvt. Ltd. collects, uses and protects the information you send us through this website.",
+  alternates: { canonical: "/privacy" },
+};
+
+/* ============================================================
+   Content (edit here)
+   ============================================================ */
+const EMAIL = "codesquare2026@gmail.com";
+const UPDATED = "3 October 2026";
+
+const sections: { id: string; t: string; body: ReactNode }[] = [
+  {
+    id: "who-we-are",
+    t: "Who we are",
+    body: (
+      <>
+        <p>
+          This website is run by Code Square Pvt. Ltd. (&ldquo;Code
+          Square&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;), a software and
+          design studio based in Kathmandu, Nepal. We are responsible for the
+          personal information described in this policy.
+        </p>
+        <p>
+          You can reach us at <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "what-we-collect",
+    t: "What we collect",
+    body: (
+      <>
+        <p>
+          <strong>Information you give us.</strong> When you use the contact
+          form, we receive what you type into it:
+        </p>
+        <ul>
+          <li>your name and email address</li>
+          <li>your phone number and the country you selected</li>
+          <li>the services you are interested in and when you want to start</li>
+          <li>any message or project details you choose to write</li>
+        </ul>
+        <p>
+          <strong>Information stored in your browser.</strong> To limit spam,
+          the contact form saves the times of your recent submissions in your
+          browser&apos;s local storage. This stays on your device and is not
+          sent to us.
+        </p>
+        <p>
+          <strong>Technical information.</strong> Like most websites, our
+          hosting provider may record basic technical data such as IP address,
+          browser type and the pages requested, for security and reliability.
+        </p>
+        <p>
+          At the time of writing, this website does not use advertising
+          trackers. If that changes, we will update this page.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "how-we-use-it",
+    t: "How we use it",
+    body: (
+      <>
+        <p>We use your information to:</p>
+        <ul>
+          <li>reply to your enquiry and discuss your project</li>
+          <li>prepare proposals, estimates and next steps you ask for</li>
+          <li>protect the website from spam and abuse</li>
+          <li>meet legal obligations</li>
+        </ul>
+        <p>We do not sell your personal information.</p>
+      </>
+    ),
+  },
+  {
+    id: "who-we-share-with",
+    t: "Who we share it with",
+    body: (
+      <>
+        <p>
+          Contact form messages are delivered through{" "}
+          <strong>Web3Forms</strong>, a form service that passes the message
+          to our email inbox. Our email is hosted by Google. These providers
+          process your information only to deliver it to us, under their own
+          privacy terms.
+        </p>
+        <p>
+          We may also share information when the law requires it, or with
+          professional advisers who are bound to keep it confidential. We do
+          not share it with anyone else for their own marketing.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "how-long-we-keep-it",
+    t: "How long we keep it",
+    body: (
+      <p>
+        We keep enquiries for as long as we need them to reply, to carry out
+        any work we agree on, and to keep a reasonable record of the
+        conversation. If an enquiry does not lead to a project, we delete it
+        when it is no longer useful. You can ask us to delete it sooner at any
+        time.
+      </p>
+    ),
+  },
+  {
+    id: "your-rights",
+    t: "Your choices and rights",
+    body: (
+      <>
+        <p>You can email us to:</p>
+        <ul>
+          <li>ask what information we hold about you</li>
+          <li>correct anything that is wrong</li>
+          <li>ask us to delete your information</li>
+          <li>object to us contacting you again</li>
+        </ul>
+        <p>
+          We will respond within a reasonable time. You can also clear your
+          browser&apos;s local storage at any time to remove the spam-limit
+          data described above.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "security",
+    t: "Security",
+    body: (
+      <p>
+        We use reasonable technical and organisational measures to protect
+        your information, including encrypted connections (HTTPS) and limiting
+        access to the people who need it. No method of transmission or storage
+        is completely secure, so we cannot guarantee absolute security.
+      </p>
+    ),
+  },
+  {
+    id: "children",
+    t: "Children",
+    body: (
+      <p>
+        This website is for businesses and adults. It is not directed at
+        children under 18, and we do not knowingly collect their information.
+        If you believe a child has sent us information, email us and we will
+        delete it.
+      </p>
+    ),
+  },
+  {
+    id: "changes",
+    t: "Changes to this policy",
+    body: (
+      <p>
+        We may update this policy from time to time. The date at the top of
+        the page shows when it last changed. If we make a significant change,
+        we will make it clear on this page.
+      </p>
+    ),
+  },
+  {
+    id: "contact",
+    t: "Contact us",
+    body: (
+      <p>
+        Questions about this policy or your information? Write to{" "}
+        <a href={`mailto:${EMAIL}`}>{EMAIL}</a>. You can also read our{" "}
+        <Link href="/terms">Terms of Service</Link>.
+      </p>
+    ),
+  },
+];
+
+/* ============================================================
+   Page
+   ============================================================ */
 export default function PrivacyPage() {
   return (
-    <main id="main" className={styles.page}>
-      {/* ================= HERO ================= */}
-      <section className={styles.hero} aria-labelledby="privacy-title">
-        <div className={styles.container}>
-          <span className={styles.eyebrow}>Legal</span>
-          <h1 id="privacy-title" className={styles.title}>
-            Privacy Policy
-          </h1>
+    <div className={styles.page}>
+      <main className={styles.main}>
+        <header className={styles.hero}>
+          <p className={styles.kicker}>Legal</p>
+          <h1 className={styles.title}>Privacy policy</h1>
           <p className={styles.lead}>
-            What we collect when you use this site, why we collect it,
-            and how you can ask us to delete it.
+            What we collect when you use this website, why we collect it, and
+            the choices you have. Short and in plain language.
           </p>
-          <span className={styles.meta}>
-            <span>Last updated</span>
-            <span className={styles.metaDot} aria-hidden="true" />
-            <span>January 2026</span>
-          </span>
-        </div>
-      </section>
+          <p className={styles.updated}>Last updated {UPDATED}</p>
+        </header>
 
-      {/* ================= BODY ================= */}
-      <section className={styles.body}>
-        <div className={styles.container}>
-          <div className={styles.prose}>
-            <p>
-              Code Square Pvt. Ltd. (&ldquo;Code Square&rdquo;,
-              &ldquo;we&rdquo;, &ldquo;us&rdquo;) operates{" "}
-              <strong>codesquare.com.np</strong>. This page explains
-              what information we collect when you visit the site or
-              contact us, and what we do with it.
-            </p>
-            <p>
-              We keep this simple because our practices are simple. We
-              don&rsquo;t run ads, we don&rsquo;t sell data, and we
-              don&rsquo;t track you across other websites.
-            </p>
+        <div className={styles.layout}>
+          <nav className={styles.toc} aria-label="On this page">
+            <p className={styles.tocHead}>On this page</p>
+            <ol>
+              {sections.map((s, i) => (
+                <li key={s.id}>
+                  <a href={`#${s.id}`}>
+                    <span aria-hidden="true">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    {s.t}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
 
-            <hr />
-
-            <h2>1. What we collect</h2>
-            <p>
-              When you submit the contact form on this site, we collect
-              the details you choose to give us:
-            </p>
-            <ul>
-              <li>Your name</li>
-              <li>Your email address</li>
-              <li>Your phone number and country code</li>
-              <li>Your company name</li>
-              <li>The service you&rsquo;re interested in</li>
-              <li>Your rough budget</li>
-              <li>Your message about the project</li>
-            </ul>
-            <p>
-              Along with the form, we automatically record the page you
-              submitted from, the referring page (if any), your browser
-              user-agent string, and the time of submission. This
-              metadata helps us filter spam and understand how people
-              find us.
-            </p>
-            <p>
-              We do not use advertising cookies, and we do not run
-              third-party analytics trackers on this site.
-            </p>
-
-            <h2>2. Why we collect it</h2>
-            <p>
-              We use the information you submit for one purpose: to
-              read your enquiry and reply to it. That&rsquo;s it. We
-              may also keep a record of the correspondence in our email
-              system so we can refer back to it if you get in touch
-              again.
-            </p>
-
-            <h2>3. Who we share it with</h2>
-            <p>
-              We share your form submission with exactly one third
-              party: <strong>Web3Forms</strong>, the service we use to
-              deliver contact-form emails to our inbox. Web3Forms
-              processes the submission and forwards it to us. You can
-              read their privacy practices at{" "}
-              <a
-                href="https://web3forms.com/privacy"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                web3forms.com/privacy
-              </a>
-              .
-            </p>
-            <p>
-              Beyond that, we do not sell, rent, or share your
-              information with anyone else, unless we are legally
-              required to do so by a valid request from a Nepali
-              authority.
-            </p>
-
-            <h2>4. How long we keep it</h2>
-            <p>
-              We keep contact-form enquiries for as long as they&rsquo;re
-              useful to an ongoing or potential project, and no longer
-              than three years. If you ask us to delete your data, we
-              will do so within 30 days, unless we&rsquo;re required to
-              keep it for tax or legal reasons.
-            </p>
-
-            <h2>5. Your rights</h2>
-            <p>You can ask us to:</p>
-            <ul>
-              <li>Show you what information we hold about you</li>
-              <li>Correct anything that&rsquo;s wrong</li>
-              <li>Delete your information</li>
-              <li>Stop contacting you</li>
-            </ul>
-            <p>
-              To make any of these requests, email us at{" "}
-              <a href={CONTACT_EMAIL_HREF}>{CONTACT.email}</a>. We
-              respond within one business day and act on the request
-              within 30 days.
-            </p>
-
-            <h2>6. Security</h2>
-            <p>
-              Form submissions travel over HTTPS. Our inbox is
-              protected by a password and two-factor authentication.
-              No system is perfectly secure, but we take reasonable
-              steps to protect what you send us, and we don&rsquo;t
-              store anything we don&rsquo;t need.
-            </p>
-
-            <h2>7. Children</h2>
-            <p>
-              This site is intended for business enquiries. We
-              don&rsquo;t knowingly collect information from anyone
-              under 16. If you believe we have, contact us and
-              we&rsquo;ll remove it.
-            </p>
-
-            <h2>8. Changes to this policy</h2>
-            <p>
-              If we change this policy, we&rsquo;ll update the
-              &ldquo;Last updated&rdquo; date above. Material changes
-              will be noted on the homepage for a short period.
-            </p>
-
-            <h2>9. Contact</h2>
-            <p>
-              Questions about this policy, or about your data? Write to
-              us:
-            </p>
-
-            <div className={styles.footNote}>
-              <p>
-                <strong>Code Square Pvt. Ltd.</strong>
-              </p>
-              <p>
-                {CONTACT.address}
-                <br />
-                Email:{" "}
-                <a
-                  href={CONTACT_EMAIL_HREF}
-                  className={styles.footLink}
-                >
-                  {CONTACT.email}
-                </a>
-                <br />
-                Phone:{" "}
-                <a
-                  href={CONTACT.phoneHref}
-                  className={styles.footLink}
-                >
-                  {CONTACT.phone}
-                </a>
-              </p>
-              <p>
-                See also our{" "}
-                <Link href="/terms" className={styles.footLink}>
-                  Terms of Service
-                </Link>
-                .
-              </p>
-            </div>
+          <div className={styles.content}>
+            {sections.map((s, i) => (
+              <section key={s.id} id={s.id} className={styles.section}>
+                <h2 className={styles.h2}>
+                  <span className={styles.num} aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  {s.t}
+                </h2>
+                <div className={styles.body}>{s.body}</div>
+              </section>
+            ))}
           </div>
         </div>
-      </section>
-    </main>
+      </main>
+    </div>
   );
 }

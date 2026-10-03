@@ -1,0 +1,285 @@
+/* ============================================================
+   Code Square - terms.module.css
+   Legal page: hero, sticky contents list, numbered sections.
+   Same palette and card language as the rest of the site.
+   ============================================================ */
+
+:global(html) {
+  scroll-behavior: smooth;
+  scroll-padding-top: 110px;
+}
+
+/* ---------- Tokens ---------- */
+.page {
+  --pine: #12332e;
+  --deep: #0d2622;
+  --mist: #e8eeeb;
+  --lichen: #c6d2b2;
+  --sage: #a9c4bc;
+  --muted: #3a554f;
+  --line: rgba(18, 51, 46, 0.14);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --gutter: clamp(20px, 4vw, 48px);
+
+  position: relative;
+  min-height: 60vh;
+  background:
+    radial-gradient(ellipse 55% 35% at 100% 0%, rgba(198, 210, 178, 0.5), transparent 70%),
+    radial-gradient(ellipse 40% 30% at 0% 20%, rgba(169, 196, 188, 0.3), transparent 70%),
+    var(--mist);
+  color: var(--pine);
+  line-height: 1.6;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.page ::selection {
+  background: var(--lichen);
+  color: var(--pine);
+}
+
+.page a:focus-visible {
+  outline: 3px solid var(--pine);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+.main {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: clamp(40px, 7vw, 88px) var(--gutter) 0;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  display: grid;
+  gap: 20px;
+  justify-items: start;
+  max-width: 900px;
+  padding-bottom: clamp(36px, 6vw, 72px);
+}
+
+.kicker {
+  margin: 0;
+  padding: 6px 14px;
+  border: 1.5px solid var(--pine);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2.6rem, 7vw, 5.6rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+}
+
+.lead {
+  margin: 0;
+  max-width: 32em;
+  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+  color: var(--muted);
+}
+
+.updated {
+  margin: 0;
+  padding-left: 14px;
+  border-left: 3px solid var(--lichen);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* ---------- Layout ---------- */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  gap: clamp(32px, 6vw, 96px);
+  align-items: start;
+}
+
+/* ---------- Contents list ---------- */
+.toc {
+  position: sticky;
+  top: 110px;
+  padding: clamp(20px, 2.4vw, 28px);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+}
+
+.tocHead {
+  margin: 0 0 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.toc ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.toc a {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  color: inherit;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.3;
+  transition: background 0.2s, transform 0.3s var(--ease);
+}
+
+.toc a span {
+  flex: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.toc a:hover {
+  background: var(--lichen);
+  transform: translateX(4px);
+}
+
+/* ---------- Content ---------- */
+.content {
+  min-width: 0;
+  max-width: 760px;
+  border-bottom: 2px solid var(--pine);
+}
+
+.section {
+  padding: clamp(28px, 4vw, 44px) 0;
+  border-top: 2px solid var(--pine);
+}
+
+.h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin: 0 0 18px;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.num {
+  flex: none;
+  font-size: 0.5em;
+  font-weight: 800;
+  letter-spacing: 0;
+  color: transparent;
+  -webkit-text-stroke: 1.2px var(--pine);
+  font-variant-numeric: tabular-nums;
+}
+
+.body {
+  display: grid;
+  gap: 14px;
+  font-size: 1.05rem;
+}
+
+.body p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.body strong {
+  color: var(--pine);
+  font-weight: 700;
+}
+
+.body ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.body li {
+  position: relative;
+  padding-left: 26px;
+  color: var(--muted);
+}
+
+/* brand square as the bullet */
+.body li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 10px;
+  height: 10px;
+  background: var(--pine);
+}
+
+.body a {
+  color: var(--pine);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--sage);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.2s;
+}
+
+.body a:hover {
+  text-decoration-color: var(--pine);
+}
+
+/* ---------- Motion ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .hero > * {
+    animation: rise 0.8s var(--ease) backwards;
+  }
+
+  .hero > :nth-child(2) { animation-delay: 0.08s; }
+  .hero > :nth-child(3) { animation-delay: 0.16s; }
+  .hero > :nth-child(4) { animation-delay: 0.24s; }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .toc {
+    position: static;
+  }
+}
+
+@media (max-width: 520px) {
+  .h2 {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .num {
+    font-size: 0.65em;
+  }
+}

@@ -125,7 +125,8 @@
   color: var(--f-muted);
 }
 
-.col a {
+.col a,
+.legal a {
   width: fit-content;
   max-width: 100%;
   overflow-wrap: anywhere;
@@ -135,7 +136,8 @@
   transition: background-size 0.3s var(--f-ease);
 }
 
-.col a:hover {
+.col a:hover,
+.legal a:hover {
   background-size: 100% 2px;
 }
 
@@ -148,18 +150,36 @@
 
 .brand:focus-visible,
 .col a:focus-visible,
+.legal a:focus-visible,
 .ctaBtn:focus-visible {
   outline: 3px solid var(--f-ink);
   outline-offset: 4px;
   border-radius: 6px;
 }
 
-.copy {
-  margin: 0;
+/* ---------- Bottom row: copyright left, legal links right ---------- */
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 24px;
   padding-top: 18px;
   border-top: 1px solid var(--f-line);
+}
+
+.copy {
+  margin: 0;
   font-size: 0.85rem;
   color: var(--f-muted);
+}
+
+.legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 /* ---------- Responsive ---------- */
@@ -186,5 +206,10 @@
   .ctaBtn {
     width: 100%;
     text-align: center;
+  }
+
+  .bottom {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
