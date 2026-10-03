@@ -1,3 +1,4 @@
+//app/components/Footer.tsx
 import Link from "next/link";
 import styles from "../css/footer.module.css";
 import Logo from "./logo";

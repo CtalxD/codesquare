@@ -1,3 +1,4 @@
+//app/components/Navbar.tsx
 "use client";
 
 import { useEffect, useState, type MouseEvent } from "react";

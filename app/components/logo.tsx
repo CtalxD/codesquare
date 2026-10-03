@@ -1,11 +1,4 @@
-/* ============================================================
-   Code Square logo - exact copy of the supplied artwork.
-   The C is perfectly symmetric top to bottom, and the square
-   sits exactly in the middle of its opening.
-   Colours are props with hard-coded defaults (no CSS variables),
-   so no page stylesheet can change them by accident.
-   ============================================================ */
-
+//app/components/logo.tsx
 const INK = "#1a1713"; /* near-black */
 const GOLD = "#b88c51"; /* brown-gold square */
 
