@@ -1,786 +1,489 @@
-//app/contact/page.tsx
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import { ArrowRight, Check, Copy } from "lucide-react";
-import styles from "../css/contact.module.css";
-import { useCopy } from "../../lib/useCopy";
 import {
-  AMOUNT_RE,
-  buildMailtoFallback,
-  CONTACT,
-  CONTACT_EMAIL_HREF,
-  COUNTRY_CODES,
-  EMAIL_RE,
-  MIN_SUBMIT_MS,
-  PHONE_RE,
-  SERVICE_OPTIONS,
-  SUBMIT_COOLDOWN_MS,
-  trackEvent,
-  WEB3FORMS_ENDPOINT,
-  WEB3FORMS_KEY,
-  type Web3FormsPayload,
-} from "../../lib/contactConfig";
+  useState,
+  type CSSProperties,
+  type FormEvent,
+  type PointerEvent,
+} from "react";
+import Image from "next/image";
+import styles from "../css/contact.module.css";
 
-type FormState = {
-  name: string;
-  email: string;
-  countryCode: string;
-  phone: string;
-  company: string;
-  service: string;
-  budget: string;
-  message: string;
-};
+const v = (o: Record<string, number | string>) =>
+  o as unknown as CSSProperties;
 
-const EMPTY: FormState = {
-  name: "",
-  email: "",
-  countryCode: "+977",
-  phone: "",
-  company: "",
-  service: "website",
-  budget: "",
-  message: "",
-};
+/* ============================================================
+   Content (edit here)
+   ============================================================ */
+const EMAIL = "codesquare2026@gmail.com";
 
+/* Web3Forms access key lives in .env.local:
+   NEXT_PUBLIC_WEB3FORMS_KEY=your-key                          */
+const ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
+
+const services = [
+  "UI/UX design",
+  "Custom software",
+  "Mobile apps",
+  "Websites",
+  "Not sure yet",
+];
+
+const timelines = ["As soon as possible", "In a month or two", "Just exploring"];
+
+const team = [
+  { n: "Prithak Rai", img: "/pr.jpg" },
+  { n: "Shrijan Thapa", img: "/sbt.jpg" },
+  { n: "Sital Aryal", img: "/si.jpeg" },
+  { n: "Sudil Maharjan", img: "/sm.jpg" },
+];
+
+/* [ISO, name, dial code, min digits, max digits] (digits after the country code) */
+const countries = (
+  [
+    ["NP", "Nepal", "977", 8, 10],
+    ["IN", "India", "91", 10, 10],
+    ["US", "United States", "1", 10, 10],
+    ["CA", "Canada", "1", 10, 10],
+    ["GB", "United Kingdom", "44", 10, 10],
+    ["AU", "Australia", "61", 9, 9],
+    ["NZ", "New Zealand", "64", 8, 10],
+    ["BD", "Bangladesh", "880", 10, 10],
+    ["PK", "Pakistan", "92", 10, 10],
+    ["LK", "Sri Lanka", "94", 9, 9],
+    ["BT", "Bhutan", "975", 8, 8],
+    ["AE", "UAE", "971", 9, 9],
+    ["SA", "Saudi Arabia", "966", 9, 9],
+    ["QA", "Qatar", "974", 8, 8],
+    ["SG", "Singapore", "65", 8, 8],
+    ["MY", "Malaysia", "60", 9, 10],
+    ["TH", "Thailand", "66", 9, 9],
+    ["PH", "Philippines", "63", 10, 10],
+    ["ID", "Indonesia", "62", 9, 12],
+    ["CN", "China", "86", 11, 11],
+    ["JP", "Japan", "81", 10, 10],
+    ["KR", "South Korea", "82", 9, 10],
+    ["DE", "Germany", "49", 10, 11],
+    ["FR", "France", "33", 9, 9],
+    ["NL", "Netherlands", "31", 9, 9],
+    ["ES", "Spain", "34", 9, 9],
+    ["IT", "Italy", "39", 9, 10],
+    ["ZA", "South Africa", "27", 9, 9],
+    ["NG", "Nigeria", "234", 10, 10],
+    ["BR", "Brazil", "55", 10, 11],
+    ["MX", "Mexico", "52", 10, 10],
+  ] as [string, string, string, number, number][]
+).map(([iso, name, dial, min, max]) => ({ iso, name, dial, min, max }));
+
+/* Rate limit (per browser): a short cooldown plus an hourly cap.
+   This is a deterrent only; Web3Forms enforces its own limits too. */
+const LIMIT_KEY = "cs_contact_sends";
+const MAX_PER_HOUR = 3;
+const HOUR = 60 * 60 * 1000;
+const COOLDOWN = 30 * 1000;
+
+function checkRateLimit(): string | null {
+  try {
+    const now = Date.now();
+    const sends: number[] = JSON.parse(
+      localStorage.getItem(LIMIT_KEY) || "[]",
+    ).filter((t: number) => now - t < HOUR);
+    const last = sends[sends.length - 1];
+    if (last && now - last < COOLDOWN) {
+      return `Please wait ${Math.ceil((COOLDOWN - (now - last)) / 1000)} seconds before sending another message.`;
+    }
+    if (sends.length >= MAX_PER_HOUR) {
+      return `You've reached the limit of ${MAX_PER_HOUR} messages per hour. Try again in ${Math.ceil((HOUR - (now - sends[0])) / 60000)} minutes, or email ${EMAIL}.`;
+    }
+    localStorage.setItem(LIMIT_KEY, JSON.stringify([...sends, now]));
+  } catch {
+    /* storage blocked: skip the local limit */
+  }
+  return null;
+}
+
+type Status = "idle" | "sending" | "sent" | "error";
+
+/* ============================================================
+   Page
+   ============================================================ */
 export default function ContactPage() {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const mountedAtRef = useRef<number>(0);
-  const lastSubmitAtRef = useRef<number>(0);
-  const successHeadingRef = useRef<HTMLHeadingElement>(null);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [iso, setIso] = useState("NP");
+  const [phoneTouched, setPhoneTouched] = useState(false);
+  const [errMsg, setErrMsg] = useState("");
+  const [picked, setPicked] = useState<string[]>([]);
+  const [when, setWhen] = useState("");
+  const [msg, setMsg] = useState("");
+  const [status, setStatus] = useState<Status>("idle");
+  const [copied, setCopied] = useState(false);
 
-  const [form, setForm] = useState<FormState>(EMPTY);
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
-    "idle"
-  );
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof FormState, string>>
-  >({});
-  const [serverMessage, setServerMessage] = useState<string>("");
-  const { copiedKey, copy } = useCopy();
+  const country = countries.find((c) => c.iso === iso) ?? countries[0];
+  const range =
+    country.min === country.max
+      ? `${country.min}`
+      : `${country.min}–${country.max}`;
+  const phoneOk = phone.length >= country.min && phone.length <= country.max;
+  const phoneBad = phoneTouched && !phoneOk;
 
-  useEffect(() => {
-    mountedAtRef.current = Date.now();
-  }, []);
+  const done = [name.trim(), picked.length, email.trim(), phoneOk].filter(
+    Boolean,
+  ).length;
+  const ready = done === 4;
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-    const svc = params.get("service");
-    if (!svc) return;
-    const match = SERVICE_OPTIONS.find((o) => o.value === svc);
-    if (match) setForm((f) => ({ ...f, service: match.value }));
-  }, []);
-
-  useEffect(() => {
-    if (status === "sent") {
-      successHeadingRef.current?.focus();
-    }
-  }, [status]);
-
-  useEffect(() => {
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReduced) return;
-
-    let cleanup: (() => void) | undefined;
-    let cancelled = false;
-
-    (async () => {
-      const gsapMod = await import("gsap");
-      const stMod = await import("gsap/ScrollTrigger");
-      const gsap = gsapMod.gsap ?? gsapMod.default;
-      const ScrollTrigger = stMod.ScrollTrigger ?? stMod.default;
-
-      if (cancelled) return;
-      gsap.registerPlugin(ScrollTrigger);
-
-      const root = rootRef.current;
-      if (!root) return;
-
-      const ctx = gsap.context(() => {
-        gsap.from("[data-contact-line]", {
-          yPercent: 110,
-          duration: 1,
-          ease: "expo.out",
-          stagger: 0.1,
-          delay: 0.1,
-        });
-
-        gsap.from("[data-contact-fade]", {
-          y: 24,
-          opacity: 0,
-          duration: 0.9,
-          ease: "power3.out",
-          stagger: 0.1,
-          delay: 0.4,
-        });
-
-        gsap.from("[data-contact-card]", {
-          y: 32,
-          opacity: 0,
-          duration: 0.9,
-          ease: "power3.out",
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: "[data-contact-body]",
-            start: "top 80%",
-          },
-        });
-
-        gsap.from("[data-contact-form]", {
-          y: 32,
-          opacity: 0,
-          duration: 1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: "[data-contact-body]",
-            start: "top 78%",
-          },
-        });
-
-        ScrollTrigger.refresh();
-      }, root);
-
-      cleanup = () => ctx.revert();
-    })();
-
-    return () => {
-      cancelled = true;
-      if (cleanup) cleanup();
-    };
-  }, []);
-
-  const update =
-    <K extends keyof FormState>(key: K) =>
-    (
-      e: React.ChangeEvent<
-        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-      >
-    ) => {
-      setForm((f) => ({ ...f, [key]: e.target.value }));
-      setErrors((prev) => ({ ...prev, [key]: undefined }));
-    };
-
-  const validate = (): boolean => {
-    const next: Partial<Record<keyof FormState, string>> = {};
-
-    if (!form.name.trim()) next.name = "Please tell us your name.";
-
-    if (!form.email.trim()) {
-      next.email = "Please add an email so we can reply.";
-    } else if (!EMAIL_RE.test(form.email.trim())) {
-      next.email = "That email doesn't look right.";
-    }
-
-    if (!form.phone.trim()) {
-      next.phone = "Please add a phone number.";
-    } else if (!PHONE_RE.test(form.phone.trim())) {
-      next.phone = "Digits, spaces, and dashes only.";
-    }
-
-    if (!form.company.trim()) {
-      next.company = "Please tell us the company name.";
-    }
-
-    if (!form.budget.trim()) {
-      next.budget = "A rough number is enough.";
-    } else if (!AMOUNT_RE.test(form.budget.trim())) {
-      next.budget = "Numbers only, please.";
-    }
-
-    if (!form.message.trim() || form.message.trim().length < 10) {
-      next.message = "A sentence or two about the project, please.";
-    }
-
-    setErrors(next);
-    return Object.keys(next).length === 0;
+  const onPhone = (val: string) =>
+    setPhone(val.replace(/\D/g, "").replace(/^0+/, "").slice(0, country.max));
+  const onCountry = (code: string) => {
+    const c = countries.find((x) => x.iso === code) ?? countries[0];
+    setIso(code);
+    setPhone((p) => p.slice(0, c.max));
   };
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const toggle = (s: string) =>
+    setPicked((p) => (p.includes(s) ? p.filter((x) => x !== s) : [...p, s]));
+
+  const glow = (e: PointerEvent<HTMLElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+  };
+
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (status === "sending") return;
-    if (!validate()) return;
 
-    /* Bot check - silent reject if the form was filled too fast. */
-    if (Date.now() - mountedAtRef.current < MIN_SUBMIT_MS) {
-      setStatus("error");
-      setServerMessage(
-        "That was a little too quick. Please try again in a moment."
-      );
+    /* Spam trap: real visitors never see or fill this field */
+    const trap = new FormData(e.currentTarget).get("botcheck");
+    if (trap) return;
+
+    if (!phoneOk) {
+      setPhoneTouched(true);
       return;
     }
 
-    /* Rate limit - client-side, catches accidental double-submits. */
-    if (Date.now() - lastSubmitAtRef.current < SUBMIT_COOLDOWN_MS) {
-      const wait = Math.ceil(
-        (SUBMIT_COOLDOWN_MS - (Date.now() - lastSubmitAtRef.current)) / 1000
-      );
+    const limited = checkRateLimit();
+    if (limited) {
+      setErrMsg(limited);
       setStatus("error");
-      setServerMessage(
-        `Please wait ${wait}s before sending another message.`
-      );
+      return;
+    }
+
+    if (!ACCESS_KEY) {
+      setErrMsg(`We couldn't send that. Please email us at ${EMAIL}.`);
+      setStatus("error");
       return;
     }
 
     setStatus("sending");
-    setServerMessage("");
-
-    const payload: Web3FormsPayload = {
-      access_key: WEB3FORMS_KEY,
-      subject: `New enquiry - ${form.name} (${form.company})`,
-      from_name: "Code Square website",
-      email: form.email.trim(),
-      name: form.name.trim(),
-      phone: `${form.countryCode} ${form.phone.trim()}`,
-      company: form.company.trim(),
-      service: form.service,
-      budget: form.budget.trim(),
-      message: form.message.trim(),
-      botcheck: "",
-      submitted_at: new Date().toISOString(),
-      page_source:
-        typeof window !== "undefined" ? window.location.pathname : "",
-      referrer:
-        typeof document !== "undefined" ? document.referrer || "direct" : "",
-      user_agent:
-        typeof navigator !== "undefined" ? navigator.userAgent : "",
-    };
-
     try {
-      const res = await fetch(WEB3FORMS_ENDPOINT, {
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: ACCESS_KEY,
+          subject: `Project enquiry from ${name.trim()}`,
+          from_name: "Code Square website",
+          name: name.trim(),
+          email: email.trim(),
+          phone: `+${country.dial} ${phone}`,
+          country: country.name,
+          services: picked.join(", "),
+          timeline: when || "Not specified",
+          message: msg.trim() || "(no message)",
+        }),
       });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
 
-      const data = (await res.json()) as {
-        success?: boolean;
-        message?: string;
-      };
-
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "send failed");
-      }
-
-      trackEvent("contact_submit", {
-        service: form.service,
-        has_company: Boolean(form.company),
-      });
-
-      lastSubmitAtRef.current = Date.now();
       setStatus("sent");
-      setForm(EMPTY);
-    } catch (err) {
-      const detail = err instanceof Error ? err.message : "unknown";
-      setServerMessage(detail);
+      setName("");
+      setEmail("");
+      setPhone("");
+      setPhoneTouched(false);
+      setPicked([]);
+      setWhen("");
+      setMsg("");
+    } catch {
+      setErrMsg(
+        `We couldn't send that. Please try again, or write to us at ${EMAIL}.`,
+      );
       setStatus("error");
-      trackEvent("contact_submit_error", { detail });
     }
   };
 
-  const emailCopied = copiedKey === "email";
-  const phoneCopied = copiedKey === "phone";
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      /* clipboard blocked: the address is still visible */
+    }
+  };
 
   return (
-    <main id="main" ref={rootRef} className={styles.page}>
-      {/* ================= HERO ================= */}
-      <section className={styles.hero} aria-labelledby="contact-title">
-        <div className={styles.container}>
-          <span className={styles.eyebrow} data-contact-fade>
-            05 - Contact
-          </span>
+    <div className={styles.page}>
+      <main className={styles.main}>
+        {/* ---------- Left: dark panel ---------- */}
+        <section
+          className={styles.hero}
+          onPointerMove={glow}
+          aria-label="Get in touch"
+        >
+          <span className={styles.glow} aria-hidden="true" />
 
-          <h1 id="contact-title" className={styles.title}>
-            <span className={styles.maskLine}>
-              <span data-contact-line>Tell us about</span>
-            </span>
-            <span className={styles.maskLine}>
-              <span data-contact-line>the project.</span>
-            </span>
-          </h1>
+          <div className={styles.heroBody}>
+            <p className={styles.kicker}>Contact</p>
+            <h1 className={styles.title}>
+              Let&apos;s build something{" "}
+              <span className={styles.hl}>people use</span>
+            </h1>
+            <p className={styles.lead}>
+              Tell us what you have in mind. A real person on our team reads
+              every message.
+            </p>
 
-          <p className={styles.lead} data-contact-fade>
-            We reply within one business day - with honest thoughts on
-            scope, timeline, and cost. No discovery-call funnel, no
-            pressure.
-          </p>
-        </div>
-      </section>
-
-      {/* ================= BODY ================= */}
-      <section className={styles.body} data-contact-body>
-        <div className={styles.container}>
-          <div className={styles.grid}>
-            {/* ---------- Left: contact details ---------- */}
-            <aside className={styles.aside}>
-              <div className={styles.asideBlock} data-contact-card>
-                <span className={styles.asideLabel}>Email</span>
-                <div className={styles.asideRow}>
-                  <a
-                    href={CONTACT_EMAIL_HREF}
-                    className={styles.asideValue}
-                  >
-                    {CONTACT.email}
-                  </a>
-                  <button
-                    type="button"
-                    className={`${styles.copyBtn} ${
-                      emailCopied ? styles.copyBtnDone : ""
-                    }`}
-                    onClick={() => copy("email", CONTACT.email)}
-                    aria-label={
-                      emailCopied
-                        ? "Email copied to clipboard"
-                        : "Copy email address"
-                    }
-                  >
-                    {emailCopied ? (
-                      <>
-                        <Check
-                          size={13}
-                          strokeWidth={2.25}
-                          aria-hidden="true"
-                        />
-                        <span className={styles.copyBtnLabel}>
-                          Copied
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={13} strokeWidth={2} aria-hidden="true" />
-                        <span className={styles.copyBtnLabel}>Copy</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              <div className={styles.asideBlock} data-contact-card>
-                <span className={styles.asideLabel}>Phone</span>
-                <div className={styles.asideRow}>
-                  <a
-                    href={CONTACT.phoneHref}
-                    className={styles.asideValue}
-                  >
-                    {CONTACT.phone}
-                  </a>
-                  <button
-                    type="button"
-                    className={`${styles.copyBtn} ${
-                      phoneCopied ? styles.copyBtnDone : ""
-                    }`}
-                    onClick={() => copy("phone", CONTACT.phone)}
-                    aria-label={
-                      phoneCopied
-                        ? "Phone number copied to clipboard"
-                        : "Copy phone number"
-                    }
-                  >
-                    {phoneCopied ? (
-                      <>
-                        <Check
-                          size={13}
-                          strokeWidth={2.25}
-                          aria-hidden="true"
-                        />
-                        <span className={styles.copyBtnLabel}>
-                          Copied
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={13} strokeWidth={2} aria-hidden="true" />
-                        <span className={styles.copyBtnLabel}>Copy</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              <div className={styles.asideBlock} data-contact-card>
-                <span className={styles.asideLabel}>Based in</span>
-                <span className={styles.asideValue}>
-                  {CONTACT.address}
+            <a
+              href={`mailto:${EMAIL}`}
+              className={styles.mail}
+              aria-label={EMAIL}
+            >
+              {EMAIL.split("").map((ch, i) => (
+                <span key={i} className={styles.ch} aria-hidden="true">
+                  {ch}
                 </span>
-              </div>
+              ))}
+            </a>
 
-              <div className={styles.asideBlock} data-contact-card>
-                <span className={styles.asideLabel}>Hours</span>
-                <span className={styles.asideValue}>{CONTACT.hours}</span>
-              </div>
-
-              <div className={styles.asideNote} data-contact-card>
-                <p>
-                  Prefer to write in your own format? Email us directly
-                  - same inbox, same reply time.
-                </p>
-              </div>
-            </aside>
-
-            {/* ---------- Right: form ---------- */}
-            <div className={styles.formWrap} data-contact-form>
-              {status === "sent" ? (
-                <div className={styles.success} role="status">
-                  <span className={styles.successIcon} aria-hidden="true">
-                    <Check size={22} strokeWidth={2} />
-                  </span>
-                  <h2
-                    className={styles.successTitle}
-                    ref={successHeadingRef}
-                    tabIndex={-1}
-                  >
-                    Got it.
-                  </h2>
-                  <p className={styles.successText}>
-                    We&rsquo;ll read your message and reply within one
-                    business day. If it&rsquo;s urgent, call{" "}
-                    <a
-                      href={CONTACT.phoneHref}
-                      className={styles.successLink}
-                    >
-                      {CONTACT.phone}
-                    </a>
-                    .
-                  </p>
-                  <button
-                    type="button"
-                    className={styles.secondaryBtn}
-                    onClick={() => setStatus("idle")}
-                  >
-                    Send another message
-                  </button>
-                </div>
-              ) : (
-                <form
-                  className={styles.form}
-                  onSubmit={onSubmit}
-                  noValidate
-                >
-                  <input
-                    type="checkbox"
-                    name="botcheck"
-                    tabIndex={-1}
-                    autoComplete="off"
-                    style={{ display: "none" }}
-                    aria-hidden="true"
-                  />
-
-                  <div className={styles.row}>
-                    <div className={styles.field}>
-                      <label
-                        className={styles.label}
-                        htmlFor="contact-name"
-                      >
-                        Your name
-                      </label>
-                      <input
-                        id="contact-name"
-                        className={styles.input}
-                        type="text"
-                        autoComplete="name"
-                        value={form.name}
-                        onChange={update("name")}
-                        aria-invalid={Boolean(errors.name)}
-                        aria-describedby={
-                          errors.name ? "err-name" : undefined
-                        }
-                        required
-                      />
-                      {errors.name && (
-                        <span id="err-name" className={styles.error}>
-                          {errors.name}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className={styles.field}>
-                      <label
-                        className={styles.label}
-                        htmlFor="contact-email"
-                      >
-                        Email
-                      </label>
-                      <input
-                        id="contact-email"
-                        className={styles.input}
-                        type="email"
-                        autoComplete="email"
-                        value={form.email}
-                        onChange={update("email")}
-                        aria-invalid={Boolean(errors.email)}
-                        aria-describedby={
-                          errors.email ? "err-email" : undefined
-                        }
-                        required
-                      />
-                      {errors.email && (
-                        <span id="err-email" className={styles.error}>
-                          {errors.email}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className={styles.field}>
-                    <label
-                      className={styles.label}
-                      htmlFor="contact-phone"
-                    >
-                      Phone
-                    </label>
-                    <div className={styles.phoneRow}>
-                      <select
-                        aria-label="Country code"
-                        className={`${styles.select} ${styles.selectCode}`}
-                        value={form.countryCode}
-                        onChange={update("countryCode")}
-                      >
-                        {COUNTRY_CODES.map((c) => (
-                          <option key={c.value} value={c.value}>
-                            {c.label}
-                          </option>
-                        ))}
-                      </select>
-                      <input
-                        id="contact-phone"
-                        className={`${styles.input} ${styles.inputPhone}`}
-                        type="tel"
-                        inputMode="tel"
-                        autoComplete="tel-national"
-                        placeholder="98XXXXXXXX"
-                        value={form.phone}
-                        onChange={update("phone")}
-                        aria-invalid={Boolean(errors.phone)}
-                        aria-describedby={
-                          errors.phone ? "err-phone" : undefined
-                        }
-                        required
-                      />
-                    </div>
-                    {errors.phone && (
-                      <span id="err-phone" className={styles.error}>
-                        {errors.phone}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className={styles.row}>
-                    <div className={styles.field}>
-                      <label
-                        className={styles.label}
-                        htmlFor="contact-company"
-                      >
-                        Company
-                      </label>
-                      <input
-                        id="contact-company"
-                        className={styles.input}
-                        type="text"
-                        autoComplete="organization"
-                        value={form.company}
-                        onChange={update("company")}
-                        aria-invalid={Boolean(errors.company)}
-                        aria-describedby={
-                          errors.company ? "err-company" : undefined
-                        }
-                        required
-                      />
-                      {errors.company && (
-                        <span id="err-company" className={styles.error}>
-                          {errors.company}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className={styles.field}>
-                      <label
-                        className={styles.label}
-                        htmlFor="contact-service"
-                      >
-                        What do you need?
-                      </label>
-                      <select
-                        id="contact-service"
-                        className={styles.select}
-                        value={form.service}
-                        onChange={update("service")}
-                      >
-                        {SERVICE_OPTIONS.map((o) => (
-                          <option key={o.value} value={o.value}>
-                            {o.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className={styles.field}>
-                    <label
-                      className={styles.label}
-                      htmlFor="contact-budget"
-                    >
-                      Rough budget
-                    </label>
-                    <div className={styles.budgetRow}>
-                      <span
-                        className={styles.budgetPrefix}
-                        aria-hidden="true"
-                      >
-                        $
-                      </span>
-                      <input
-                        id="contact-budget"
-                        className={`${styles.input} ${styles.inputBudget}`}
-                        type="number"
-                        min="0"
-                        step="100"
-                        inputMode="numeric"
-                        placeholder="5000"
-                        value={form.budget}
-                        onChange={update("budget")}
-                        aria-invalid={Boolean(errors.budget)}
-                        aria-describedby={
-                          errors.budget ? "err-budget" : undefined
-                        }
-                        required
-                      />
-                    </div>
-                    <span className={styles.hint}>
-                      A rough number is enough. USD is fine - we convert
-                      on our side.
-                    </span>
-                    {errors.budget && (
-                      <span id="err-budget" className={styles.error}>
-                        {errors.budget}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className={styles.field}>
-                    <label
-                      className={styles.label}
-                      htmlFor="contact-message"
-                    >
-                      About the project
-                    </label>
-                    <textarea
-                      id="contact-message"
-                      className={styles.textarea}
-                      rows={7}
-                      value={form.message}
-                      onChange={update("message")}
-                      aria-invalid={Boolean(errors.message)}
-                      aria-describedby={
-                        errors.message ? "err-message" : undefined
-                      }
-                      placeholder="What are you building, who is it for, and when would you like it live?"
-                      required
-                    />
-                    {errors.message && (
-                      <span id="err-message" className={styles.error}>
-                        {errors.message}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className={styles.formFoot}>
-                    <p className={styles.privacy}>
-                      We only use your details to reply. No lists, no
-                      forwarding.
-                    </p>
-                    <button
-                      type="submit"
-                      className={styles.submit}
-                      disabled={status === "sending"}
-                    >
-                      {status === "sending" ? (
-                        "Sending…"
-                      ) : (
-                        <>
-                          Send message
-                          <ArrowRight
-                            size={16}
-                            strokeWidth={2}
-                            aria-hidden="true"
-                          />
-                        </>
-                      )}
-                    </button>
-                  </div>
-
-                  {status === "error" && (
-                    <p className={styles.formError} role="alert">
-                      We couldn&rsquo;t send your message automatically.{" "}
-                      <a
-                        href={buildMailtoFallback({
-                          name: form.name,
-                          company: form.company,
-                          phone: `${form.countryCode} ${form.phone}`.trim(),
-                          service: form.service,
-                          budget: form.budget,
-                          message: form.message,
-                        })}
-                        className={styles.errorLink}
-                      >
-                        Send it by email instead
-                      </a>{" "}
-                      - your message is already in that link.
-                      {serverMessage && (
-                        <span className={styles.formErrorDetail}>
-                          {" "}
-                          ({serverMessage})
-                        </span>
-                      )}
-                    </p>
-                  )}
-                </form>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= FOOTNOTE ================= */}
-      <section className={styles.foot} aria-labelledby="foot-title">
-        <div className={styles.container}>
-          <div className={styles.footRow}>
-            <div>
-              <h2 id="foot-title" className={styles.footTitle}>
-                Prefer a call?
-              </h2>
-              <p className={styles.footText}>
-                Ring us at{" "}
-                <a
-                  href={CONTACT.phoneHref}
-                  className={styles.footLink}
-                >
-                  {CONTACT.phone}
-                </a>{" "}
-                or drop us a line at{" "}
-                <a
-                  href={CONTACT_EMAIL_HREF}
-                  className={styles.footLink}
-                >
-                  {CONTACT.email}
-                </a>
-                .
+            <div className={styles.meta}>
+              <button type="button" className={styles.copy} onClick={copy}>
+                {copied ? "Copied ✓" : "Copy address"}
+              </button>
+              <p className={styles.status}>
+                <span className={styles.dot} aria-hidden="true" />
+                We reply within one business day.
               </p>
             </div>
-            <div className={styles.footActions}>
-              <Link href="/services" className={styles.footSecondary}>
-                See what we do
-              </Link>
+
+            <div className={styles.crew}>
+              <ul className={styles.team} aria-label="The Code Square team">
+                {team.map((m, i) => (
+                  <li
+                    key={m.n}
+                    className={styles.avatar}
+                    style={v({ "--i": i })}
+                    title={m.n}
+                  >
+                    {m.img ? (
+                      <Image
+                        src={m.img}
+                        alt={m.n}
+                        fill
+                        sizes="44px"
+                        className={styles.avatarImg}
+                      />
+                    ) : (
+                      <span role="img" aria-label={m.n}>
+                        {m.n
+                          .split(" ")
+                          .map((p) => p[0])
+                          .join("")}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+              <p className={styles.teamNote}>
+                You talk to the four people who build your product.
+              </p>
             </div>
           </div>
-        </div>
-      </section>
-    </main>
+        </section>
+
+        {/* ---------- Right: fill-in-the-blanks form ---------- */}
+        <section className={styles.formWrap}>
+          <div className={styles.progress}>
+            <span className={styles.bar} aria-hidden="true">
+              <i style={v({ "--p": done / 4 })} />
+            </span>
+            <span className={styles.step}>
+              {ready ? "Ready when you are" : `${done} of 4 filled in`}
+            </span>
+          </div>
+
+          <form
+            className={styles.form}
+            onSubmit={submit}
+            aria-label="Contact form"
+          >
+            {/* Honeypot */}
+            <input
+              type="checkbox"
+              name="botcheck"
+              tabIndex={-1}
+              autoComplete="off"
+              style={{ display: "none" }}
+            />
+
+            <p className={styles.story}>
+              Hi, I&apos;m{" "}
+              <input
+                className={styles.input}
+                type="text"
+                name="name"
+                placeholder="your name"
+                aria-label="Your name"
+                autoComplete="name"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />{" "}
+              and I&apos;d like help with
+            </p>
+
+            <div
+              className={styles.chips}
+              role="group"
+              aria-label="What do you need help with?"
+            >
+              {services.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  className={styles.chip}
+                  aria-pressed={picked.includes(s)}
+                  onClick={() => toggle(s)}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+
+            <p className={styles.story}>I&apos;d like to start</p>
+            <div
+              className={styles.chips}
+              role="group"
+              aria-label="When would you like to start?"
+            >
+              {timelines.map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  className={styles.chip}
+                  aria-pressed={when === t}
+                  onClick={() => setWhen(when === t ? "" : t)}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+
+            <p className={styles.story}>Here&apos;s a little about it:</p>
+            <textarea
+              className={styles.area}
+              name="message"
+              rows={4}
+              placeholder="What are you building, and who is it for?"
+              aria-label="About your project"
+              value={msg}
+              onChange={(e) => setMsg(e.target.value)}
+            />
+
+            <p className={styles.story}>
+              You can reach me at{" "}
+              <input
+                className={`${styles.input} ${styles.wide}`}
+                type="email"
+                name="email"
+                placeholder="you@email.com"
+                aria-label="Your email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </p>
+
+            <p className={styles.story}>and my phone number is</p>
+            <div className={styles.phone} data-invalid={phoneBad}>
+              <select
+                className={styles.cc}
+                aria-label="Country code"
+                value={iso}
+                onChange={(e) => onCountry(e.target.value)}
+              >
+                {countries.map((c) => (
+                  <option key={c.iso} value={c.iso}>
+                    {c.name} (+{c.dial})
+                  </option>
+                ))}
+              </select>
+              <input
+                className={styles.num}
+                type="tel"
+                name="phone"
+                inputMode="numeric"
+                required
+                onInvalid={() => setPhoneTouched(true)}
+                autoComplete="tel-national"
+                placeholder={`${"9".repeat(country.max)}`.replace(/9/g, "0")}
+                aria-label="Phone number"
+                aria-invalid={phoneBad}
+                aria-describedby="phone-hint"
+                maxLength={country.max}
+                value={phone}
+                onChange={(e) => onPhone(e.target.value)}
+                onBlur={() => setPhoneTouched(true)}
+              />
+            </div>
+            <p
+              id="phone-hint"
+              className={styles.hint}
+              data-invalid={phoneBad}
+            >
+              {phone || phoneBad
+                ? `${country.name} numbers have ${range} digits (you've entered ${phone.length}).`
+                : `Required. ${country.name} numbers have ${range} digits.`}
+            </p>
+
+            <button
+              type="submit"
+              className={styles.send}
+              data-ready={ready}
+              disabled={status === "sending"}
+            >
+              {status === "sending" ? "Sending…" : "Send message"}
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </button>
+
+            {status === "sent" && (
+              <p className={styles.sent} role="status">
+                Thanks, your message is on its way. We&apos;ll reply within one
+                business day.
+              </p>
+            )}
+            {status === "error" && (
+              <p className={styles.error} role="alert">
+                {errMsg}
+              </p>
+            )}
+          </form>
+        </section>
+      </main>
+    </div>
   );
 }

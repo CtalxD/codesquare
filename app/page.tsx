@@ -1,802 +1,450 @@
-//app/page.tsx
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import {
-  ArrowRight,
-  Compass,
-  PenTool,
-  Code2,
-  Rocket,
-} from "lucide-react";
-import CircuitCanvas from "./components/CircuitCanvas";
+  useState,
+  type CSSProperties,
+} from "react";
+import Link from "next/link";
+import Image from "next/image";
 import styles from "./css/page.module.css";
+import { icons, Illustration } from "./components/icons";
 
-const SERVICES = [
+/* ============================================================
+   Style helper
+   ============================================================ */
+const v = (o: Record<string, number | string>) =>
+  o as unknown as CSSProperties;
+
+/* ============================================================
+   Content (edit here)
+   ============================================================ */
+const services = [
   {
-    n: "01",
-    title: "Website Development",
-    text: "Fast, responsive sites that load quickly and read clearly on any device. Built to be found on Google and easy for your team to update.",
-    href: "/services#website",
-    image:
-      "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=1400&q=80&auto=format&fit=crop",
+    id: "ui-ux-design",
+    t: "UI/UX design",
+    d: "Research, flows and interfaces tested with real users before a line of code is written.",
+    k: ["Product discovery", "Wireframes", "Design systems", "Prototypes"],
   },
   {
-    n: "02",
-    title: "Mobile App Development",
-    text: "Android and iOS apps for customers or internal teams. One codebase, two platforms, no wasted effort.",
-    href: "/services#mobile",
-    image:
-      "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=1400&q=80&auto=format&fit=crop",
+    id: "custom-software",
+    t: "Custom software",
+    d: "Portals, dashboards and internal tools shaped around how your team already works.",
+    k: ["Web platforms", "Integrations", "Automation", "APIs"],
   },
   {
-    n: "03",
-    title: "Custom Software",
-    text: "Inventory, billing, CRM, dashboards - the tools your team runs on, shaped around how you actually work.",
-    href: "/services#software",
-    image:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1400&q=80&auto=format&fit=crop",
+    id: "mobile-apps",
+    t: "Mobile apps",
+    d: "iOS and Android apps that feel native, launch quickly and stay easy to maintain.",
+    k: ["iOS", "Android", "Cross-platform", "App store release"],
   },
   {
-    n: "04",
-    title: "UI / UX Design",
-    text: "Interfaces people understand without a manual. Designed for real users, tested before build.",
-    href: "/services#design",
-    image:
-      "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=1400&q=80&auto=format&fit=crop",
+    id: "websites",
+    t: "Websites",
+    d: "Fast, accessible sites designed to load quickly, rank well and look right on every screen.",
+    k: ["Marketing sites", "Accessibility", "Performance", "SEO"],
   },
 ];
 
-const SPLIT_ROWS = [
+const steps: [string, string][] = [
+  ["Listen", "We start with your goals, your users and your constraints."],
+  ["Design", "You click through a working prototype before we build anything."],
+  ["Build", "We ship small releases every week so progress is never a mystery."],
+  ["Support", "After launch we fix, improve and scale alongside you."],
+];
+
+const stack = [
+  { g: "Design", t: ["Figma", "Framer", "Storybook"] },
+  { g: "Web", t: ["React", "Next.js", "TypeScript", "Tailwind", "Vue"] },
+  { g: "Mobile", t: ["React Native", "Flutter", "Swift", "Kotlin"] },
   {
-    eyebrow: "Discovery first",
-    title: "We start by listening.",
-    text: "Before we write anything, we sit down with you - a call or two, sometimes more - to understand how your business actually runs. What's slowing you down, what your customers need, what success looks like. Then we put it in writing.",
-    image:
-      "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=80&auto=format&fit=crop",
-    reversed: false,
-  },
-  {
-    eyebrow: "Built together",
-    title: "You see progress every week.",
-    text: "We build in short cycles and share working versions as we go. You can try things early, give feedback, and course-correct while it's cheap - instead of waiting until launch to see what you got.",
-    image:
-      "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&q=80&auto=format&fit=crop",
-    reversed: true,
-  },
-  {
-    eyebrow: "After launch",
-    title: "We stick around.",
-    text: "Software needs care. We're reachable for fixes, updates, and small improvements long after go-live. No disappearing after the invoice clears.",
-    image:
-      "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200&q=80&auto=format&fit=crop",
-    reversed: false,
+    g: "Backend and cloud",
+    t: ["Node.js", "Python", "Java", "PostgreSQL", "GraphQL", "AWS", "Docker"],
   },
 ];
 
-const TEAM_PHOTOS = [
-  "",
-  "/sbt.jpg",
-  "/sba.jpeg",
-  "",
+const principles: [string, string][] = [
+  [
+    "Designers and engineers, together",
+    "Both are in the conversation from day one, so the product you approve is the product we build.",
+  ],
+  [
+    "Plain communication",
+    "One point of contact, weekly demos and honest timelines. You always know where the project stands.",
+  ],
+  [
+    "Small, steady releases",
+    "We ship in slices you can test, which keeps risk low and feedback early.",
+  ],
+  [
+    "Built to be maintained",
+    "Clean code, written decisions and a proper handover, so you are never locked in.",
+  ],
 ];
 
-const PROCESS_STEPS = [
+/* ---------- Team (real, alphabetical by first name) ---------- */
+const team = [
   {
-    n: "01",
-    t: "Discover",
-    d: "Calls, questions, and a written scope. You know what we're building before we start.",
-    Icon: Compass,
+    n: "Prithak Rai",
+    r: "Backend & System Architecture",
+    img: "/pr.jpg",
   },
   {
-    n: "02",
-    t: "Design",
-    d: "Clickable layouts and flows. We revise together before code.",
-    Icon: PenTool,
+    n: "Shrijan Thapa",
+    r: "Project Manager & AI Engineer",
+    img: "/sbt.jpg",
   },
   {
-    n: "03",
-    t: "Develop",
-    d: "Weekly builds you can test. Feedback early, not at the end.",
-    Icon: Code2,
+    n: "Sital Aryal",
+    r: "Full Stack & UI/UX",
+    img: "/si.jpeg",
   },
   {
-    n: "04",
-    t: "Deliver",
-    d: "Launch, handover, and a walkthrough for your team. Then we stay reachable.",
-    Icon: Rocket,
+    n: "Sudil Maharjan",
+    r: "Frontend & UI/UX",
+    img: "/sm.jpg",
   },
 ];
 
-export default function HomePage() {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const [revealed, setRevealed] = useState<boolean[]>(() =>
-    TEAM_PHOTOS.map(() => false)
+/* ---------- Hero copy ---------- */
+const title = "We design and build software people actually use.".split(" ");
+
+/* ---------- Sketch to shipped ---------- */
+const stages: [string, string, number][] = [
+  ["Sketch", "We start with boxes and arrows, so the layout is easy to question and cheap to change.", 0],
+  ["Prototype", "You click through a working version before any real code is written.", 50],
+  ["Shipped", "The site you approved is the one that goes live, polished and ready for visitors.", 100],
+];
+
+/* One website drawn twice: as a rough wireframe and as the finished design */
+function ScreenUI({ done }: { done: boolean }) {
+  return (
+    <div className={styles.screen} data-kind={done ? "done" : "wire"}>
+      <div className={styles.wChrome}>
+        <i />
+        <i />
+        <i />
+        <span className={styles.wUrl}>{done && "northbean.com"}</span>
+      </div>
+      <div className={styles.wBody}>
+        <div className={styles.wNav}>
+          <span className={styles.wLogo}>{done && "Northbean"}</span>
+          <span className={styles.wLinks}>
+            <i />
+            <i />
+            <i />
+          </span>
+        </div>
+        <div className={styles.wHero}>
+          <div className={styles.wCopy}>
+            <span className={styles.wHead}>
+              {done && "Good coffee, made simple"}
+            </span>
+            <span className={styles.wSub}>
+              {done && "Beans roasted weekly and sent to your door."}
+            </span>
+            <span className={styles.wCta}>{done && "Shop beans"}</span>
+          </div>
+          <div className={styles.wImg} />
+        </div>
+        <div className={styles.wCards}>
+          {["Espresso", "Filter", "Decaf"].map((n) => (
+            <span key={n}>{done && n}</span>
+          ))}
+        </div>
+      </div>
+    </div>
   );
+}
 
-  const toggleReveal = (index: number) => {
-    setRevealed((prev) => {
-      const next = [...prev];
-      next[index] = !next[index];
-      return next;
-    });
-  };
-
-  useEffect(() => {
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReduced) return;
-
-    let cancelled = false;
-    let ctx: { revert: () => void } | undefined;
-    let stRef: { refresh: () => void } | undefined;
-    let refreshTimeout: ReturnType<typeof setTimeout> | undefined;
-    let onLoad: (() => void) | undefined;
-
-    (async () => {
-      const gsapMod = await import("gsap");
-      const stMod = await import("gsap/ScrollTrigger");
-      const gsap = gsapMod.gsap ?? gsapMod.default;
-      const ScrollTrigger = stMod.ScrollTrigger ?? stMod.default;
-
-      if (cancelled) return;
-      gsap.registerPlugin(ScrollTrigger);
-      stRef = ScrollTrigger;
-
-      const root = rootRef.current;
-      if (!root) return;
-
-      ctx = gsap.context(() => {
-        /* ---------- HERO ---------- */
-        const heroLines = gsap.utils.toArray<HTMLElement>("[data-hero-line]");
-        gsap.set(heroLines, { yPercent: 110, opacity: 0 });
-        gsap.to(heroLines, {
-          yPercent: 0,
-          opacity: 1,
-          duration: 1,
-          ease: "expo.out",
-          stagger: 0.12,
-          delay: 0.1,
-        });
-
-        const heroFades = gsap.utils.toArray<HTMLElement>("[data-hero-fade]");
-        gsap.set(heroFades, { y: 20, opacity: 0 });
-        gsap.to(heroFades, {
-          y: 0,
-          opacity: 1,
-          duration: 0.9,
-          ease: "power3.out",
-          stagger: 0.1,
-          delay: 0.5,
-        });
-
-        gsap.to("[data-hero-image]", {
-          yPercent: 15,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "[data-hero]",
-            start: "top top",
-            end: "bottom top",
-            scrub: 0.5,
-          },
-        });
-
-        /* ---------- INTRO ---------- */
-        gsap.set("[data-intro-line]", { yPercent: 100, opacity: 0 });
-        gsap.to("[data-intro-line]", {
-          yPercent: 0,
-          opacity: 1,
-          duration: 1,
-          ease: "expo.out",
-          stagger: 0.08,
-          scrollTrigger: { trigger: "[data-intro]", start: "top 85%" },
-        });
-
-        gsap.set("[data-intro-body] > p, [data-intro-body] > a", {
-          y: 20,
-          opacity: 0,
-        });
-        gsap.to("[data-intro-body] > p, [data-intro-body] > a", {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          stagger: 0.1,
-          scrollTrigger: { trigger: "[data-intro]", start: "top 80%" },
-        });
-
-        /* ---------- SCROLL-FILL HEADLINES ---------- */
-        gsap.utils.toArray<HTMLElement>("[data-fill]").forEach((block) => {
-          const words = block.querySelectorAll("[data-fill-word]");
-          if (!words.length) return;
-
-          gsap.set(words, { opacity: 0.15 });
-          gsap.to(words, {
-            opacity: 1,
-            stagger: 0.06,
-            ease: "none",
-            scrollTrigger: {
-              trigger: block,
-              start: "top 85%",
-              end: "top 45%",
-              scrub: 0.6,
-            },
-          });
-        });
-
-        /* ---------- PINNED SERVICES ---------- */
-        const serviceSection = document.querySelector<HTMLElement>(
-          "[data-services]"
-        );
-        const serviceItems = gsap.utils.toArray<HTMLElement>(
-          "[data-service-item]"
-        );
-        const serviceImages = gsap.utils.toArray<HTMLElement>(
-          "[data-service-image]"
-        );
-        const serviceCounter = document.querySelector<HTMLElement>(
-          "[data-service-counter]"
-        );
-
-        if (serviceSection && serviceItems.length && serviceImages.length) {
-          const setActive = (idx: number) => {
-            const clamped = Math.max(0, Math.min(SERVICES.length - 1, idx));
-            serviceItems.forEach((el, i) =>
-              el.classList.toggle(styles.active, i === clamped)
-            );
-            serviceImages.forEach((el, i) =>
-              el.classList.toggle(styles.active, i === clamped)
-            );
-            if (serviceCounter) {
-              serviceCounter.textContent = String(clamped + 1).padStart(2, "0");
-            }
-          };
-
-          setActive(0);
-
-          ScrollTrigger.create({
-            trigger: serviceSection,
-            start: "top top",
-            end: "bottom bottom",
-            pin: "[data-services-sticky]",
-            pinSpacing: false,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-            refreshPriority: 1,
-            onUpdate: (self) => {
-              const idx = Math.floor(self.progress * SERVICES.length);
-              setActive(idx);
-            },
-          });
-
-          gsap.set("[data-service-item]", { y: 24, opacity: 0 });
-          ScrollTrigger.create({
-            trigger: serviceSection,
-            start: "top 70%",
-            once: true,
-            onEnter: () => {
-              gsap.to("[data-service-item]", {
-                y: 0,
-                opacity: 1,
-                duration: 0.7,
-                ease: "power3.out",
-                stagger: 0.1,
-                onComplete: () => {
-                  gsap.set("[data-service-item]", {
-                    clearProps: "opacity,transform",
-                  });
-                  setActive(0);
-                },
-              });
-            },
-          });
-        }
-
-        /* ---------- SPLIT ROWS ---------- */
-        gsap.utils.toArray<HTMLElement>("[data-split]").forEach((row) => {
-          const media = row.querySelector("[data-split-media]");
-          const img = row.querySelector("[data-split-img]");
-          const content = row.querySelectorAll("[data-split-content] > *");
-
-          if (media) {
-            gsap.fromTo(
-              media,
-              { clipPath: "inset(100% 0 0 0)" },
-              {
-                clipPath: "inset(0% 0 0 0)",
-                duration: 1.1,
-                ease: "expo.out",
-                scrollTrigger: { trigger: row, start: "top 85%" },
-              }
-            );
-          }
-          if (img) {
-            gsap.fromTo(
-              img,
-              { scale: 1.12 },
-              {
-                scale: 1,
-                ease: "none",
-                scrollTrigger: {
-                  trigger: row,
-                  start: "top bottom",
-                  end: "bottom top",
-                  scrub: 0.6,
-                },
-              }
-            );
-          }
-          if (content.length) {
-            gsap.set(content, { y: 24, opacity: 0 });
-            gsap.to(content, {
-              y: 0,
-              opacity: 1,
-              duration: 0.8,
-              ease: "power3.out",
-              stagger: 0.08,
-              scrollTrigger: { trigger: row, start: "top 80%" },
-            });
-          }
-        });
-
-        /* ---------- PROCESS TIMELINE ---------- */
-        const rail = document.querySelector("[data-timeline-rail]");
-        if (rail) {
-          gsap.fromTo(
-            rail,
-            { scaleY: 0 },
-            {
-              scaleY: 1,
-              ease: "none",
-              scrollTrigger: {
-                trigger: "[data-timeline]",
-                start: "top 80%",
-                end: "bottom 60%",
-                scrub: 0.6,
-              },
-            }
-          );
-        }
-
-        gsap.set("[data-timeline-step]", { y: 30, opacity: 0 });
-        gsap.to("[data-timeline-step]", {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          stagger: 0.15,
-          scrollTrigger: { trigger: "[data-timeline]", start: "top 80%" },
-        });
-
-        /* ---------- TEAM ---------- */
-        gsap.set("[data-team-photo]", { y: 40, opacity: 0, scale: 0.94 });
-        gsap.to("[data-team-photo]", {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.9,
-          ease: "power3.out",
-          stagger: 0.08,
-          scrollTrigger: { trigger: "[data-team]", start: "top 80%" },
-        });
-
-        gsap.set("[data-team-content] > *", { y: 20, opacity: 0 });
-        gsap.to("[data-team-content] > *", {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          stagger: 0.1,
-          scrollTrigger: { trigger: "[data-team]", start: "top 80%" },
-        });
-
-        /* ---------- CTA ---------- */
-        gsap.fromTo(
-          "[data-cta-image]",
-          { yPercent: -6 },
-          {
-            yPercent: 6,
-            ease: "none",
-            scrollTrigger: {
-              trigger: "[data-cta]",
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 0.6,
-            },
-          }
-        );
-
-        gsap.set("[data-cta-content] > *", { y: 20, opacity: 0 });
-        gsap.to("[data-cta-content] > *", {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          stagger: 0.1,
-          scrollTrigger: { trigger: "[data-cta]", start: "top 80%" },
-        });
-
-        ScrollTrigger.refresh();
-      }, root);
-
-      onLoad = () => stRef?.refresh();
-      if (document.readyState === "complete") {
-        onLoad();
-      } else {
-        window.addEventListener("load", onLoad);
-      }
-      refreshTimeout = setTimeout(() => stRef?.refresh(), 800);
-    })();
-
-    return () => {
-      cancelled = true;
-      if (refreshTimeout) clearTimeout(refreshTimeout);
-      if (onLoad) window.removeEventListener("load", onLoad);
-      if (ctx) ctx.revert();
-    };
-  }, []);
+/* ============================================================
+   Page
+   ============================================================ */
+export default function Home() {
+  const [mix, setMix] = useState(0);
+  const stage = mix < 34 ? 0 : mix < 67 ? 1 : 2;
 
   return (
-    <div ref={rootRef}>
-      <main id="main" className={styles.page}>
-        {/* HERO */}
-        <section className={styles.hero} data-hero>
-          <div className={styles.heroCanvas} data-hero-image aria-hidden="true">
-            <CircuitCanvas className={styles.heroCanvasInner} />
-            <div className={styles.heroOverlay} />
-          </div>
-
-          <div className={styles.heroContent}>
-            <span className={styles.heroEyebrow} data-hero-fade>
-              Software studio - Kathmandu, Nepal
-            </span>
-
-            <h1 className={styles.heroTitle}>
-              <span className={styles.heroLine}>
-                <span data-hero-line>We build the digital</span>
-              </span>
-              <span className={styles.heroLine}>
-                <span data-hero-line>tools your business</span>
-              </span>
-              <span className={styles.heroLine}>
-                <span data-hero-line>needs to grow.</span>
-              </span>
+    <div className={styles.page}>
+      <main>
+        {/* ---------- HOME / Hero ---------- */}
+        <section id="top" className={styles.hero}>
+          <div className={styles.heroText}>
+            <h1 className={styles.title} aria-label={title.join(" ")}>
+              {title.map((w, i) => (
+                <span key={i} className={styles.mask} aria-hidden="true">
+                  <span className={styles.w} style={v({ "--d": i })}>
+                    {w}&nbsp;
+                  </span>
+                </span>
+              ))}
             </h1>
 
-            <p className={styles.heroLead} data-hero-fade>
-              Code Square is a four-person studio building websites, mobile apps,
-              and custom software for businesses in Nepal and abroad. We work in
-              small teams, ship in short cycles, and stay reachable long after
-              launch because your product builds on the foundation we create.
-
+            <p className={styles.lead}>
+              Websites, mobile apps and custom software for teams that need
+              technology to fit the way they work.
             </p>
 
-            <div className={styles.heroActions} data-hero-fade>
-              <Link href="/contact" className={styles.btnPrimary}>
-                Get a Free Consultation
-                <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
+            <div className={styles.actions}>
+              <Link href="/contact" className={styles.btn}>
+                Start a project
               </Link>
-              <Link href="/services" className={styles.btnGhost}>
-                See what we do
-              </Link>
-            </div>
-
-            <div className={styles.heroMeta} data-hero-fade>
-              <span>Web</span>
-              <span className={styles.dot} />
-              <span>Apps</span>
-              <span className={styles.dot} />
-              <span>Software</span>
-              <span className={styles.dot} />
-              <span>Design</span>
+              <a href="#services" className={styles.btnGhost}>
+                What we build
+              </a>
             </div>
           </div>
-        </section>
 
-        {/* INTRO */}
-        <section className={styles.intro} data-intro>
-          <div className={styles.container}>
-            <div className={styles.introGrid}>
-              <div className={styles.introIndex}>
-                <span className={styles.introIndexNum}>01</span>
-                <span className={styles.introIndexLine} aria-hidden="true" />
-                <span className={styles.introIndexLabel}>Introduction</span>
-              </div>
-
-              <div className={styles.introBody} data-intro-body>
-                <h2 className={styles.introTitle}>
-                  <span className={styles.maskLine}>
-                    <span data-intro-line>An IT company that</span>
-                  </span>
-                  <span className={styles.maskLine}>
-                    <span data-intro-line>treats your software</span>
-                  </span>
-                  <span className={styles.maskLine}>
-                    <span data-intro-line>like our own.</span>
-                  </span>
-                </h2>
-                <p className={styles.introText}>
-                  Code Square Pvt. Ltd. is a Nepal-based software company
-                  started in 2026 by four friends who&rsquo;d been building
-                  products together for years. We work with local businesses,
-                  startups, and international clients who want software that
-                  actually fits how they operate.
-                </p>
-                <p className={styles.introText}>
-                  Our work spans four areas: <em>websites</em>,{" "}
-                  <em>mobile apps</em>, <em>custom software</em>, and{" "}
-                  <em>UI/UX design</em>. Small enough to move fast, structured
-                  enough to deliver.
-                </p>
-                <Link href="/about" className={styles.inlineLink}>
-                  More about us
-                  <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* PINNED SERVICES */}
-        <section
-          className={styles.pinned}
-          data-services
-          aria-labelledby="services-title"
-        >
-          <div className={styles.pinnedSticky} data-services-sticky>
-            <div className={styles.pinnedInner}>
-              <header className={styles.pinnedHead}>
-                <span className={styles.sectionLabel}>What we do</span>
-                <h2
-                  id="services-title"
-                  className={styles.pinnedTitle}
-                  data-fill
+          <div
+            className={styles.heroArt}
+            role="group"
+            aria-label="Tools and languages we work with"
+          >
+            <div className={styles.board}>
+              {stack.map((c, gi) => (
+                <div
+                  key={c.g}
+                  className={`${styles.group} ${styles["g" + gi]}`}
+                  style={v({ "--k": gi })}
                 >
-                  <FillWords text="Four services. Done properly." />
-                </h2>
-              </header>
-
-              <div className={styles.pinnedLayout}>
-                <div className={styles.pinnedVisual}>
-                  {SERVICES.map((s, i) => (
-                    <div
-                      key={s.n}
-                      className={`${styles.pinnedImageWrap} ${
-                        i === 0 ? styles.active : ""
-                      }`}
-                      data-service-image
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={s.image}
-                        alt=""
-                        className={styles.pinnedImage}
-                      />
-                    </div>
-                  ))}
-
-                  <span className={styles.pinnedCounter} aria-hidden="true">
-                    <span
-                      className={styles.pinnedCounterNum}
-                      data-service-counter
-                    >
-                      01
-                    </span>
-                    <span className={styles.pinnedCounterTotal}>
-                      / {String(SERVICES.length).padStart(2, "0")}
-                    </span>
-                  </span>
+                  <p className={styles.groupName}>{c.g}</p>
+                  <ul className={styles.chips}>
+                    {c.t.map((name, ci) => {
+                      const Icon = icons[name];
+                      return (
+                        <li
+                          key={name}
+                          className={styles.tool}
+                          style={v({ "--n": gi * 4 + ci })}
+                        >
+                          <Icon />
+                          {name}
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </div>
-
-                <ol className={styles.pinnedList}>
-                  {SERVICES.map((s, i) => (
-                    <li
-                      key={s.n}
-                      className={`${styles.pinnedItem} ${
-                        i === 0 ? styles.active : ""
-                      }`}
-                      data-service-item
-                    >
-                      <div className={styles.pinnedItemHead}>
-                        <span className={styles.pinnedNum}>{s.n}</span>
-                        <h3 className={styles.pinnedItemTitle}>{s.title}</h3>
-                      </div>
-                      <p className={styles.pinnedItemText}>{s.text}</p>
-                      <Link href={s.href} className={styles.pinnedLink}>
-                        Get a quote
-                        <ArrowRight
-                          size={14}
-                          strokeWidth={2}
-                          aria-hidden="true"
-                        />
-                      </Link>
-                    </li>
-                  ))}
-                </ol>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* SPLIT ROWS */}
-        <section className={styles.splits}>
-          <div className={styles.container}>
-            <header className={styles.sectionHead}>
-              <span className={styles.sectionLabel}>How we work</span>
-              <h2 className={styles.sectionTitle} data-fill>
-                <FillWords text="A small team, working close to you." />
+        {/* ---------- INTRODUCTION ---------- */}
+        <section
+          id="intro"
+          className={styles.intro}
+          aria-label="Introduction"
+        >
+          <div className={styles.introInner}>
+            <div className={styles.introHead}>
+              <h2 className={styles.introTitle}>
+                Websites, mobile apps and custom software.
               </h2>
-            </header>
+              <p className={styles.introText}>
+                Code Square is a software and design studio. We build websites,
+                mobile apps and custom software, and we stay accountable long
+                after launch.
+              </p>
+            </div>
 
-            {SPLIT_ROWS.map((row) => (
-              <div
-                key={row.title}
-                className={`${styles.split} ${
-                  row.reversed ? styles.splitReverse : ""
-                }`}
-                data-split
+            <ul className={styles.introList}>
+              {services.map((s, i) => (
+                <li key={s.t} style={v({ "--i": i })}>
+                  <Link
+                    href={`/services#${s.id}`}
+                    className={styles.introItem}
+                  >
+                    <span className={styles.introName}>{s.t}</span>
+                    <span className={styles.introDesc}>{s.d}</span>
+                    <span className={styles.introArrow} aria-hidden="true">
+                      <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M5 12h14M13 6l6 6-6 6" />
+                      </svg>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* ---------- SERVICES ---------- */}
+        <section id="services" className={styles.section}>
+          <h2 className={styles.h2}>What we build</h2>
+
+          <div className={styles.stack}>
+            {services.map((s, i) => (
+              <article
+                key={s.t}
+                className={`${styles.panel} ${styles["tone" + i]}`}
+                style={v({ "--i": i })}
               >
-                <div className={styles.splitMedia} data-split-media>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={row.image}
-                    alt=""
-                    className={styles.splitImage}
-                    data-split-img
-                  />
+                <div className={styles.panelInner}>
+                  <div>
+                    <h3 className={styles.h3}>{s.t}</h3>
+                    <p className={styles.panelText}>{s.d}</p>
+                    <ul className={styles.keys}>
+                      {s.k.map((k) => (
+                        <li key={k}>{k}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className={styles.art}>
+                    <Illustration kind={i} />
+                  </div>
                 </div>
-                <div className={styles.splitContent} data-split-content>
-                  <span className={styles.splitEyebrow}>{row.eyebrow}</span>
-                  <h3 className={styles.splitTitle}>{row.title}</h3>
-                  <p className={styles.splitText}>{row.text}</p>
-                </div>
-              </div>
+              </article>
             ))}
           </div>
-        </section>
 
-        {/* PROCESS */}
-        <section className={styles.process} aria-labelledby="process-title">
-          <div className={styles.container}>
-            <header className={styles.sectionHead}>
-              <span className={styles.sectionLabel}>Our process</span>
-              <h2
-                id="process-title"
-                className={styles.sectionTitle}
-                data-fill
-              >
-                <FillWords text="Four steps. No surprises." />
-              </h2>
-            </header>
-
-            <ol className={styles.timeline} data-timeline>
-              <span
-                className={styles.timelineRail}
-                data-timeline-rail
-                aria-hidden="true"
-              />
-              {PROCESS_STEPS.map((s) => {
-                const Icon = s.Icon;
-                return (
-                  <li
-                    key={s.n}
-                    className={styles.timelineStep}
-                    data-timeline-step
-                  >
-                    <span className={styles.timelineMarker} aria-hidden="true">
-                      <Icon size={16} strokeWidth={1.75} />
-                    </span>
-                    <span className={styles.timelineIndex}>Step {s.n}</span>
-                    <h3 className={styles.timelineTitle}>{s.t}</h3>
-                    <p className={styles.timelineText}>{s.d}</p>
-                  </li>
-                );
-              })}
-            </ol>
-          </div>
-        </section>
-
-        {/* TEAM */}
-        <section className={styles.team} data-team aria-labelledby="team-title">
-          <div className={styles.container}>
-            <div className={styles.teamGrid}>
-              <div className={styles.teamVisual}>
-                <div className={styles.teamImages}>
-                  {TEAM_PHOTOS.map((src, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      className={styles.teamPhoto}
-                      data-slot={i + 1}
-                      data-team-photo
-                      aria-label={`Reveal color for team member ${i + 1}`}
-                      aria-pressed={revealed[i]}
-                      onClick={() => toggleReveal(i)}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={src}
-                        alt=""
-                        className={styles.teamPhotoInner}
-                      />
-                    </button>
-                  ))}
+          <h3 className={`${styles.h2} ${styles.sub}`}>How we work</h3>
+          <ol className={styles.steps}>
+            {steps.map(([t, d], i) => (
+              <li key={t} className={styles.step}>
+                <span className={styles.num} aria-hidden="true">
+                  0{i + 1}
+                </span>
+                <div>
+                  <h4 className={styles.stepTitle}>{t}</h4>
+                  <p>{d}</p>
                 </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        {/* ---------- ABOUT ---------- */}
+        <section id="about" className={styles.section}>
+          <h2 className={styles.h2}>A small team that owns the result</h2>
+          <p className={styles.aboutLead}>
+            Code Square is a software and design studio. We build websites,
+            mobile apps and custom software, and we stay accountable long after
+            launch.
+          </p>
+
+          <ul className={styles.rows}>
+            {principles.map(([t, d]) => (
+              <li key={t} className={styles.row}>
+                <h3 className={styles.rowTitle}>{t}</h3>
+                <p className={styles.rowText}>{d}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* ---------- CRAFT: sketch to shipped ---------- */}
+        <section id="craft" className={styles.craft} aria-labelledby="craft-title">
+          <div className={styles.craftInner}>
+            <div className={styles.craftText}>
+              <h2 id="craft-title" className={styles.h2}>
+                From sketch to shipped
+              </h2>
+              <p className={styles.craftLead}>
+                Drag the slider and watch one website grow from a rough sketch
+                into a finished design. It is the same path every project
+                takes with us.
+              </p>
+
+              <div className={styles.stageBtns} role="group" aria-label="Project stage">
+                {stages.map(([name, , at], i) => (
+                  <button
+                    key={name}
+                    type="button"
+                    className={styles.stageBtn}
+                    aria-pressed={stage === i}
+                    onClick={() => setMix(at)}
+                  >
+                    {name}
+                  </button>
+                ))}
               </div>
 
-              <div className={styles.teamContent} data-team-content>
-                <span className={styles.sectionLabel}>The people</span>
-                <h2 id="team-title" className={styles.sectionTitle}>
-                  Four friends. One company.
-                </h2>
-                <p className={styles.sectionLead}>
-                  Code Square started because four of us wanted to build
-                  software the way we wished more agencies did - carefully,
-                  honestly, and without the sales pitch.
-                </p>
-                <Link href="/about#team" className={styles.inlineLink}>
-                  Meet the team
-                  <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
-                </Link>
-              </div>
+              <input
+                className={styles.range}
+                type="range"
+                min={0}
+                max={100}
+                value={mix}
+                onChange={(e) => setMix(Number(e.target.value))}
+                aria-label="Move the project from sketch to shipped"
+                aria-valuetext={stages[stage][0]}
+              />
+
+              <p className={styles.stageNote} aria-live="polite">
+                {stages[stage][1]}
+              </p>
+            </div>
+
+            <div className={styles.device} style={v({ "--t": mix / 100 })} aria-hidden="true">
+              <ScreenUI done={false} />
+              <ScreenUI done />
             </div>
           </div>
         </section>
 
-        {/* CTA */}
-        <section className={styles.ctaBand} data-cta>
-          <div className={styles.ctaImage} data-cta-image aria-hidden="true">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=2000&q=80&auto=format&fit=crop"
-              alt=""
-              className={styles.ctaImageInner}
-            />
-            <div className={styles.ctaImageOverlay} />
+        {/* ---------- TEAM ---------- */}
+        <section id="team" className={styles.team} aria-label="Our team">
+          <div className={styles.teamHead}>
+            <span className={styles.teamKicker}>The team</span>
+            <span className={styles.teamRule} aria-hidden="true" />
           </div>
 
-          <div className={styles.container}>
-            <div className={styles.ctaGrid} data-cta-content>
-              <div>
-                <h2 className={styles.ctaTitle}>Have a project in mind?</h2>
-                <p className={styles.ctaText}>
-                  Tell us about it. We&rsquo;ll reply within one business day
-                  with honest thoughts on scope, timeline, and cost.
-                </p>
-              </div>
-              <div className={styles.ctaActions}>
-                <Link href="/contact" className={styles.ctaPrimary}>
-                  Start a conversation
-                  <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
-                </Link>
-                <Link href="/services" className={styles.ctaSecondary}>
-                  See services
-                </Link>
-              </div>
+          <div className={styles.teamGrid}>
+            <ul className={styles.teamPhotos}>
+              {team.map((m, i) => (
+                <li
+                  key={m.n}
+                  className={`${styles.teamPhoto} ${styles["p" + i]}`}
+                  style={v({ "--m": i })}
+                >
+                  {m.img ? (
+                    <Image
+                      src={m.img}
+                      alt={m.n}
+                      fill
+                      sizes="(max-width: 1000px) 46vw, 240px"
+                      quality={90}
+                    />
+                  ) : (
+                    <span
+                      className={styles.teamInitial}
+                      role="img"
+                      aria-label={m.n}
+                    >
+                      {m.n
+                        .split(" ")
+                        .map((p) => p[0])
+                        .join("")}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+
+            <div className={styles.teamInfo}>
+              <h3 className={styles.teamTitle}>
+                Four specialists, one team.
+              </h3>
+              <p className={styles.teamText}>
+                You work directly with the people building your product - no
+                account managers, no handoffs. Every project is staffed end to
+                end by the same four: design, frontend, backend and delivery.
+              </p>
+              <Link href="/contact" className={styles.teamBtn}>
+                Work with us
+              </Link>
             </div>
           </div>
         </section>
       </main>
     </div>
-  );
-}
-
-/* Helper: splits a string into per-word spans for scroll-fill */
-function FillWords({ text }: { text: string }) {
-  const words = text.split(" ");
-  return (
-    <>
-      {words.map((w, i) => (
-        <span
-          key={i}
-          data-fill-word
-          style={{ display: "inline-block", marginRight: "0.24em" }}
-        >
-          {w}
-        </span>
-      ))}
-    </>
   );
 }

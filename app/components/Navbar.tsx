@@ -1,203 +1,145 @@
-//app/components/Navbar.tsx
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "../css/navbar.module.css";
+import { Mark, Wordmark } from "./logo";
 
-const NAV_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "Services", href: "/services" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-] as const;
+/* [id, label, href] - every item opens its own page */
+const nav: [string, string, string][] = [
+  ["top", "Home", "/"],
+  ["services", "Services", "/services"],
+  ["about", "About us", "/about"],
+  ["contact", "Contact", "/contact"],
+];
+
+/* Which nav item belongs to the page you are on */
+const routeId = (pathname: string): string | null => {
+  if (pathname === "/") return "top"; // Home stays active while you scroll
+  if (pathname.startsWith("/services")) return "services";
+  if (pathname.startsWith("/about")) return "about";
+  if (pathname.startsWith("/contact")) return "contact";
+  return null;
+};
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const onHome = pathname === "/";
 
-  const isActive = useCallback(
-    (href: string) =>
-      href === "/" ? pathname === "/" : pathname.startsWith(href),
-    [pathname]
-  );
+  const [open, setOpen] = useState(false);
 
-  const isQuoteActive = pathname === "/contact";
+  /* The active link depends only on the page you are on, never on scroll */
+  const active = routeId(pathname);
 
+  /* "Start a project" opens the contact page */
+  const contactHref = "/contact";
+
+  /* Lock page scroll while the mobile menu is open */
   useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "";
+    document.body.style.overflow = open ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isOpen]);
+  }, [open]);
 
+  /* Close the mobile menu whenever the route changes */
   useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setIsOpen(false);
-        menuButtonRef.current?.focus();
+    setOpen(false);
+  }, [pathname]);
+
+  /* Close with Escape, and when the screen grows past the mobile layout */
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const mq = window.matchMedia("(min-width: 861px)");
+    const onMq = () => mq.matches && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    mq.addEventListener("change", onMq);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      mq.removeEventListener("change", onMq);
+    };
+  }, [open]);
+
+  /* Clicking Home while already on the home page scrolls to the top.
+     The scroll lock is released first: phones ignore scrollTo while
+     the body is locked, which made the menu links feel dead. */
+  const onNavClick =
+    (href: string, close?: boolean) => (e: MouseEvent<HTMLAnchorElement>) => {
+      if (close) {
+        document.body.style.overflow = "";
+        setOpen(false);
+      }
+      if (href === "/" && onHome) {
+        e.preventDefault();
+        requestAnimationFrame(() =>
+          window.scrollTo({ top: 0, behavior: "smooth" }),
+        );
       }
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [isOpen]);
-
-  useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 60);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   return (
     <>
-      <header
-        className={`${styles.header} ${
-          isScrolled ? styles.headerScrolled : ""
-        }`}
-        data-drawer-open={isOpen}
-      >
-        <div className={styles.shell}>
-          <Link
-            href="/"
-            className={styles.brand}
-            aria-label="Code Square - Home"
-          >
-            <span className={styles.brandMark} aria-hidden="true">
-              <svg viewBox="0 0 164 177" width="24" height="24">
-                <path
-                  d="M40,0 L164,0 L164,42 L50,42 L50,135 L164,135 L164,177 L40,177 L0,135 L0,42 Z"
-                  fill="currentColor"
-                />
-                <rect
-                  x="86"
-                  y="66"
-                  width="45"
-                  height="45"
-                  className={styles.brandSquare}
-                />
-              </svg>
-            </span>
-            <span className={styles.brandName}>CODE SQUARE</span>
+      <header className={styles.header}>
+        <Link
+          href="/"
+          className={styles.brand}
+          aria-label="Code Square home"
+          onClick={onNavClick("/", open)}
+        >
+          <Mark className={styles.brandMark} />
+          <Wordmark />
+        </Link>
+
+        <nav className={styles.nav} aria-label="Main">
+          {nav.map(([id, l, href]) => (
+            <Link
+              key={id}
+              href={href}
+              onClick={onNavClick(href)}
+              className={`${styles.link} ${active === id ? styles.active : ""}`}
+              aria-current={active === id ? "page" : undefined}
+            >
+              {l}
+            </Link>
+          ))}
+          <Link href={contactHref} className={styles.navCta}>
+            Start a project
           </Link>
+        </nav>
 
-          <nav className={styles.links} aria-label="Primary">
-            <ul className={styles.linksList}>
-              {NAV_LINKS.map((link) => {
-                const active = isActive(link.href);
-                return (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className={`${styles.link} ${
-                        active ? styles.linkActive : ""
-                      }`}
-                      aria-current={active ? "page" : undefined}
-                    >
-                      <span className={styles.linkLabel}>{link.label}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-
-          <Link
-            href="/contact"
-            className={`${styles.cta} ${
-              isQuoteActive ? styles.ctaActive : ""
-            }`}
-            aria-current={isQuoteActive ? "page" : undefined}
-          >
-            <span>Get a Quote</span>
-          </Link>
-
-          <button
-            ref={menuButtonRef}
-            type="button"
-            className={`${styles.menuButton} ${
-              isOpen ? styles.menuButtonOpen : ""
-            }`}
-            aria-expanded={isOpen}
-            aria-controls="mobile-menu"
-            aria-label={isOpen ? "Close menu" : "Open menu"}
-            onClick={() => setIsOpen((v) => !v)}
-          >
-            <span className={styles.burger} aria-hidden="true">
-              <span className={styles.burgerLine} />
-              <span className={styles.burgerLine} />
-              <span className={styles.burgerLine} />
-            </span>
-          </button>
-        </div>
+        <button
+          type="button"
+          className={styles.burger}
+          aria-expanded={open}
+          aria-controls="menu"
+          aria-label={open ? "Close menu" : "Open menu"}
+          onClick={() => setOpen((o) => !o)}
+        >
+          <span />
+          <span />
+        </button>
       </header>
 
       <div
-        className={`${styles.backdrop} ${
-          isOpen ? styles.backdropOpen : ""
-        }`}
-        onClick={() => setIsOpen(false)}
-        aria-hidden="true"
-      />
-
-      <aside
-        id="mobile-menu"
-        className={`${styles.drawer} ${isOpen ? styles.drawerOpen : ""}`}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Site menu"
-        hidden={!isOpen}
+        id="menu"
+        className={`${styles.menu} ${open ? styles.menuOpen : ""}`}
       >
-        <ul className={styles.drawerLinks}>
-          {NAV_LINKS.map((link, i) => {
-            const active = isActive(link.href);
-            return (
-              <li
-                key={link.href}
-                style={{
-                  transitionDelay: isOpen ? `${80 + i * 40}ms` : "0ms",
-                }}
-              >
-                <Link
-                  href={link.href}
-                  className={`${styles.drawerLink} ${
-                    active ? styles.drawerLinkActive : ""
-                  }`}
-                  aria-current={active ? "page" : undefined}
-                >
-                  <span className={styles.drawerLabel}>{link.label}</span>
-                  <span className={styles.drawerArrow} aria-hidden="true">
-                    →
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-
-        <Link
-          href="/contact"
-          className={`${styles.drawerCta} ${
-            isQuoteActive ? styles.drawerCtaActive : ""
-          }`}
-          aria-current={isQuoteActive ? "page" : undefined}
-        >
-          <span>Get a Quote</span>
+        {nav.map(([id, l, href]) => (
+          <Link
+            key={id}
+            href={href}
+            onClick={onNavClick(href, true)}
+            aria-current={active === id ? "page" : undefined}
+          >
+            {l}
+          </Link>
+        ))}
+        <Link href={contactHref} onClick={onNavClick(contactHref, true)}>
+          Start a project
         </Link>
-
-        <div className={styles.drawerFoot}>
-          <span>Code Square</span>
-          <span>Kathmandu, Nepal</span>
-        </div>
-      </aside>
+      </div>
     </>
   );
 }

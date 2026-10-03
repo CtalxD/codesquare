@@ -1,574 +1,260 @@
-/* app/css/navbar.module.css */
-/* =========================================================
-   Navbar - flat bar, right-aligned rectangular CTA
-   ========================================================= */
+/* ============================================================
+   Navbar - Code Square
+   Stacking: header 1000, mobile menu 900 (above any page content).
+   Colour tokens fall back to the site palette if a page has not
+   defined --ink / --paper / --brass.
+   ============================================================ */
+
+.header,
+.menu {
+  --n-ink: var(--ink, #12332e);
+  --n-ink2: var(--ink-2, #1a443d);
+  --n-paper: var(--paper, #e8eeeb);
+  --n-accent: var(--brass, #c6d2b2);
+  --n-rule: var(--rule, rgba(18, 51, 46, 0.14));
+  --n-ease: var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
 
 .header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  background: transparent;
-  border-bottom: 1px solid transparent;
-  transition:
-    background 260ms ease-out,
-    border-color 260ms ease-out,
-    z-index 0ms;
-}
-
-.headerScrolled {
-  background: var(--color-white);
-  border-bottom-color: var(--hairline);
-}
-
-.header[data-drawer-open="true"],
-.headerScrolled[data-drawer-open="true"] {
-  background: transparent;
-  border-bottom-color: transparent;
-  z-index: 200;
-}
-
-.shell {
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: 0 var(--container-pad);
-  height: 72px;
+  position: sticky;
+  top: max(12px, env(safe-area-inset-top));
+  z-index: 1000;
+  isolation: isolate;
+  width: min(1240px, calc(100% - 24px));
+  margin: 12px auto 0;
   display: flex;
   align-items: center;
-  gap: 40px;
-  transition: height 260ms ease-out;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 9px 9px 9px 22px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--n-paper) 82%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
+  border: 1px solid var(--n-rule);
+  box-shadow: 0 12px 32px -20px rgba(13, 38, 34, 0.55);
+  pointer-events: auto;
 }
-
-.headerScrolled .shell {
-  height: 64px;
-}
-
-/* ---------- Brand ---------- */
 
 .brand {
+  --ls: 0.2em; /* tracking, also used by the Λ spacing */
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  color: var(--color-white);
+  gap: 12px;
+  min-width: 0;
+  color: var(--n-ink);
+  font-weight: 700;
+  font-size: 0.92rem;
+  letter-spacing: var(--ls);
+  text-transform: uppercase;
+  white-space: nowrap;
   text-decoration: none;
-  flex-shrink: 0;
-  transition: color 260ms ease-out;
-}
-
-.headerScrolled .brand {
-  color: var(--color-navy);
-}
-
-.header[data-drawer-open="true"] .brand {
-  color: var(--color-white);
-}
-
-.brand:focus-visible {
-  outline: 2px solid var(--color-gold);
-  outline-offset: 4px;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .brandMark {
-  display: inline-flex;
-  transition: transform 320ms cubic-bezier(0.2, 0.85, 0.2, 1);
+  width: 22px;
+  height: auto;
+  flex: none;
 }
 
-.brand:hover .brandMark {
-  transform: rotate(-6deg);
-}
-
-.brandSquare {
-  fill: var(--color-gold);
-}
-
-.brandName {
-  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  color: currentColor;
-}
-
-/* ---------- Links ---------- */
-
-.links {
-  display: none;
-  margin-left: auto;
-}
-
-.linksList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.nav {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 26px;
+  font-weight: 500;
 }
 
 .link {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  padding: 10px 16px;
-  font-family: var(--font-display, var(--font-sans));
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: -0.005em;
+  padding: 4px 0;
+  color: var(--n-ink);
   text-decoration: none;
-  color: rgba(255, 255, 255, 0.72);
-  transition: color 220ms ease-out;
 }
 
-.headerScrolled .link {
-  color: var(--text-muted);
-}
-
-.link:hover {
-  color: var(--color-white);
-}
-
-.headerScrolled .link:hover {
-  color: var(--text-strong);
-}
-
-.link:focus-visible {
-  outline: 2px solid var(--color-gold);
-  outline-offset: 2px;
-}
-
-.linkActive {
-  color: var(--color-white);
-}
-
-.headerScrolled .linkActive {
-  color: var(--text-strong);
-}
-
-.linkLabel {
-  position: relative;
-  display: inline-block;
-  padding-bottom: 4px;
-}
-
-.linkLabel::after {
+.link::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 1px;
-  background: var(--color-gold);
+  height: 2px;
+  background: var(--n-ink);
   transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 320ms cubic-bezier(0.2, 0.85, 0.2, 1);
+  transform-origin: left;
+  transition: transform 0.3s var(--n-ease);
 }
 
-.link:hover .linkLabel::after {
+.link:hover::after,
+.active::after {
   transform: scaleX(1);
 }
 
-.linkActive .linkLabel::after {
-  transform: scaleX(1);
-}
-
-/* ---------- CTA (rectangular, right-aligned) ---------- */
-
-.cta {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  height: 42px;
-  padding: 0 22px;
-  font-family: var(--font-display, var(--font-sans));
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: var(--color-navy);
-  background: var(--color-gold);
+.navCta {
+  background: var(--n-ink);
+  color: var(--n-paper);
+  padding: 11px 22px;
+  border-radius: 999px;
   text-decoration: none;
-  flex-shrink: 0;
-  transition:
-    background 200ms ease-out,
-    color 200ms ease-out,
-    box-shadow 200ms ease-out;
+  white-space: nowrap;
+  transition: transform 0.25s var(--n-ease), background 0.2s;
 }
 
-.cta:hover {
-  background: var(--gold-on-dark);
-  color: var(--color-navy);
-}
-
-.headerScrolled .cta {
-  background: var(--color-navy);
-  color: var(--color-white);
-}
-
-.headerScrolled .cta:hover {
-  background: #163257;
-}
-
-.cta:focus-visible {
-  outline: 2px solid var(--color-gold);
-  outline-offset: 3px;
-}
-
-.ctaActive,
-.headerScrolled .ctaActive {
-  background: transparent;
-  color: var(--color-white);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
-}
-
-.headerScrolled .ctaActive {
-  color: var(--color-navy);
-  box-shadow: inset 0 0 0 1px var(--color-navy);
-}
-
-.ctaActive:hover,
-.headerScrolled .ctaActive:hover {
-  background: var(--color-gold);
-  color: var(--color-navy);
-  box-shadow: inset 0 0 0 1px var(--color-gold);
-}
-
-/* ---------- Mobile toggle (burger) ---------- */
-
-.menuButton {
-  margin-left: auto;
-  padding: 10px;
-  background: transparent;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  color: var(--color-white);
-  flex-shrink: 0;
-  transition:
-    color 260ms ease-out,
-    background 200ms ease-out;
-}
-
-.headerScrolled .menuButton {
-  color: var(--text-strong);
-}
-
-.menuButton:hover {
-  color: var(--color-gold);
-}
-
-.headerScrolled .menuButton:hover {
-  color: var(--gold-on-light);
-}
-
-.menuButton:focus-visible {
-  outline: 2px solid var(--color-gold);
-  outline-offset: 4px;
+.navCta:hover {
+  background: var(--n-ink2);
+  transform: translateY(-2px);
 }
 
 .burger {
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 22px;
-  height: 16px;
-  position: relative;
-}
-
-.burgerLine {
-  display: block;
-  width: 100%;
-  height: 2px;
-  background: currentColor;
-  transform-origin: center;
-  transition:
-    transform 320ms cubic-bezier(0.2, 0.85, 0.2, 1),
-    opacity 220ms ease-out;
-}
-
-.menuButtonOpen .burgerLine:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
-}
-
-.menuButtonOpen .burgerLine:nth-child(2) {
-  opacity: 0;
-}
-
-.menuButtonOpen .burgerLine:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
-}
-
-.menuButton[aria-expanded="true"] {
-  color: var(--color-white);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.menuButton[aria-expanded="true"]:hover {
-  color: var(--color-gold);
-  background: rgba(255, 255, 255, 0.14);
-}
-
-/* ---------- Backdrop ---------- */
-
-.backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 260ms ease-out;
-  z-index: 90;
-}
-
-.backdropOpen {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* ---------- Drawer ---------- */
-
-.drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 400px;
-  max-width: 90vw;
-  background: var(--color-navy);
-  color: var(--text-on-dark-strong);
-  z-index: 95;
-  padding: 96px 32px 32px;
-  display: flex;
-  flex-direction: column;
-  transform: translateX(100%);
-  transition: transform 320ms cubic-bezier(0.2, 0.85, 0.2, 1);
-  overflow-y: auto;
-}
-
-.drawerOpen {
-  transform: translateX(0);
-}
-
-.drawerLinks {
-  list-style: none;
-  margin: 0;
+  display: none;
+  flex: none;
+  width: 48px;
+  height: 48px;
   padding: 0;
-  display: flex;
+  border: 0;
+  border-radius: 50%;
+  background: var(--n-ink);
+  cursor: pointer;
   flex-direction: column;
-}
-
-.drawerLinks li {
-  opacity: 0;
-  transform: translateY(10px);
-  transition:
-    opacity 260ms ease-out,
-    transform 260ms cubic-bezier(0.2, 0.85, 0.2, 1);
-  border-bottom: 1px solid var(--hairline-dark);
-}
-
-.drawerOpen .drawerLinks li {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.drawerLink {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 22px 0;
-  text-decoration: none;
-  color: var(--text-on-dark-body);
-  transition: color 200ms ease-out;
-}
-
-.drawerLink:hover {
-  color: var(--text-on-dark-strong);
-}
-
-.drawerLink:focus-visible {
-  outline: 2px solid var(--color-gold);
-  outline-offset: 4px;
-}
-
-.drawerLinkActive {
-  color: var(--text-on-dark-strong);
-}
-
-.drawerLabel {
-  font-family: var(--font-display, var(--font-sans));
-  font-size: 24px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-}
-
-.drawerArrow {
-  font-size: 18px;
-  color: var(--color-gold);
-  opacity: 0;
-  transform: translateX(-4px);
-  transition:
-    opacity 200ms ease-out,
-    transform 240ms cubic-bezier(0.2, 0.85, 0.2, 1);
-}
-
-.drawerLink:hover .drawerArrow,
-.drawerLink:focus-visible .drawerArrow,
-.drawerLinkActive .drawerArrow {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.drawerCta {
-  margin-top: 40px;
-  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  min-height: 56px;
-  padding: 0 24px;
-  font-family: var(--font-display, var(--font-sans));
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--color-navy);
-  background: var(--color-gold);
-  text-decoration: none;
-  transition:
-    background 200ms ease-out,
-    color 200ms ease-out,
-    box-shadow 200ms ease-out;
+  gap: 6px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.drawerCta:hover {
-  background: var(--gold-on-dark);
+.burger span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--n-paper);
+  pointer-events: none; /* taps always land on the button itself */
+  transition: transform 0.35s var(--n-ease);
 }
 
-.drawerCta:focus-visible {
-  outline: 2px solid var(--color-gold);
-  outline-offset: 4px;
+.burger[aria-expanded="true"] span:first-child {
+  transform: translateY(4px) rotate(45deg);
 }
 
-.drawerCtaActive {
-  background: transparent;
-  color: var(--color-white);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+.burger[aria-expanded="true"] span:last-child {
+  transform: translateY(-4px) rotate(-45deg);
 }
 
-.drawerCtaActive:hover {
-  background: var(--color-gold);
-  color: var(--color-navy);
-  box-shadow: inset 0 0 0 1px var(--color-gold);
-}
-
-.drawerFoot {
-  margin-top: auto;
-  padding-top: 32px;
-  border-top: 1px solid var(--hairline-dark);
+/* ---------- Mobile menu ---------- */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--text-on-dark-muted);
+  justify-content: center;
+  gap: 4px;
+  padding: calc(96px + env(safe-area-inset-top)) 28px
+    calc(40px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--n-ink);
+  color: var(--n-paper);
+  visibility: hidden;
+  pointer-events: none; /* a closed menu can never swallow taps */
+  clip-path: circle(0 at calc(100% - 44px) 36px);
+  transition: clip-path 0.7s cubic-bezier(0.76, 0, 0.24, 1),
+    visibility 0s 0.7s;
 }
 
-/* =========================================================
-   Breakpoints
-   ========================================================= */
+.menuOpen {
+  visibility: visible;
+  pointer-events: auto;
+  clip-path: circle(150% at calc(100% - 44px) 36px);
+  transition-delay: 0s;
+}
 
-@media (min-width: 960px) {
-  .links,
-  .cta {
+.menu a {
+  display: block;
+  padding: 6px 0;
+  color: var(--n-paper);
+  text-decoration: none;
+  font-size: clamp(2.2rem, 10vw, 3.6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menu a:active {
+  color: var(--n-accent);
+}
+
+.menu a:focus-visible,
+.brand:focus-visible,
+.navCta:focus-visible,
+.link:focus-visible,
+.burger:focus-visible {
+  outline: 3px solid var(--n-ink);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+.menu a:focus-visible {
+  outline-color: var(--n-accent);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1020px) {
+  .nav {
+    gap: 18px;
+    font-size: 0.95rem;
+  }
+
+  .navCta {
+    padding: 10px 18px;
+  }
+}
+
+@media (max-width: 860px) {
+  .nav {
+    display: none;
+  }
+
+  .burger {
     display: inline-flex;
   }
-  .menuButton {
-    display: none;
+}
+
+@media (max-width: 620px) {
+  .header {
+    width: calc(100% - 20px);
+    margin-top: 10px;
+    padding: 6px 6px 6px 16px;
+  }
+
+  .brand {
+    --ls: 0.14em;
+    gap: 10px;
+    font-size: 0.78rem;
   }
 }
 
-@media (max-width: 959px) {
-  .shell {
-    height: 60px;
-    gap: 20px;
+@media (max-width: 380px) {
+  .brand {
+    --ls: 0.1em;
+    font-size: 0.72rem;
   }
 
-  .drawer {
-    width: 100vw;
-    max-width: 100vw;
-    height: 100dvh;
-    padding: 96px 32px 32px;
-    padding-top: calc(96px + env(safe-area-inset-top, 0px));
-    z-index: 150;
-  }
-
-  .backdrop {
-    background: transparent;
-    z-index: 140;
-  }
-}
-
-@media (max-width: 640px) {
-  .shell {
-    padding: 0 24px;
-    height: 56px;
-  }
-  .brandName {
-    font-size: 11px;
-    letter-spacing: 0.2em;
-  }
-  .drawer {
-    padding: 88px 24px 24px;
-    padding-top: calc(88px + env(safe-area-inset-top, 0px));
-  }
-  .drawerLabel {
-    font-size: 22px;
-  }
-}
-
-@media (max-width: 420px) {
-  .shell {
-    padding: 0 20px;
-  }
-  .brandName {
-    display: none;
-  }
-  .drawer {
-    padding: 80px 20px 24px;
-    padding-top: calc(80px + env(safe-area-inset-top, 0px));
-  }
-  .drawerLink {
-    padding: 20px 0;
-  }
-  .drawerLabel {
-    font-size: 20px;
-  }
-}
-
-@media (min-width: 1600px) {
-  .shell {
-    max-width: 1280px;
+  .brandMark {
+    width: 18px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .header,
-  .shell,
-  .brand,
-  .brandMark,
-  .link,
-  .linkLabel::after,
-  .cta,
-  .menuButton,
-  .burgerLine,
-  .backdrop,
-  .drawer,
-  .drawerLinks li,
-  .drawerLink,
-  .drawerArrow,
-  .drawerCta {
-    transition-duration: 0.001ms !important;
-    animation-duration: 0.001ms !important;
+  .menu {
+    clip-path: none;
+    opacity: 0;
+    transition: opacity 0.2s, visibility 0s 0.2s;
+  }
+
+  .menuOpen {
+    opacity: 1;
   }
 }

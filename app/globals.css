@@ -1,132 +1,140 @@
 /* =========================================================
-   globals.css
+   Code Square - global tokens
+   Palette built independently from the logo mark.
+   Warm paper + deep ink, brass accent, one cool signal.
+   No neon. No purple. No gradient defaults.
    ========================================================= */
 
 :root {
-  /* Brand */
-  --color-navy: #0c2748;
-  --color-gold: #d9b98c;
-  --color-white: #ffffff;
-  --color-off-white: #f4f6f9;
-  --color-slate: #1a2233;
+  --paper: #f2ede4;
+  --paper-2: #e9e2d5;
+  --paper-3: #ded5c4;
 
-  /* Text on light surfaces */
-  --text-strong: #0c2748;
-  --text-body: #2a3446;
-  --text-muted: #5a6478;
-  --gold-on-light: #a8843f;
+  --ink: #16130e;
+  --ink-2: #1f1b14;
+  --ink-3: #2a251c;
 
-  /* Text on navy / dark surfaces */
-  --text-on-dark-strong: #ffffff;
-  --text-on-dark-body: rgba(255, 255, 255, 0.9);
-  --text-on-dark-muted: rgba(255, 255, 255, 0.68);
-  --gold-on-dark: #e6c9a2;
+  --text: #16130e;
+  --text-2: #56504a;
+  --text-3: #86807a;
 
-  /* Typography */
-  --font-sans: "Instrument Sans", system-ui, -apple-system, "Segoe UI",
-    sans-serif;
-  --font-display: "Instrument Sans", system-ui, -apple-system, "Segoe UI",
-    sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --paper-text: #f2ede4;
+  --paper-text-2: #b8b0a2;
+  --paper-text-3: #7d7568;
+  --paper-text-4: #5e574c;
 
-  /* Layout */
-  --radius: 8px;
-  --container-max: 1180px;
-  --container-pad: 40px;
+  --rule: rgba(22, 19, 14, 0.13);
+  --rule-strong: rgba(22, 19, 14, 0.26);
+  --rule-inverse: rgba(242, 237, 228, 0.12);
+  --rule-inverse-strong: rgba(242, 237, 228, 0.24);
 
-  /* Hairlines */
-  --hairline: rgba(12, 39, 72, 0.1);
-  --hairline-strong: rgba(12, 39, 72, 0.22);
-  --hairline-dark: rgba(255, 255, 255, 0.14);
+  --brass: #b98b4f;
+  --brass-bright: #d1a463;
+  --brass-deep: #8f6a35;
+  --signal: #3f5f7c;
+
+  --mist: #e8eeeb;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
+    ui-serif, serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas,
+    monospace;
+
+  --ease: cubic-bezier(0.22, 0.72, 0.18, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 180ms;
+  --dur: 320ms;
+  --dur-slow: 620ms;
+  --dur-slower: 900ms;
+
+  --max: 1320px;
+  --gutter: 56px;
 }
 
-*,
-*::before,
-*::after {
+* {
   box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-  height: 100%;
-  overflow-x: hidden; /* fallback for older Safari */
-  overflow-x: clip;   /* modern: clips without creating a scroll container */
-}
-
-html,
-body {
   margin: 0;
   padding: 0;
 }
 
+html,
 body {
+  background: var(--mist);
+  color: var(--text);
   font-family: var(--font-sans);
-  font-size: 16px;
-  line-height: 1.65;
-  color: var(--text-body);
-  background: var(--color-white);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01", "cv11", "tnum";
+  text-rendering: optimizeLegibility;
+}
+
+body {
   min-height: 100vh;
-  overflow-x: hidden; /* fallback */
-  overflow-x: clip;   /* key change: keeps position: sticky working */
+  overflow-x: hidden;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-display);
-  color: var(--text-strong);
-  margin: 0;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-}
-
-p {
-  margin: 0;
+::selection {
+  background: var(--brass);
+  color: var(--ink);
 }
 
 a {
   color: inherit;
-}
-
-img {
-  display: block;
-  max-width: 100%;
-  height: auto;
+  text-decoration: none;
 }
 
 button {
-  font-family: inherit;
+  font: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
 }
 
-.skipLink {
+:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.sr {
   position: absolute;
-  top: -100px;
-  left: 16px;
-  z-index: 200;
-  padding: 10px 16px;
-  background: var(--color-navy);
-  color: var(--color-white);
-  text-decoration: none;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
-.skipLink:focus {
-  top: 12px;
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity var(--dur-slower) var(--ease-out),
+    transform var(--dur-slower) var(--ease-out);
 }
+
+[data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+[data-reveal-delay="1"] { transition-delay: 90ms; }
+[data-reveal-delay="2"] { transition-delay: 180ms; }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
   }
 }

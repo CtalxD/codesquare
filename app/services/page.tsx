@@ -1,898 +1,281 @@
-//app/services/page.tsx
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import CircuitCanvas from "../components/CircuitCanvas";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent,
+} from "react";
 import styles from "../css/services.module.css";
+import { icons, tileIcons, Illustration } from "../components/icons";
 
+/* ============================================================
+   Style helper
+   ============================================================ */
+const v = (o: Record<string, number | string>) =>
+  o as unknown as CSSProperties;
+
+/* ============================================================
+   Content (edit here)
+   ============================================================ */
+
+/* Where every "Start a project" button goes. Change to your real
+   contact page, or a mailto: link. */
+const CONTACT_HREF = "/contact";
+
+const services = [
+  {
+    id: "ui-ux-design",
+    t: "UI/UX design",
+    d: "Research, flows and interfaces tested with real users before a line of code is written.",
+    out: "You approve a clickable prototype that real users have already tried.",
+    k: ["Product discovery", "Wireframes", "Design systems", "Prototypes"],
+    tools: ["Figma", "Framer", "Storybook"],
+  },
+  {
+    id: "custom-software",
+    t: "Custom software",
+    d: "Portals, dashboards and internal tools shaped around how your team already works.",
+    out: "One tool that replaces the spreadsheets and workarounds your team juggles today.",
+    k: ["Web platforms", "Integrations", "Automation", "APIs"],
+    tools: ["Node.js", "Python", "Java", "PostgreSQL", "GraphQL", "AWS", "Docker"],
+  },
+  {
+    id: "mobile-apps",
+    t: "Mobile apps",
+    d: "iOS and Android apps that feel native, launch quickly and stay easy to maintain.",
+    out: "A fast, native-feeling app in the stores, ready to grow with your users.",
+    k: ["iOS", "Android", "Cross-platform", "App store release"],
+    tools: ["React Native", "Flutter", "Swift", "Kotlin"],
+  },
+  {
+    id: "websites",
+    t: "Websites",
+    d: "Fast, accessible sites designed to load quickly, rank well and look right on every screen.",
+    out: "A site that loads quickly, ranks well and works on every device.",
+    k: ["Marketing sites", "Accessibility", "Performance", "SEO"],
+    tools: ["React", "Next.js", "TypeScript", "Tailwind", "Vue"],
+  },
+];
+
+const steps: [string, string, string][] = [
+  ["Listen", "We start with your goals, your users and your constraints.", "A clear brief"],
+  ["Design", "You click through a working prototype before we build anything.", "A clickable prototype"],
+  ["Build", "We ship small releases every week so progress is never a mystery.", "Working releases every week"],
+  ["Support", "After launch we fix, improve and scale alongside you.", "Fixes, updates and room to scale"],
+];
+
+const principles = [
+  "Designers and engineers, together",
+  "Plain communication",
+  "Small, steady releases",
+  "Built to be maintained",
+];
+
+const titleLines = ["What we", "build"];
+
+/* ============================================================
+   Page
+   ============================================================ */
 export default function ServicesPage() {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const [activeId, setActiveId] = useState<string>("website");
+  const heroRef = useRef<HTMLElement>(null);
+  const [current, setCurrent] = useState(services[0].id);
 
+  /* Highlight the service currently in view in the sticky sub-nav */
   useEffect(() => {
-    const sections =
-      rootRef.current?.querySelectorAll<HTMLElement>("[data-service]");
-    if (!sections || !sections.length) return;
+    const els = services
+      .map((x) => document.getElementById(x.id))
+      .filter((el): el is HTMLElement => el !== null);
 
     const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) setActiveId(e.target.id);
-        }
-      },
-      { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
+      (entries) =>
+        entries.forEach(
+          (entry) => entry.isIntersecting && setCurrent(entry.target.id),
+        ),
+      { rootMargin: "-40% 0px -50% 0px" },
     );
 
-    sections.forEach((el) => io.observe(el));
+    els.forEach((el) => io.observe(el));
     return () => io.disconnect();
   }, []);
 
-  useEffect(() => {
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReduced) return;
-
-    let cleanup: (() => void) | undefined;
-    let cancelled = false;
-
-    (async () => {
-      const gsapMod = await import("gsap");
-      const stMod = await import("gsap/ScrollTrigger");
-      const gsap = gsapMod.gsap ?? gsapMod.default;
-      const ScrollTrigger = stMod.ScrollTrigger ?? stMod.default;
-
-      if (cancelled) return;
-      gsap.registerPlugin(ScrollTrigger);
-
-      const root = rootRef.current;
-      if (!root) return;
-
-      const ctx = gsap.context(() => {
-        /* ---------- HERO ---------- */
-
-        const heroLines = gsap.utils.toArray<HTMLElement>("[data-hero-line]");
-        gsap.set(heroLines, { yPercent: 110 });
-        gsap.to(heroLines, {
-          yPercent: 0,
-          duration: 1,
-          ease: "expo.out",
-          stagger: 0.1,
-          delay: 0.1,
-        });
-
-        const heroFades = gsap.utils.toArray<HTMLElement>("[data-hero-fade]");
-        gsap.set(heroFades, { y: 24, opacity: 0 });
-        gsap.to(heroFades, {
-          y: 0,
-          opacity: 1,
-          duration: 0.9,
-          ease: "power2.out",
-          stagger: 0.1,
-          delay: 0.5,
-        });
-
-        gsap.to("[data-hero-image]", {
-          yPercent: 15,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "[data-hero]",
-            start: "top top",
-            end: "bottom top",
-            scrub: 0.5,
-          },
-        });
-
-        gsap.to("[data-hero-content]", {
-          yPercent: -10,
-          opacity: 0.35,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "[data-hero]",
-            start: "top top",
-            end: "bottom top",
-            scrub: 0.6,
-          },
-        });
-
-        /* ---------- SERVICE 01 - WEBSITE ---------- */
-
-        const websiteTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: "#website",
-            start: "top 78%",
-          },
-        });
-
-        websiteTl
-          .from("[data-website-head] > *", {
-            y: 32,
-            opacity: 0,
-            duration: 0.9,
-            ease: "power3.out",
-            stagger: 0.1,
-          })
-          .from(
-            "[data-website-frame]",
-            {
-              clipPath: "inset(100% 0 0 0)",
-              duration: 1.2,
-              ease: "expo.out",
-            },
-            "-=0.4"
-          )
-          .from(
-            "[data-website-foot] > *",
-            {
-              y: 24,
-              opacity: 0,
-              duration: 0.8,
-              ease: "power3.out",
-              stagger: 0.1,
-            },
-            "-=0.5"
-          );
-
-        gsap.fromTo(
-          "[data-website-frame]",
-          { yPercent: 3 },
-          {
-            yPercent: -3,
-            ease: "none",
-            scrollTrigger: {
-              trigger: "#website",
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 0.6,
-            },
-          }
-        );
-
-        /* ---------- SERVICE 02 - MOBILE ---------- */
-
-        const mobileTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: "#mobile",
-            start: "top 78%",
-          },
-        });
-
-        mobileTl
-          .from("[data-mobile-text] > *", {
-            y: 32,
-            opacity: 0,
-            duration: 0.9,
-            ease: "power3.out",
-            stagger: 0.1,
-          })
-          .from(
-            "[data-mobile-media]",
-            {
-              clipPath: "inset(0 100% 0 0)",
-              duration: 1.2,
-              ease: "expo.out",
-            },
-            "-=0.5"
-          );
-
-        gsap.fromTo(
-          "[data-mobile-image]",
-          { scale: 1.12 },
-          {
-            scale: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: "#mobile",
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 0.6,
-            },
-          }
-        );
-
-        /* ---------- SERVICE 03 - SOFTWARE ---------- */
-
-        const softwareTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: "#software",
-            start: "top 78%",
-          },
-        });
-
-        softwareTl
-          .from("[data-software-head] > *", {
-            y: 32,
-            opacity: 0,
-            duration: 0.9,
-            ease: "power3.out",
-            stagger: 0.1,
-          })
-          .from(
-            "[data-dashboard]",
-            {
-              y: 48,
-              opacity: 0,
-              duration: 1,
-              ease: "power3.out",
-            },
-            "-=0.4"
-          )
-          .from(
-            "[data-software-foot] > *",
-            {
-              y: 24,
-              opacity: 0,
-              duration: 0.8,
-              ease: "power3.out",
-              stagger: 0.1,
-            },
-            "-=0.4"
-          );
-
-        const dashBars = gsap.utils.toArray<HTMLElement>("[data-dash-bar]");
-        dashBars.forEach((bar) => {
-          const targetHeight = bar.dataset.height || bar.style.height;
-          gsap.fromTo(
-            bar,
-            { height: "0%" },
-            {
-              height: targetHeight,
-              duration: 1.2,
-              ease: "expo.out",
-              scrollTrigger: {
-                trigger: "[data-dashboard]",
-                start: "top 78%",
-              },
-            }
-          );
-        });
-
-        gsap.from("[data-dash-kpi]", {
-          y: 16,
-          opacity: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          stagger: 0.08,
-          scrollTrigger: {
-            trigger: "[data-dashboard]",
-            start: "top 75%",
-          },
-        });
-
-        /* ---------- SERVICE 04 - DESIGN ---------- */
-
-        const designTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: "#design",
-            start: "top 78%",
-          },
-        });
-
-        designTl
-          .from("[data-design-head] > *", {
-            y: 32,
-            opacity: 0,
-            duration: 0.9,
-            ease: "power3.out",
-            stagger: 0.1,
-          })
-          .from(
-            "[data-wire-back]",
-            {
-              x: -60,
-              opacity: 0,
-              duration: 1,
-              ease: "expo.out",
-            },
-            "-=0.4"
-          )
-          .from(
-            "[data-wire-front]",
-            {
-              x: 60,
-              opacity: 0,
-              duration: 1,
-              ease: "expo.out",
-            },
-            "-=0.8"
-          )
-          .from(
-            "[data-design-foot] > *",
-            {
-              y: 24,
-              opacity: 0,
-              duration: 0.8,
-              ease: "power3.out",
-              stagger: 0.1,
-            },
-            "-=0.4"
-          );
-
-        /* ---------- CTA ---------- */
-
-        gsap.fromTo(
-          "[data-cta-image]",
-          { yPercent: -6 },
-          {
-            yPercent: 6,
-            ease: "none",
-            scrollTrigger: {
-              trigger: "[data-cta]",
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 0.6,
-            },
-          }
-        );
-
-        gsap.from("[data-cta-content] > *", {
-          y: 24,
-          opacity: 0,
-          duration: 0.9,
-          ease: "power3.out",
-          stagger: 0.12,
-          scrollTrigger: {
-            trigger: "[data-cta]",
-            start: "top 78%",
-          },
-        });
-
-        ScrollTrigger.refresh();
-      }, root);
-
-      cleanup = () => ctx.revert();
-    })();
-
-    return () => {
-      cancelled = true;
-      if (cleanup) cleanup();
-    };
-  }, []);
+  const onMove = (e: PointerEvent<HTMLElement>) => {
+    const el = heroRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    const y = e.clientY - r.top;
+    el.style.setProperty("--mx", `${x}px`);
+    el.style.setProperty("--my", `${y}px`);
+    el.style.setProperty("--px", (x / r.width - 0.5).toFixed(3));
+    el.style.setProperty("--py", (y / r.height - 0.5).toFixed(3));
+  };
 
   return (
-    <main id="main" ref={rootRef} className={styles.page}>
-      {/* ================= HERO ================= */}
-      <section className={styles.hero} data-hero>
-        <div className={styles.heroCanvas} data-hero-image aria-hidden="true">
-          <CircuitCanvas className={styles.heroCanvasInner} />
-          <div className={styles.heroBgTopScrim} />
-          <div className={styles.heroBgBottomScrim} />
-        </div>
+    <div className={styles.page}>
+      <main className={styles.main}>
+        {/* ---------- HERO (full screen) ---------- */}
+        <section
+          ref={heroRef}
+          className={styles.hero}
+          onPointerMove={onMove}
+          onPointerEnter={(e) => (e.currentTarget.dataset.active = "1")}
+          onPointerLeave={(e) => delete e.currentTarget.dataset.active}
+        >
+          <div className={styles.grid} aria-hidden="true" />
+          <div className={styles.gridLit} aria-hidden="true" />
+          <div className={styles.glow} aria-hidden="true" />
 
-        <div className={styles.heroInner} data-hero-content>
-          <div className={styles.container}>
-            <div className={styles.heroContent}>
-              <h1 className={styles.heroTitle}>
-                <span className={styles.heroLine}>
-                  <span className={styles.heroLineInner} data-hero-line>
-                    Four things
+          <div className={styles.cursor} aria-hidden="true" />
+
+          <div className={styles.heroLeft}>
+            <h1 className={styles.title} aria-label={titleLines.join(" ")}>
+              {titleLines.map((l, i) => (
+                <span key={l} className={styles.line} aria-hidden="true">
+                  <span className={styles.lineIn} style={v({ "--d": i })}>
+                    {l}
                   </span>
                 </span>
-                <span className={styles.heroLine}>
-                  <span className={styles.heroLineInner} data-hero-line>
-                    we do well.
-                  </span>
-                </span>
-              </h1>
+              ))}
+            </h1>
 
-              <p className={styles.heroLead} data-hero-fade>
-                Each one has a rule. We keep the rules so the work stays
-                good.
-              </p>
-
-              <nav
-                className={`${styles.heroNav} ${styles.heroNavMoved}`}
-                aria-label="Services"
-                data-hero-fade
-              >
-                <ol className={styles.heroNavList}>
-                  {[
-                    { id: "website", index: "01", label: "Web" },
-                    { id: "mobile", index: "02", label: "Mobile" },
-                    { id: "software", index: "03", label: "Systems" },
-                    { id: "design", index: "04", label: "Design" },
-                  ].map((s) => (
-                    <li key={s.id}>
-                      <a
-                        href={`#${s.id}`}
-                        className={
-                          activeId === s.id
-                            ? `${styles.heroNavLink} ${styles.heroNavLinkActive}`
-                            : styles.heroNavLink
-                        }
-                        aria-current={activeId === s.id ? "true" : undefined}
-                      >
-                        <span className={styles.heroNavNum}>{s.index}</span>
-                        <span className={styles.heroNavLabel}>{s.label}</span>
-                      </a>
-                    </li>
-                  ))}
-                </ol>
-              </nav>
-            </div>
+            <ul className={styles.tileRow} aria-label="Jump to a service">
+              {services.map((s, i) => {
+                const Icon = tileIcons[i];
+                return (
+                  <li key={s.id} style={v({ "--n": i })}>
+                    <a href={`#${s.id}`} className={styles.tile}>
+                      <span className={styles.tileIcon} aria-hidden="true">
+                        <Icon />
+                      </span>
+                      <span>{s.t}</span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-        </div>
-      </section>
 
-      {/* ================= SERVICE 01 - WEBSITE ================= */}
-      <section
-        id="website"
-        data-service
-        className={styles.website}
-        aria-labelledby="website-title"
-      >
-        <div className={styles.container}>
-          <header className={styles.websiteHead} data-website-head>
-            <span className={styles.serviceNum}>01</span>
-
-            <h2 id="website-title" className={styles.websiteTitle}>
-              <span>Website</span>
-              <span className={styles.websiteTitleSecond}>Development</span>
-            </h2>
-
-            <p className={styles.websiteRule}>
-              We refuse to build sites your team can&rsquo;t edit. If the
-              copy has to come through us, we&rsquo;ve failed.
+          <aside className={styles.about} aria-label="What we do">
+            <p className={styles.aboutKicker}>What we do</p>
+            <h2 className={styles.aboutTitle}>Good software is quiet.</h2>
+            <p className={styles.aboutText}>
+              It removes steps, answers questions before they are asked, and
+              keeps working long after launch. That is what we build.
             </p>
-          </header>
+            <p className={styles.aboutText}>
+              Websites, mobile apps and custom software for teams that need
+              technology to fit the way they work.
+            </p>
 
-          <div
-            className={styles.browserFrame}
-            data-website-frame
-            aria-hidden="true"
-          >
-            <div className={styles.browserBar}>
-              <span className={styles.browserDot} />
-              <span className={styles.browserDot} />
-              <span className={styles.browserDot} />
-              <div className={styles.browserUrl}>
-                <span>codesquare.com.np</span>
-              </div>
-            </div>
+            <ul className={styles.aboutList}>
+              {principles.map((p) => (
+                <li key={p}>{p}</li>
+              ))}
+            </ul>
 
-            <div className={styles.browserBody}>
-              <div className={styles.siteNav}>
-                <div className={styles.siteBrand}>
-                  <span className={styles.siteMark} />
-                  <span className={styles.siteBrandText}>
-                    CODE SQUARE
+            <a href={CONTACT_HREF} className={styles.aboutBtn}>
+              Start a project
+            </a>
+          </aside>
+
+          <span className={styles.scrollLine} aria-hidden="true" />
+        </section>
+
+        {/* ---------- SERVICES ---------- */}
+        <section className={styles.services} aria-label="Our services">
+          <div className={styles.svcWrap}>
+            <h2 className={styles.h2}>Our services</h2>
+
+            <nav className={styles.subnav} aria-label="Services">
+              {services.map((x) => (
+                <a
+                  key={x.id}
+                  href={`#${x.id}`}
+                  className={`${styles.pill} ${current === x.id ? styles.pillOn : ""}`}
+                  aria-current={current === x.id ? "true" : undefined}
+                >
+                  {x.t}
+                </a>
+              ))}
+            </nav>
+
+            {services.map((s, i) => (
+              <article
+                key={s.id}
+                id={s.id}
+                className={`${styles.svc} ${styles["tone" + i]}`}
+              >
+                <div className={styles.svcSide}>
+                  <h3 className={styles.svcName}>{s.t}</h3>
+                  <p className={styles.svcDesc}>{s.d}</p>
+                  <p className={styles.svcOut}>{s.out}</p>
+                  <a href={CONTACT_HREF} className={styles.svcLink}>
+                    Start a project
+                  </a>
+                </div>
+
+                <div className={styles.svcMain}>
+                  <div className={styles.svcArt}>
+                    <div className={styles.svcIll}>
+                      <Illustration kind={i} />
+                    </div>
+                  </div>
+
+                  <div className={styles.cols}>
+                    <div>
+                      <h4 className={styles.colTitle}>Included</h4>
+                      <ul className={styles.checks}>
+                        {s.k.map((k) => (
+                          <li key={k}>{k}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h4 className={styles.colTitle}>Built with</h4>
+                      <ul className={styles.chips}>
+                        {s.tools.map((name) => {
+                          const Icon = icons[name];
+                          return (
+                            <li key={name} className={styles.chip}>
+                              <Icon />
+                              {name}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* ---------- HOW WE WORK ---------- */}
+        <section className={styles.process} aria-label="How we work">
+          <div className={styles.processWrap}>
+            <h2 className={`${styles.h2} ${styles.h2Light}`}>How we work</h2>
+
+            <ol className={styles.steps}>
+              {steps.map(([t, d, o], i) => (
+                <li key={t} className={styles.step} style={v({ "--s": i })}>
+                  <span className={styles.num} aria-hidden="true">
+                    0{i + 1}
                   </span>
-                </div>
-                <div className={styles.siteNavLinks}>
-                  <span>Work</span>
-                  <span>Services</span>
-                  <span>About</span>
-                  <span>Contact</span>
-                </div>
-              </div>
-
-              <div className={styles.siteHero}>
-                <h3 className={styles.siteH1}>
-                  Building
-                  <br />
-                  something
-                  <br />
-                  useful.
-                </h3>
-                <span className={styles.siteCta}>
-                  Start a project <span aria-hidden="true">→</span>
-                </span>
-              </div>
-
-              <div className={styles.siteGrid}>
-                <div className={styles.siteCard}>
-                  <span className={styles.siteCardNum}>01</span>
-                  <span className={styles.siteCardTitle}>Websites</span>
-                </div>
-                <div className={styles.siteCard}>
-                  <span className={styles.siteCardNum}>02</span>
-                  <span className={styles.siteCardTitle}>Applications</span>
-                </div>
-                <div className={styles.siteCard}>
-                  <span className={styles.siteCardNum}>03</span>
-                  <span className={styles.siteCardTitle}>Design</span>
-                </div>
-              </div>
-            </div>
+                  <h3 className={styles.stepTitle}>{t}</h3>
+                  <p>{d}</p>
+                  <p className={styles.get}>
+                    <strong>You get</strong> {o}
+                  </p>
+                </li>
+              ))}
+            </ol>
           </div>
-
-          <div className={styles.websiteFoot} data-website-foot>
-            <div className={styles.handleBlock}>
-              <span className={styles.blockLabel}>Scope</span>
-              <ol className={styles.handleGrid}>
-                {[
-                  "Discovery",
-                  "Architecture",
-                  "Interface",
-                  "Development",
-                  "Performance",
-                  "Launch",
-                ].map((item, i) => (
-                  <li key={item}>
-                    <span className={styles.handleNum}>
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-
-            <div className={styles.footRow}>
-              <span className={styles.time}>3-6 weeks</span>
-              <Link
-                href="/contact?service=website"
-                className={styles.link}
-              >
-                Get a quote <span aria-hidden="true">→</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= SERVICE 02 - MOBILE ================= */}
-      <section
-        id="mobile"
-        data-service
-        className={styles.mobile}
-        aria-labelledby="mobile-title"
-      >
-        <div className={styles.container}>
-          <div className={styles.mobileGrid}>
-            <div className={styles.mobileText} data-mobile-text>
-              <span className={styles.serviceNumLight}>02</span>
-
-              <h2 id="mobile-title" className={styles.mobileTitle}>
-                We won&rsquo;t build an app for something a web page can
-                already do.
-              </h2>
-
-              <p className={styles.mobileLead}>
-                When an app is the right answer, it&rsquo;s built from one
-                codebase and runs on both platforms.
-              </p>
-            </div>
-
-            <div className={styles.mobileMedia} data-mobile-media>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=1400&q=80&auto=format&fit=crop"
-                alt="Two phones showing a mobile application interface"
-                className={styles.mobileImage}
-                loading="lazy"
-                decoding="async"
-                data-mobile-image
-              />
-            </div>
-          </div>
-
-          <div className={styles.footRowDark}>
-            <span className={styles.timeLight}>6-12 weeks</span>
-            <Link
-              href="/contact?service=mobile"
-              className={styles.linkLight}
-            >
-              Get a quote <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= SERVICE 03 - SOFTWARE ================= */}
-      <section
-        id="software"
-        data-service
-        className={styles.software}
-        aria-labelledby="software-title"
-      >
-        <div className={styles.container}>
-          <header className={styles.softwareHead} data-software-head>
-            <span className={styles.serviceNum}>03</span>
-
-            <h2 id="software-title" className={styles.softwareTitle}>
-              Every system we build starts with a workflow audit. If we
-              can&rsquo;t map it on one page, we don&rsquo;t build it.
-            </h2>
-          </header>
-        </div>
-
-        <div className={styles.dashboardBleed}>
-          <div className={styles.dashboard} data-dashboard aria-hidden="true">
-            <div className={styles.dashHeader}>
-              <span className={styles.dashTitle}>Operations</span>
-              <div className={styles.dashHeaderRight}>
-                <span className={styles.dashPill}>Week</span>
-                <span className={styles.dashPill}>Month</span>
-                <span className={styles.dashPillActive}>Quarter</span>
-              </div>
-            </div>
-
-            <div className={styles.dashKpis}>
-              <div className={styles.dashKpi} data-dash-kpi>
-                <span className={styles.dashKpiLabel}>Orders</span>
-                <span className={styles.dashKpiValue}>1,248</span>
-                <span className={styles.dashKpiDelta}>
-                  ↑ 12% from last quarter
-                </span>
-              </div>
-              <div className={styles.dashKpi} data-dash-kpi>
-                <span className={styles.dashKpiLabel}>Users</span>
-                <span className={styles.dashKpiValue}>382</span>
-                <span className={styles.dashKpiDelta}>↑ 46 new</span>
-              </div>
-              <div className={styles.dashKpi} data-dash-kpi>
-                <span className={styles.dashKpiLabel}>Pending</span>
-                <span className={styles.dashKpiValue}>38</span>
-                <span className={styles.dashKpiDelta}>
-                  ↓ 6 since Monday
-                </span>
-              </div>
-            </div>
-
-            <div className={styles.dashChart}>
-              <span
-                className={styles.dashBar}
-                data-dash-bar
-                data-height="38%"
-                style={{ height: "38%" }}
-              />
-              <span
-                className={styles.dashBar}
-                data-dash-bar
-                data-height="62%"
-                style={{ height: "62%" }}
-              />
-              <span
-                className={styles.dashBar}
-                data-dash-bar
-                data-height="48%"
-                style={{ height: "48%" }}
-              />
-              <span
-                className={styles.dashBar}
-                data-dash-bar
-                data-height="82%"
-                style={{ height: "82%" }}
-              />
-              <span
-                className={styles.dashBar}
-                data-dash-bar
-                data-height="54%"
-                style={{ height: "54%" }}
-              />
-              <span
-                className={styles.dashBar}
-                data-dash-bar
-                data-height="70%"
-                style={{ height: "70%" }}
-              />
-              <span
-                className={`${styles.dashBar} ${styles.dashBarActive}`}
-                data-dash-bar
-                data-height="94%"
-                style={{ height: "94%" }}
-              />
-              <span
-                className={styles.dashBar}
-                data-dash-bar
-                data-height="60%"
-                style={{ height: "60%" }}
-              />
-              <span
-                className={styles.dashBar}
-                data-dash-bar
-                data-height="78%"
-                style={{ height: "78%" }}
-              />
-              <span
-                className={styles.dashBar}
-                data-dash-bar
-                data-height="42%"
-                style={{ height: "42%" }}
-              />
-              <span
-                className={styles.dashBar}
-                data-dash-bar
-                data-height="68%"
-                style={{ height: "68%" }}
-              />
-              <span
-                className={styles.dashBar}
-                data-dash-bar
-                data-height="55%"
-                style={{ height: "55%" }}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.container}>
-          <div className={styles.softwareFoot} data-software-foot>
-            <div className={styles.handleBlock}>
-              <span className={styles.blockLabel}>Scope</span>
-              <ol className={styles.handleGrid}>
-                {[
-                  "Process mapping",
-                  "Data model",
-                  "Admin interface",
-                  "Access control",
-                  "Integrations",
-                  "Documentation",
-                ].map((item, i) => (
-                  <li key={item}>
-                    <span className={styles.handleNum}>
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-
-            <div className={styles.footRow}>
-              <span className={styles.time}>8-16 weeks</span>
-              <Link
-                href="/contact?service=software"
-                className={styles.link}
-              >
-                Get a quote <span aria-hidden="true">→</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= SERVICE 04 - DESIGN ================= */}
-      <section
-        id="design"
-        data-service
-        className={styles.design}
-        aria-labelledby="design-title"
-      >
-        <div className={styles.container}>
-          <header className={styles.designHead} data-design-head>
-            <span className={styles.serviceNum}>04</span>
-
-            <h2 id="design-title" className={styles.designTitle}>
-              We do this before anything else. If the design isn&rsquo;t
-              right, the code is wasted.
-            </h2>
-          </header>
-
-          <div className={styles.wireframes} aria-hidden="true">
-            <div className={styles.wireBack} data-wire-back>
-              <div className={styles.wireHeader}>
-                <span className={styles.wireLabel}>
-                  Customer onboarding · v3
-                </span>
-                <span className={styles.wireDot} />
-              </div>
-              <div className={styles.wireRow}>
-                <div className={styles.wireBox} />
-                <div className={styles.wireLines}>
-                  <span />
-                  <span />
-                  <span className={styles.wireLineShort} />
-                </div>
-              </div>
-              <div className={styles.wireRow}>
-                <div className={styles.wireBox} />
-                <div className={styles.wireLines}>
-                  <span />
-                  <span className={styles.wireLineShort} />
-                </div>
-              </div>
-              <div className={styles.wireRow}>
-                <div className={styles.wireBox} />
-                <div className={styles.wireLines}>
-                  <span />
-                  <span />
-                  <span />
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.wireFront} data-wire-front>
-              <div className={styles.wireHeader}>
-                <span className={styles.wireLabel}>
-                  Components · 42 defined
-                </span>
-                <span className={styles.wireDotActive} />
-              </div>
-              <div className={styles.wireSwatches}>
-                <span className={styles.wireSwatchA} />
-                <span className={styles.wireSwatchB} />
-                <span className={styles.wireSwatchC} />
-                <span className={styles.wireSwatchD} />
-              </div>
-              <div className={styles.wireType}>
-                <span className={styles.wireTypeH}>Aa</span>
-                <div className={styles.wireTypeLines}>
-                  <span className={styles.wireTypeLine} />
-                  <span className={styles.wireTypeLineShort} />
-                </div>
-              </div>
-              <div className={styles.wireButtons}>
-                <span className={styles.wireBtnPrimary}>Continue</span>
-                <span className={styles.wireBtnGhost}>Back</span>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.designFoot} data-design-foot>
-            <div className={styles.handleBlock}>
-              <span className={styles.blockLabel}>Scope</span>
-              <ol className={styles.handleGrid}>
-                {[
-                  "Research",
-                  "Flows",
-                  "Wireframes",
-                  "Prototypes",
-                  "Design system",
-                  "Handoff",
-                ].map((item, i) => (
-                  <li key={item}>
-                    <span className={styles.handleNum}>
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-
-            <div className={styles.footRow}>
-              <span className={styles.time}>3-8 weeks</span>
-              <Link
-                href="/contact?service=design"
-                className={styles.link}
-              >
-                Get a quote <span aria-hidden="true">→</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= CTA ================= */}
-      <section
-        className={styles.cta}
-        data-cta
-        aria-labelledby="cta-title"
-      >
-        <div className={styles.ctaBg} data-cta-image aria-hidden="true">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=2400&q=80&auto=format&fit=crop"
-            alt=""
-            className={styles.ctaBgImage}
-            loading="lazy"
-            decoding="async"
-          />
-          <div className={styles.ctaBgOverlay} />
-        </div>
-
-        <div className={styles.container}>
-          <div className={styles.ctaGrid} data-cta-content>
-            <div>
-              <h2 id="cta-title" className={styles.ctaTitle}>
-                Have something in mind?
-              </h2>
-              <p className={styles.ctaText}>
-                Tell us about it. We&rsquo;ll reply within one business day
-                with honest thoughts on scope, timeline, and cost.
-              </p>
-            </div>
-            <div className={styles.ctaActions}>
-              <Link href="/contact" className={styles.ctaPrimary}>
-                Start a conversation <span aria-hidden="true">→</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
+        </section>
+      </main>
+    </div>
   );
 }
