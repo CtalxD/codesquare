@@ -1,22 +1,14 @@
-//app/components/JsonLd.tsx
-const organizationSchema = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "Code Square Pvt. Ltd.",
-  url: "https://www.codesquare.com.np",
-  logo: "https://www.codesquare.com.np/codesquare.PNG",
-  description: "A four-person software studio in Kathmandu building websites, mobile apps, and custom software.",
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Kathmandu",
-    addressCountry: "NP",
-  },
-  contactPoint: {
-    "@type": "ContactPoint",
-    email: "codesquare2026@gmail.com",
-    telephone: "+9779813301334",
-    contactType: "customer service",
-  },
-};
+// app/components/JsonLd.tsx
+// Renders structured data. Server component, no client JS.
 
-// Then render: <JsonLd data={organizationSchema} />
+export default function JsonLd({ data }: { data: object | object[] }) {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        // escape "<" so content can never close the script tag
+        __html: JSON.stringify(data).replace(/</g, "\\u003c"),
+      }}
+    />
+  );
+}

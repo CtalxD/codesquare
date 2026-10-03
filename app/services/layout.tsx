@@ -1,17 +1,32 @@
-//app/services/layout.tsx
+// app/services/layout.tsx
 import type { Metadata } from "next";
+import JsonLd from "../components/JsonLd";
+import { pageMeta, breadcrumbSchema, servicesSchema } from "../lib/seo";
 
-export const metadata: Metadata = {
-  title: "Services - Websites, Apps, Software & Design",
+export const metadata: Metadata = pageMeta({
+  title: "Software, Web & Mobile App Development in Nepal",
   description:
-    "Four services from Code Square: website development, mobile app development, custom software, and UI/UX design. Built in Kathmandu for clients in Nepal and abroad.",
-  alternates: { canonical: "/services" },
-};
+    "Website development, mobile app development, custom software and UI/UX design from Code Square in Kathmandu. Clear scope, weekly releases and support after launch.",
+  path: "/services",
+});
 
 export default function ServicesLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <JsonLd
+        data={[
+          breadcrumbSchema([
+            ["Home", "/"],
+            ["Services", "/services"],
+          ]),
+          servicesSchema,
+        ]}
+      />
+      {children}
+    </>
+  );
 }

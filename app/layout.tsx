@@ -1,9 +1,19 @@
 // app/layout.tsx
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Instrument_Sans, IBM_Plex_Mono } from "next/font/google";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import JsonLd from "./components/JsonLd";
+import {
+  SITE_URL,
+  SITE_NAME,
+  SITE_TITLE,
+  SITE_DESCRIPTION,
+  LEGAL_NAME,
+  organizationSchema,
+  websiteSchema,
+} from "./lib/seo";
 import "./globals.css";
 
 const sans = Instrument_Sans({
@@ -19,96 +29,10 @@ const mono = IBM_Plex_Mono({
   display: "swap",
 });
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
-  "https://www.codesquare.com.np";
-
-const SITE_NAME = "Code Square";
-
-const SITE_TITLE =
-  "Code Square | Software Company & Digital Product Studio in Kathmandu, Nepal";
-
-const SITE_DESCRIPTION =
-  "Code Square is a software studio in Kathmandu, Nepal building websites, mobile applications, custom software and digital experiences for businesses in Nepal and international markets.";
-
-const areaServed = [
-  { "@type": "City", name: "Kathmandu" },
-  { "@type": "Country", name: "Nepal" },
-  { "@type": "Place", name: "International" },
-];
-
-const address = {
-  "@type": "PostalAddress",
-  addressLocality: "Kathmandu",
-  addressRegion: "Bagmati Province",
-  addressCountry: "NP",
-};
-
-const organizationSchema = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "@id": `${SITE_URL}/#organization`,
-  name: "Code Square",
-  legalName: "Code Square Pvt. Ltd.",
-  alternateName: ["CodeSquare", "Code Square Nepal", "Code Square Kathmandu"],
-  url: SITE_URL,
-  logo: {
-    "@type": "ImageObject",
-    "@id": `${SITE_URL}/#logo`,
-    url: `${SITE_URL}/logo.png`,
-    contentUrl: `${SITE_URL}/logo.png`,
-    width: 512,
-    height: 512,
-    caption: "Code Square logo",
-  },
-  image: `${SITE_URL}/og-image.png`,
-  description: SITE_DESCRIPTION,
-  address,
-  areaServed,
-  knowsAbout: [
-    "Web Development",
-    "Website Development",
-    "Software Development",
-    "Custom Software Development",
-    "Mobile App Development",
-    "UI UX Design",
-    "Frontend Development",
-    "Backend Development",
-    "Digital Product Development",
-  ],
-};
-
-const websiteSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "@id": `${SITE_URL}/#website`,
-  name: SITE_NAME,
-  alternateName: ["CodeSquare", "Code Square Nepal"],
-  url: SITE_URL,
-  publisher: { "@id": `${SITE_URL}/#organization` },
-  inLanguage: "en",
-};
-
-const professionalServiceSchema = {
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  "@id": `${SITE_URL}/#business`,
-  name: "Code Square Pvt. Ltd.",
-  alternateName: ["Code Square", "Code Square Nepal"],
-  url: SITE_URL,
-  image: `${SITE_URL}/og-image.png`,
-  logo: `${SITE_URL}/logo.png`,
-  description: SITE_DESCRIPTION,
-  address,
-  areaServed,
-  serviceType: [
-    "Website Development",
-    "Web Development",
-    "Mobile App Development",
-    "Custom Software Development",
-    "UI UX Design",
-  ],
-  parentOrganization: { "@id": `${SITE_URL}/#organization` },
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#12332e",
 };
 
 export const metadata: Metadata = {
@@ -120,56 +44,29 @@ export const metadata: Metadata = {
   },
 
   description: SITE_DESCRIPTION,
-
   applicationName: SITE_NAME,
-  generator: "Next.js",
-  referrer: "origin-when-cross-origin",
 
-  keywords: [
-    "Code Square",
-    "CodeSquare",
-    "Code Square Nepal",
-    "Code Square Kathmandu",
-    "software company Kathmandu",
-    "IT company Kathmandu",
-    "software development company Nepal",
-    "web development Nepal",
-    "website development Kathmandu",
-    "mobile app development Nepal",
-    "custom software development Nepal",
-    "UI UX design Nepal",
-    "digital product development Nepal",
-    "software studio Kathmandu",
-  ],
-
-  authors: [{ name: "Code Square Pvt. Ltd.", url: SITE_URL }],
-  creator: "Code Square Pvt. Ltd.",
-  publisher: "Code Square Pvt. Ltd.",
-
+  authors: [{ name: LEGAL_NAME, url: SITE_URL }],
+  creator: LEGAL_NAME,
+  publisher: LEGAL_NAME,
   category: "Technology",
-  classification: "Software Development",
 
-  alternates: {
-    canonical: SITE_URL,
-    languages: {
-      "en-NP": SITE_URL,
-      en: SITE_URL,
-    },
-  },
+  /* Pages override this with their own canonical (see lib/seo.ts) */
+  alternates: { canonical: "/" },
 
   openGraph: {
     type: "website",
     locale: "en_NP",
-    url: SITE_URL,
+    url: "/",
     siteName: SITE_NAME,
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
     images: [
       {
-        url: `${SITE_URL}/og-image.png`,
+        url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Code Square - Software Company and Digital Product Studio in Kathmandu, Nepal",
+        alt: "Code Square - software studio in Kathmandu, Nepal",
         type: "image/png",
       },
     ],
@@ -181,8 +78,8 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: [
       {
-        url: `${SITE_URL}/og-image.png`,
-        alt: "Code Square - Software Company and Digital Product Studio",
+        url: "/og-image.png",
+        alt: "Code Square - software studio in Kathmandu, Nepal",
       },
     ],
   },
@@ -199,7 +96,14 @@ export const metadata: Metadata = {
     },
   },
 
-  manifest: "/manifest.webmanifest",
+  /* Set GOOGLE_SITE_VERIFICATION / BING_SITE_VERIFICATION in .env.local
+     with the codes Search Console and Bing Webmaster Tools give you. */
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+    ...(process.env.BING_SITE_VERIFICATION
+      ? { other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION } }
+      : {}),
+  },
 };
 
 export default function RootLayout({
@@ -210,16 +114,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${sans.variable} ${mono.variable}`}>
       <body>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify([
-              organizationSchema,
-              websiteSchema,
-              professionalServiceSchema,
-            ]),
-          }}
-        />
+        <JsonLd data={[organizationSchema, websiteSchema]} />
 
         {/* Hidden until focused with the keyboard (styled in globals.css) */}
         <a href="#main" className="skipLink">
@@ -228,8 +123,7 @@ export default function RootLayout({
 
         <Navbar />
 
-        {/* Each page renders its own <main>, so this wrapper is a div,
-            not a second <main>. tabIndex lets the skip link move focus here. */}
+        {/* Each page renders its own <main>, so this wrapper is a div. */}
         <div id="main" tabIndex={-1}>
           {children}
         </div>
