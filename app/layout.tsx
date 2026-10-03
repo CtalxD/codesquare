@@ -6,13 +6,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import "./globals.css";
 
-const display = Instrument_Sans({
-  subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-});
-
-const body = Instrument_Sans({
+const sans = Instrument_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
@@ -31,8 +25,24 @@ const SITE_URL =
 
 const SITE_NAME = "Code Square";
 
+const SITE_TITLE =
+  "Code Square | Software Company & Digital Product Studio in Kathmandu, Nepal";
+
 const SITE_DESCRIPTION =
   "Code Square is a software studio in Kathmandu, Nepal building websites, mobile applications, custom software and digital experiences for businesses in Nepal and international markets.";
+
+const areaServed = [
+  { "@type": "City", name: "Kathmandu" },
+  { "@type": "Country", name: "Nepal" },
+  { "@type": "Place", name: "International" },
+];
+
+const address = {
+  "@type": "PostalAddress",
+  addressLocality: "Kathmandu",
+  addressRegion: "Bagmati Province",
+  addressCountry: "NP",
+};
 
 const organizationSchema = {
   "@context": "https://schema.org",
@@ -40,24 +50,7 @@ const organizationSchema = {
   "@id": `${SITE_URL}/#organization`,
   name: "Code Square",
   legalName: "Code Square Pvt. Ltd.",
-  alternateName: [
-    "Code Square Nepal",
-    "codesquare",
-    "codesquare.com.np",
-    "Code Square Kathmandu",
-    "CodeSquare",
-    "Code Square Pvt Ltd",
-    "Code Square software company",
-    "Code Square Nepal software company",
-    "Code Square Pvt. Ltd.",
-    "Code Square Pvt. Ltd. Nepal",
-    "Code Square Pvt. Ltd. Kathmandu",
-    "Code Square Pvt. Ltd. Nepal Kathmandu",
-    "Code Square Pvt. Ltd. Nepal Kathmandu Bagmati Province",
-    "Code Square Pvt. Ltd. Nepal Kathmandu Bagmati Province NP",
-    "Code Square Pvt. Ltd. Nepal Kathmandu Bagmati Province NP 44600",
-    "Code Square Pvt. Ltd. Nepal Kathmandu Bagmati Province NP 44600 Nepal",
-  ],
+  alternateName: ["CodeSquare", "Code Square Nepal", "Code Square Kathmandu"],
   url: SITE_URL,
   logo: {
     "@type": "ImageObject",
@@ -70,26 +63,8 @@ const organizationSchema = {
   },
   image: `${SITE_URL}/og-image.png`,
   description: SITE_DESCRIPTION,
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Kathmandu",
-    addressRegion: "Bagmati Province",
-    addressCountry: "NP",
-  },
-  areaServed: [
-    {
-      "@type": "City",
-      name: "Kathmandu",
-    },
-    {
-      "@type": "Country",
-      name: "Nepal",
-    },
-    {
-      "@type": "Place",
-      name: "International",
-    },
-  ],
+  address,
+  areaServed,
   knowsAbout: [
     "Web Development",
     "Website Development",
@@ -108,15 +83,9 @@ const websiteSchema = {
   "@type": "WebSite",
   "@id": `${SITE_URL}/#website`,
   name: SITE_NAME,
-  alternateName: [
-    "Code Square Nepal",
-    "Code Square Kathmandu",
-    "CodeSquare",
-  ],
+  alternateName: ["CodeSquare", "Code Square Nepal"],
   url: SITE_URL,
-  publisher: {
-    "@id": `${SITE_URL}/#organization`,
-  },
+  publisher: { "@id": `${SITE_URL}/#organization` },
   inLanguage: "en",
 };
 
@@ -125,35 +94,13 @@ const professionalServiceSchema = {
   "@type": "ProfessionalService",
   "@id": `${SITE_URL}/#business`,
   name: "Code Square Pvt. Ltd.",
-  alternateName: [
-    "Code Square",
-    "Code Square Nepal",
-    "Code Square Kathmandu",
-  ],
+  alternateName: ["Code Square", "Code Square Nepal"],
   url: SITE_URL,
   image: `${SITE_URL}/og-image.png`,
   logo: `${SITE_URL}/logo.png`,
   description: SITE_DESCRIPTION,
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Kathmandu",
-    addressRegion: "Bagmati Province",
-    addressCountry: "NP",
-  },
-  areaServed: [
-    {
-      "@type": "City",
-      name: "Kathmandu",
-    },
-    {
-      "@type": "Country",
-      name: "Nepal",
-    },
-    {
-      "@type": "Place",
-      name: "International",
-    },
-  ],
+  address,
+  areaServed,
   serviceType: [
     "Website Development",
     "Web Development",
@@ -161,73 +108,45 @@ const professionalServiceSchema = {
     "Custom Software Development",
     "UI UX Design",
   ],
-  parentOrganization: {
-    "@id": `${SITE_URL}/#organization`,
-  },
+  parentOrganization: { "@id": `${SITE_URL}/#organization` },
 };
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
 
   title: {
-    default:
-      "Code Square | Software Company & Digital Product Studio in Kathmandu, Nepal",
+    default: SITE_TITLE,
     template: "%s | Code Square",
   },
 
   description: SITE_DESCRIPTION,
 
-  applicationName: "Code Square",
-
+  applicationName: SITE_NAME,
   generator: "Next.js",
-
   referrer: "origin-when-cross-origin",
 
   keywords: [
     "Code Square",
     "CodeSquare",
-    "codesquare",
-    "codequare",
-    "code square",
     "Code Square Nepal",
     "Code Square Kathmandu",
-    "Code Square Pvt Ltd",
-    "Code Square software company",
-    "Code Square Nepal software company",
     "software company Kathmandu",
-    "software company in Kathmandu",
     "IT company Kathmandu",
-    "IT company in Kathmandu",
-    "software development company Kathmandu",
     "software development company Nepal",
-    "web development Kathmandu",
     "web development Nepal",
     "website development Kathmandu",
-    "website development Nepal",
-    "mobile app development Kathmandu",
     "mobile app development Nepal",
     "custom software development Nepal",
-    "custom software development Kathmandu",
     "UI UX design Nepal",
-    "UI UX design Kathmandu",
     "digital product development Nepal",
     "software studio Kathmandu",
-    "software studio Nepal",
-    "technology company Nepal",
   ],
 
-  authors: [
-    {
-      name: "Code Square Pvt. Ltd.",
-      url: SITE_URL,
-    },
-  ],
-
+  authors: [{ name: "Code Square Pvt. Ltd.", url: SITE_URL }],
   creator: "Code Square Pvt. Ltd.",
   publisher: "Code Square Pvt. Ltd.",
 
   category: "Technology",
-
   classification: "Software Development",
 
   alternates: {
@@ -240,18 +159,11 @@ export const metadata: Metadata = {
 
   openGraph: {
     type: "website",
-
     locale: "en_NP",
-
     url: SITE_URL,
-
     siteName: SITE_NAME,
-
-    title:
-      "Code Square | Software Company & Digital Product Studio in Kathmandu, Nepal",
-
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
-
     images: [
       {
         url: `${SITE_URL}/og-image.png`,
@@ -265,12 +177,8 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-
-    title:
-      "Code Square | Software Company & Digital Product Studio in Kathmandu, Nepal",
-
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
-
     images: [
       {
         url: `${SITE_URL}/og-image.png`,
@@ -282,7 +190,6 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-
     googleBot: {
       index: true,
       follow: true,
@@ -301,10 +208,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${display.variable} ${body.variable} ${mono.variable}`}
-    >
+    <html lang="en" className={`${sans.variable} ${mono.variable}`}>
       <body>
         <script
           type="application/ld+json"
@@ -317,13 +221,18 @@ export default function RootLayout({
           }}
         />
 
+        {/* Hidden until focused with the keyboard (styled in globals.css) */}
         <a href="#main" className="skipLink">
           Skip to content
         </a>
 
         <Navbar />
 
-        <main id="main">{children}</main>
+        {/* Each page renders its own <main>, so this wrapper is a div,
+            not a second <main>. tabIndex lets the skip link move focus here. */}
+        <div id="main" tabIndex={-1}>
+          {children}
+        </div>
 
         <Footer />
       </body>

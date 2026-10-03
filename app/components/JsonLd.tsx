@@ -1,4 +1,4 @@
-// In a Server Component (not "use client")
+//app/components/JsonLd.tsx
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",

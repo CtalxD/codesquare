@@ -1,56 +1,22 @@
-/* =========================================================
-   Code Square - global tokens
-   Palette built independently from the logo mark.
-   Warm paper + deep ink, brass accent, one cool signal.
-   No neon. No purple. No gradient defaults.
-   ========================================================= */
-
 :root {
-  --paper: #f2ede4;
-  --paper-2: #e9e2d5;
-  --paper-3: #ded5c4;
-
-  --ink: #16130e;
-  --ink-2: #1f1b14;
-  --ink-3: #2a251c;
-
-  --text: #16130e;
-  --text-2: #56504a;
-  --text-3: #86807a;
-
-  --paper-text: #f2ede4;
-  --paper-text-2: #b8b0a2;
-  --paper-text-3: #7d7568;
-  --paper-text-4: #5e574c;
-
-  --rule: rgba(22, 19, 14, 0.13);
-  --rule-strong: rgba(22, 19, 14, 0.26);
-  --rule-inverse: rgba(242, 237, 228, 0.12);
-  --rule-inverse-strong: rgba(242, 237, 228, 0.24);
-
-  --brass: #b98b4f;
-  --brass-bright: #d1a463;
-  --brass-deep: #8f6a35;
-  --signal: #3f5f7c;
-
+  --pine: #12332e;
+  --deep: #0d2622;
   --mist: #e8eeeb;
+  --lichen: #c6d2b2;
+  --sage: #a9c4bc;
+  --muted: #3a554f;
 
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-    "Helvetica Neue", Arial, sans-serif;
-  --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
-    ui-serif, serif;
-  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas,
-    monospace;
+  /* names used by the navbar */
+  --ink: #12332e;
+  --ink-2: #1a443d;
+  --paper: #e8eeeb;
+  --brass: #c6d2b2;
+  --rule: rgba(18, 51, 46, 0.14);
 
-  --ease: cubic-bezier(0.22, 0.72, 0.18, 1);
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur-fast: 180ms;
-  --dur: 320ms;
-  --dur-slow: 620ms;
-  --dur-slower: 900ms;
+  --text: #12332e;
+  --text-2: #3a554f;
 
-  --max: 1320px;
-  --gutter: 56px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 * {
@@ -63,9 +29,10 @@ html,
 body {
   background: var(--mist);
   color: var(--text);
-  font-family: var(--font-sans);
+  /* --font-sans comes from next/font in layout.tsx */
+  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
-  font-feature-settings: "ss01", "cv11", "tnum";
   text-rendering: optimizeLegibility;
 }
 
@@ -75,8 +42,8 @@ body {
 }
 
 ::selection {
-  background: var(--brass);
-  color: var(--ink);
+  background: var(--lichen);
+  color: var(--pine);
 }
 
 a {
@@ -93,9 +60,36 @@ button {
 }
 
 :focus-visible {
-  outline: 2px solid var(--brass);
+  outline: 2px solid var(--pine);
   outline-offset: 3px;
   border-radius: 2px;
+}
+
+/* Skip link: hidden until it receives keyboard focus */
+.skipLink {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 2000; /* above the navbar (1000) and mobile menu (900) */
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: var(--pine);
+  color: var(--mist);
+  font-weight: 600;
+  transform: translateY(-250%);
+  transition: transform 0.25s var(--ease);
+}
+
+.skipLink:focus,
+.skipLink:focus-visible {
+  transform: none;
+  outline: 3px solid var(--lichen);
+  outline-offset: 3px;
+}
+
+/* the skip target should not show a focus ring when focused */
+#main:focus {
+  outline: none;
 }
 
 .sr {
@@ -110,31 +104,11 @@ button {
   border: 0;
 }
 
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(16px);
-  transition:
-    opacity var(--dur-slower) var(--ease-out),
-    transform var(--dur-slower) var(--ease-out);
-}
-
-[data-reveal].is-in {
-  opacity: 1;
-  transform: none;
-}
-
-[data-reveal-delay="1"] { transition-delay: 90ms; }
-[data-reveal-delay="2"] { transition-delay: 180ms; }
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
-  }
-  [data-reveal] {
-    opacity: 1;
-    transform: none;
   }
 }
