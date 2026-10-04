@@ -60,12 +60,208 @@ const initials = (n: string) =>
     .join("");
 
 /* ============================================================
+   Closing card: a pixel grid you can sketch on.
+   Squares light up where the pointer passes and fade out again.
+   When nobody is drawing, a slow pen sketches a loop on its own.
+   ============================================================ */
+function Closing() {
+  const card = useRef<HTMLDivElement>(null);
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const [touched, setTouched] = useState(false);
+
+  useEffect(() => {
+    const el = card.current;
+    const cv = canvas.current;
+    if (!el || !cv) return;
+    const ctx = cv.getContext("2d");
+    if (!ctx) return;
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const CELL = 30;
+    const GAP = 4;
+    const LIFE = 2.2; // seconds a lit square takes to fade out
+
+    let w = 0;
+    let h = 0;
+    let dpr = 1;
+    let cols = 0;
+    let rows = 0;
+    let heat = new Float32Array(0);
+    let raf = 0;
+    let running = false;
+    let prev = 0;
+    let lastInput = -1e9;
+
+    type Pt = { x: number; y: number } | null;
+    let user: Pt = null;
+    let auto: Pt = null;
+
+    const resize = () => {
+      const r = el.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = r.width;
+      h = r.height;
+      cv.width = Math.round(w * dpr);
+      cv.height = Math.round(h * dpr);
+      cols = Math.ceil(w / CELL);
+      rows = Math.ceil(h / CELL);
+      heat = new Float32Array(cols * rows);
+    };
+
+    /* light the square under (x, y) and, more softly, its neighbours */
+    const stamp = (x: number, y: number, power: number) => {
+      const cx = Math.floor(x / CELL);
+      const cy = Math.floor(y / CELL);
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          const gx = cx + dx;
+          const gy = cy + dy;
+          if (gx < 0 || gy < 0 || gx >= cols || gy >= rows) continue;
+          const d = Math.abs(dx) + Math.abs(dy);
+          const val = power * (d === 0 ? 1 : d === 1 ? 0.5 : 0.2);
+          const i = gy * cols + gx;
+          if (val > heat[i]) heat[i] = val;
+        }
+      }
+    };
+
+    /* draw a continuous stroke, so fast movement leaves no gaps */
+    const pen = (from: Pt, x: number, y: number, power: number): Pt => {
+      if (!from) {
+        stamp(x, y, power);
+      } else {
+        const dx = x - from.x;
+        const dy = y - from.y;
+        const steps = Math.max(1, Math.ceil(Math.hypot(dx, dy) / (CELL / 2)));
+        for (let s = 1; s <= steps; s++) {
+          stamp(from.x + (dx * s) / steps, from.y + (dy * s) / steps, power);
+        }
+      }
+      return { x, y };
+    };
+
+    const onMove = (e: PointerEvent) => {
+      const r = el.getBoundingClientRect();
+      user = pen(user, e.clientX - r.left, e.clientY - r.top, 1);
+      lastInput = performance.now();
+      setTouched(true);
+    };
+    const onLeave = () => {
+      user = null;
+    };
+
+    const frame = (now: number) => {
+      const dt = Math.min(0.05, (now - prev) / 1000);
+      prev = now;
+
+      if (!reduce && now - lastInput > 2200) {
+        const t = now / 1000;
+        auto = pen(
+          auto,
+          w * (0.5 + 0.42 * Math.sin(t * 0.55)),
+          h * (0.5 + 0.36 * Math.sin(t * 0.83 + 1.3)),
+          0.9,
+        );
+      } else {
+        auto = null;
+      }
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+      const size = CELL - GAP;
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const i = r * cols + c;
+          const x = c * CELL + GAP / 2;
+          const y = r * CELL + GAP / 2;
+
+          ctx.fillStyle = "rgba(198,210,178,0.05)";
+          ctx.fillRect(x, y, size, size);
+
+          const v = heat[i];
+          if (v > 0.01) {
+            ctx.fillStyle = `rgba(198,210,178,${(v * 0.3).toFixed(3)})`;
+            ctx.fillRect(x, y, size, size);
+            ctx.strokeStyle = `rgba(198,210,178,${(v * 0.9).toFixed(3)})`;
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(x + 0.75, y + 0.75, size - 1.5, size - 1.5);
+            heat[i] = Math.max(0, v - dt / LIFE);
+          }
+        }
+      }
+
+      raf = requestAnimationFrame(frame);
+    };
+
+    const start = () => {
+      if (running) return;
+      running = true;
+      prev = performance.now();
+      raf = requestAnimationFrame(frame);
+    };
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(el);
+    const io = new IntersectionObserver(
+      ([entry]) => (entry.isIntersecting ? start() : stop()),
+      { threshold: 0 },
+    );
+    io.observe(el);
+
+    el.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerleave", onLeave);
+
+    return () => {
+      stop();
+      ro.disconnect();
+      io.disconnect();
+      el.removeEventListener("pointermove", onMove);
+      el.removeEventListener("pointerleave", onLeave);
+    };
+  }, []);
+
+  return (
+    <section className={styles.close} aria-label="Work with us">
+      <div ref={card} className={styles.closeCard}>
+        <canvas ref={canvas} className={styles.sketch} aria-hidden="true" />
+
+        <div className={styles.closeText}>
+          <p className={styles.place}>Start with a sketch</p>
+
+          <h2 className={styles.closeTitle}>Tell us what you are building.</h2>
+
+          <div className={styles.closeActions}>
+            <Link href="/contact" className={styles.closeBtn}>
+              Start a project
+            </Link>
+            <Link href="/services" className={styles.closeGhost}>
+              See our services
+            </Link>
+          </div>
+        </div>
+
+        <p className={styles.hint} data-hidden={touched} aria-hidden="true">
+          Sketch on the grid
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
    Page
    ============================================================ */
 export default function AboutPage() {
   const trackRef = useRef<HTMLDivElement>(null);
   const scenes = useRef<(HTMLElement | null)[]>([]);
   const [active, setActive] = useState(0);
+
 
   /* Team: every member is driven directly by scroll position.
      s = how many screens we have scrolled into the pinned track.
@@ -295,17 +491,7 @@ export default function AboutPage() {
         </section>
 
         {/* ---------- CLOSING ---------- */}
-        <section className={styles.close} aria-label="Work with us">
-          <h2 className={styles.closeTitle}>Tell us what you are building.</h2>
-          <div className={styles.closeActions}>
-            <a href="mailto:codesquare2026@gmail.com" className={styles.closeBtn}>
-              Start a project
-            </a>
-            <Link href="/services" className={styles.closeGhost}>
-              See our services
-            </Link>
-          </div>
-        </section>
+        <Closing />
       </main>
     </div>
   );

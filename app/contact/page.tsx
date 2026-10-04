@@ -40,6 +40,55 @@ const team = [
   { n: "Sudil Maharjan", img: "/sm.jpg" },
 ];
 
+/* ---------- Budget ----------
+   The amount is typed in, so each currency only needs a symbol,
+   a number format and an example for the placeholder. */
+type Currency = {
+  code: string;
+  name: string;
+  symbol: string;
+  locale: string;
+  example: number;
+};
+
+const currencies: Currency[] = [
+  { code: "NPR", name: "Nepalese rupee", symbol: "Rs ", locale: "en-IN", example: 500000 },
+  { code: "USD", name: "US dollar", symbol: "$", locale: "en-US", example: 5000 },
+  { code: "INR", name: "Indian rupee", symbol: "₹", locale: "en-IN", example: 400000 },
+  { code: "EUR", name: "Euro", symbol: "€", locale: "en-US", example: 5000 },
+  { code: "GBP", name: "British pound", symbol: "£", locale: "en-US", example: 4000 },
+  { code: "AUD", name: "Australian dollar", symbol: "A$", locale: "en-US", example: 7000 },
+  { code: "CAD", name: "Canadian dollar", symbol: "C$", locale: "en-US", example: 6500 },
+  { code: "AED", name: "UAE dirham", symbol: "AED ", locale: "en-US", example: 18000 },
+  { code: "SGD", name: "Singapore dollar", symbol: "S$", locale: "en-US", example: 6500 },
+  { code: "JPY", name: "Japanese yen", symbol: "¥", locale: "en-US", example: 700000 },
+];
+
+const MAX_BUDGET_DIGITS = 12;
+
+/* "500000" -> "5,00,000" (or "500,000", depending on the currency) */
+const group = (c: Currency, digits: string) =>
+  digits ? Number(digits).toLocaleString(c.locale) : "";
+
+/* When someone picks their phone country, suggest its currency
+   (only until they choose a currency themselves). */
+const countryCurrency: Record<string, string> = {
+  NP: "NPR",
+  IN: "INR",
+  US: "USD",
+  CA: "CAD",
+  GB: "GBP",
+  AU: "AUD",
+  AE: "AED",
+  SG: "SGD",
+  JP: "JPY",
+  DE: "EUR",
+  FR: "EUR",
+  NL: "EUR",
+  ES: "EUR",
+  IT: "EUR",
+};
+
 /* [ISO, name, dial code, min digits, max digits] (digits after the country code) */
 const countries = (
   [
@@ -118,11 +167,17 @@ export default function ContactPage() {
   const [errMsg, setErrMsg] = useState("");
   const [picked, setPicked] = useState<string[]>([]);
   const [when, setWhen] = useState("");
+  const [currencyCode, setCurrencyCode] = useState("NPR");
+  const [currencyChosen, setCurrencyChosen] = useState(false);
+  const [budget, setBudget] = useState("");
   const [msg, setMsg] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [copied, setCopied] = useState(false);
 
   const country = countries.find((c) => c.iso === iso) ?? countries[0];
+  const currency =
+    currencies.find((c) => c.code === currencyCode) ?? currencies[0];
+
   const range =
     country.min === country.max
       ? `${country.min}`
@@ -137,11 +192,26 @@ export default function ContactPage() {
 
   const onPhone = (val: string) =>
     setPhone(val.replace(/\D/g, "").replace(/^0+/, "").slice(0, country.max));
+
   const onCountry = (code: string) => {
     const c = countries.find((x) => x.iso === code) ?? countries[0];
     setIso(code);
     setPhone((p) => p.slice(0, c.max));
+
+    /* suggest that country's currency until they pick one themselves */
+    const suggested = countryCurrency[code];
+    if (suggested && !currencyChosen && suggested !== currencyCode) {
+      setCurrencyCode(suggested);
+    }
   };
+
+  const onCurrency = (code: string) => {
+    setCurrencyCode(code);
+    setCurrencyChosen(true);
+  };
+
+  const onBudget = (val: string) =>
+    setBudget(val.replace(/\D/g, "").replace(/^0+/, "").slice(0, MAX_BUDGET_DIGITS));
 
   const toggle = (s: string) =>
     setPicked((p) => (p.includes(s) ? p.filter((x) => x !== s) : [...p, s]));
@@ -193,6 +263,10 @@ export default function ContactPage() {
           country: country.name,
           services: picked.join(", "),
           timeline: when || "Not specified",
+          budget: budget
+            ? `${currency.symbol}${group(currency, budget)} (${currency.code})`
+            : "Not specified",
+          currency: currency.code,
           message: msg.trim() || "(no message)",
         }),
       });
@@ -206,6 +280,7 @@ export default function ContactPage() {
       setPhoneTouched(false);
       setPicked([]);
       setWhen("");
+      setBudget("");
       setMsg("");
     } catch {
       setErrMsg(
@@ -388,6 +463,38 @@ export default function ContactPage() {
                 </button>
               ))}
             </div>
+
+            <p className={styles.story}>My budget is around</p>
+            <div className={styles.phone}>
+              <select
+                className={styles.cc}
+                aria-label="Currency"
+                value={currency.code}
+                onChange={(e) => onCurrency(e.target.value)}
+              >
+                {currencies.map((c) => (
+                  <option key={c.code} value={c.code}>
+                    {c.code} ({c.symbol.trim()})
+                  </option>
+                ))}
+              </select>
+              <input
+                className={styles.num}
+                type="text"
+                name="budget"
+                inputMode="numeric"
+                autoComplete="off"
+                placeholder={group(currency, String(currency.example))}
+                aria-label={`Budget in ${currency.name}`}
+                aria-describedby="budget-hint"
+                value={group(currency, budget)}
+                onChange={(e) => onBudget(e.target.value)}
+              />
+            </div>
+            <p id="budget-hint" className={styles.hint}>
+              Optional. A rough figure is enough, and it helps us suggest the
+              right scope.
+            </p>
 
             <p className={styles.story}>Here&apos;s a little about it:</p>
             <textarea

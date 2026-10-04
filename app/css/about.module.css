@@ -1,8 +1,9 @@
 /* ============================================================
    Code Square - about.module.css
-   About page: page-in transition, full-screen hero with a giant
-   "4", then a pinned, scroll-driven team section where each
-   member is revealed in turn by the scroll position itself.
+   About page: page-in transition, full-screen hero, a pinned,
+   scroll-driven team section where each member is revealed in
+   turn by the scroll position itself, and a closing section with
+   a pixel grid you can sketch on.
    ============================================================ */
 
 :global(html) {
@@ -417,37 +418,75 @@
   transform: translateY(calc((1 - var(--k)) * 16px));
 }
 
-/* ---------- CLOSING ---------- */
+/* ---------- CLOSING: compact card with a grid you can sketch on ---------- */
 .close {
+  padding: clamp(56px, 7vw, 96px) var(--gutter) 0;
+  background: var(--paper);
+}
+
+.closeCard {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: grid;
-  justify-items: center;
-  gap: var(--s4);
-  padding: clamp(96px, 14vw, 180px) var(--gutter);
-  text-align: center;
-  background: var(--deep);
+  align-content: center;
+  min-height: clamp(300px, 30vw, 380px);
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: clamp(28px, 4vw, 52px) clamp(24px, 4vw, 56px);
+  border-radius: 30px;
+  background: radial-gradient(ellipse 90% 80% at 15% 0%, #17413a, var(--pine) 70%);
   color: var(--mist);
+  box-shadow: 0 30px 60px -32px rgba(18, 51, 46, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* the drawing surface fills the whole card, behind the text */
+.sketch {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.closeText {
+  display: grid;
+  justify-items: start;
+  gap: var(--s3);
+  max-width: 34rem;
+}
+
+.place {
+  margin: 0;
+  padding: 6px 14px;
+  border: 1px solid rgba(198, 210, 178, 0.4);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--lichen);
 }
 
 .closeTitle {
   margin: 0;
-  max-width: 11em;
-  font-size: clamp(2.4rem, 6.6vw, 5.6rem);
+  max-width: 10em;
+  font-size: clamp(2rem, 4.4vw, 3.6rem);
   font-weight: 800;
-  line-height: 0.96;
-  letter-spacing: -0.05em;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
   text-wrap: balance;
 }
 
 .closeActions {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .page .closeBtn,
 .page .closeGhost {
-  padding: 16px 32px;
+  padding: 14px 28px;
   border-radius: 999px;
   font-weight: 700;
   transition: transform 0.25s var(--ease), background 0.2s, color 0.2s,
@@ -462,7 +501,7 @@
 .page .closeBtn:hover {
   background: #d8e2c6;
   transform: translateY(-3px);
-  box-shadow: 0 22px 36px -16px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 18px 30px -14px rgba(0, 0, 0, 0.6);
 }
 
 .page .closeGhost {
@@ -474,6 +513,30 @@
   background: var(--lichen);
   color: var(--pine);
   transform: translateY(-3px);
+}
+
+.page .closeCard a:focus-visible {
+  outline-color: var(--lichen);
+}
+
+/* tells people the grid is alive; disappears after the first stroke */
+.hint {
+  position: absolute;
+  right: clamp(16px, 2.4vw, 28px);
+  bottom: clamp(16px, 2.4vw, 28px);
+  margin: 0;
+  padding: 6px 14px;
+  border: 1px solid rgba(198, 210, 178, 0.4);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--lichen);
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease);
+}
+
+.hint[data-hidden="true"] {
+  opacity: 0;
 }
 
 /* ---------- Motion ---------- */
@@ -617,7 +680,13 @@
   .info {
     gap: var(--s2);
   }
+}
 
+@media (max-width: 800px) {
+  .closeCard {
+    min-height: 0;
+    padding-bottom: clamp(64px, 14vw, 88px);
+  }
 }
 
 @media (max-width: 560px) {
