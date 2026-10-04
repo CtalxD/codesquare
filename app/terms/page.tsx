@@ -1,15 +1,15 @@
 // app/terms/page.tsx
-import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import styles from "../css/terms.module.css";
+import { pageMeta } from "../lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Terms of Service",
   description:
     "The terms that apply when you use the Code Square website and send us an enquiry.",
-  alternates: { canonical: "/terms" },
-};
+  path: "/terms",
+});
 
 /* ============================================================
    Content (edit here)

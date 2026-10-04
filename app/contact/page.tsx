@@ -9,6 +9,7 @@ import {
 } from "react";
 import Image from "next/image";
 import styles from "../css/contact.module.css";
+import { CONTACT } from "../lib/contact";
 
 const v = (o: Record<string, number | string>) =>
   o as unknown as CSSProperties;
@@ -16,7 +17,7 @@ const v = (o: Record<string, number | string>) =>
 /* ============================================================
    Content (edit here)
    ============================================================ */
-const EMAIL = "codesquare2026@gmail.com";
+const EMAIL = CONTACT.email;
 
 /* Web3Forms access key lives in .env.local:
    NEXT_PUBLIC_WEB3FORMS_KEY=your-key                          */
@@ -257,6 +258,13 @@ export default function ContactPage() {
                 </span>
               ))}
             </a>
+
+            <p className={styles.reach}>
+              <a href={CONTACT.phoneHref}>{CONTACT.phone}</a>
+              <span>
+                {CONTACT.place} · {CONTACT.hours}
+              </span>
+            </p>
 
             <div className={styles.meta}>
               <button type="button" className={styles.copy} onClick={copy}>

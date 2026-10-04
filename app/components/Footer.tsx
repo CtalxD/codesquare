@@ -2,8 +2,9 @@
 import Link from "next/link";
 import styles from "../css/footer.module.css";
 import Logo from "./logo";
+import { CONTACT } from "../lib/contact";
 
-const EMAIL = "codesquare2026@gmail.com";
+const EMAIL = CONTACT.email;
 
 /* [label, href] - each opens its own page */
 const nav: [string, string][] = [
@@ -50,8 +51,12 @@ export default function Footer() {
           </nav>
 
           <div className={styles.col}>
-            <p className={styles.head}>Email us</p>
+            <p className={styles.head}>Contact</p>
             <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+            <a href={CONTACT.phoneHref}>{CONTACT.phone}</a>
+            <p className={styles.reply}>
+              {CONTACT.place} · {CONTACT.hours}
+            </p>
             <p className={styles.reply}>We reply within one business day.</p>
           </div>
         </div>

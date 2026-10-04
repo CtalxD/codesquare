@@ -181,8 +181,8 @@ export default function Home() {
             </h1>
 
             <p className={styles.lead}>
-              Websites, mobile apps and custom software for teams that need
-              technology to fit the way they work.
+              Websites, mobile apps and custom software from Kathmandu, Nepal,
+              for teams that need technology to fit the way they work.
             </p>
 
             <div className={styles.actions}>

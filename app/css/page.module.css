@@ -1020,17 +1020,17 @@
 @media (prefers-reduced-motion: no-preference) {
   .w {
     transform: translateY(105%);
-    animation: word-up 0.9s var(--ease) calc(1.15s + var(--d) * 70ms) forwards;
+    animation: word-up 0.9s var(--ease) calc(0.1s + var(--d) * 60ms) forwards;
   }
 
   .lead,
   .actions {
-    animation: fade-up 0.8s var(--ease) 1.7s both;
+    animation: fade-up 0.8s var(--ease) 0.3s both;
   }
 
   .tool {
     animation:
-      chip-in 0.5s var(--ease) calc(1.4s + var(--n) * 45ms) both,
+      chip-in 0.5s var(--ease) calc(0.3s + var(--n) * 40ms) both,
       bob 5s ease-in-out calc(var(--n) * -0.7s) infinite alternate;
   }
 

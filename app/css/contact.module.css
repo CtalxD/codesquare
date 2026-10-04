@@ -633,3 +633,24 @@
     border-radius: 0 0 14px 14px;
   }
 }
+
+/* ---------- Phone + hours (left panel) ---------- */
+.reach {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
+  margin: -8px 0 0;
+  font-size: 0.95rem;
+  color: #c9d6d1;
+}
+
+.page .reach a {
+  color: var(--lichen);
+  font-weight: 600;
+}
+
+.page .reach a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}

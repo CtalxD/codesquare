@@ -187,7 +187,9 @@ export default function ServicesPage() {
         {/* ---------- SERVICES ---------- */}
         <section className={styles.services} aria-label="Our services">
           <div className={styles.svcWrap}>
-            <h2 className={styles.h2}>Our services</h2>
+            <h2 className={styles.h2}>
+              Web, mobile and software services in Kathmandu
+            </h2>
 
             <nav className={styles.subnav} aria-label="Services">
               {services.map((x) => (

@@ -1,6 +1,7 @@
 // app/lib/seo.ts
 
 import type { Metadata } from "next";
+import { CONTACT } from "./contact";
 
 /* ============================================================
    Facts (edit here)
@@ -11,8 +12,10 @@ export const SITE_URL =
 
 export const SITE_NAME = "Code Square";
 export const LEGAL_NAME = "Code Square Pvt. Ltd.";
-export const EMAIL = "codesquare2026@gmail.com";
-export const PHONE = "+9779813301334"; // must also appear on the site (footer or contact page)
+export const EMAIL = CONTACT.email;
+/* E.164 form for structured data. The same number is shown in the footer
+   and on the contact page (see lib/contact.ts). */
+export const PHONE = CONTACT.phoneHref.replace(/^tel:/, "");
 
 export const SITE_TITLE = "Code Square | Software Company in Kathmandu, Nepal";
 
@@ -130,7 +133,7 @@ const areaServed = [
 
 export const organizationSchema = {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": ["Organization", "ProfessionalService"],
   "@id": `${SITE_URL}/#organization`,
   name: SITE_NAME,
   legalName: LEGAL_NAME,
@@ -152,6 +155,21 @@ export const organizationSchema = {
   telephone: PHONE,
   address,
   areaServed,
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+      ],
+      opens: "10:00",
+      closes: "18:00",
+    },
+  ],
   founder: TEAM.map((p) => ({
     "@type": "Person",
     name: p.name,
@@ -160,9 +178,10 @@ export const organizationSchema = {
   contactPoint: [
     {
       "@type": "ContactPoint",
-      contactType: "customer support",
+      contactType: "sales",
       email: EMAIL,
       telephone: PHONE,
+      availableLanguage: ["English", "Nepali"],
     },
   ],
   knowsAbout: [
