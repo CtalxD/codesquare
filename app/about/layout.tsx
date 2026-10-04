@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import JsonLd from "../components/JsonLd";
 import { pageMeta, breadcrumbSchema, pageSchema } from "../lib/seo";
 
-const TITLE = "About - Four-Person Software Studio in Kathmandu";
+const TITLE = "About - Four-Person Studio in Kathmandu";
 const DESCRIPTION =
   "Code Square is a four-person software company in Kathmandu, Nepal. Founded in 2026 by four friends building products together for years.";
 

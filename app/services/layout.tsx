@@ -4,9 +4,9 @@ import JsonLd from "../components/JsonLd";
 import { pageMeta, breadcrumbSchema, servicesSchema } from "../lib/seo";
 
 export const metadata: Metadata = pageMeta({
-  title: "Software, Web & Mobile App Development in Nepal",
+  title: "Web, Mobile & Software Development in Nepal",
   description:
-    "Website development, mobile app development, custom software and UI/UX design from Code Square in Kathmandu. Clear scope, weekly releases and support after launch.",
+    "Website development, mobile app development, custom software and UI/UX design from Code Square in Kathmandu. Weekly releases and support after launch.",
   path: "/services",
 });
 
